@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Synonym Match 🔗</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --yellow: #FFD93D;
+      --pink:   #FF6B9D;
+      --blue:   #4ECDC4;
+      --purple: #A855F7;
+      --orange: #FF8C42;
+      --green:  #6BCB77;
+      --red:    #FF4757;
+      --bg:     #FFF9F0;
+
+      /* Pair colors */
+      --p0: #FF6B9D; --p1: #4ECDC4; --p2: #A855F7;
+      --p3: #FFD93D; --p4: #FF8C42; --p5: #6BCB77;
+    }
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: var(--bg);
+      min-height: 100dvh;
+      overflow-x: hidden;
+    }
+
+    .bg-shapes { position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden; }
+    .shape { position:absolute; border-radius:50%; opacity:0.11; animation: floatShape 8s ease-in-out infinite; }
+    .shape:nth-child(1){width:200px;height:200px;background:var(--blue);top:-50px;left:-50px;animation-delay:0s;}
+    .shape:nth-child(2){width:160px;height:160px;background:var(--yellow);top:5%;right:-30px;animation-delay:2s;}
+    .shape:nth-child(3){width:180px;height:180px;background:var(--green);bottom:15%;left:5%;animation-delay:1s;}
+    .shape:nth-child(4){width:220px;height:220px;background:var(--purple);bottom:-70px;right:5%;animation-delay:3s;}
+    @keyframes floatShape {
+      0%,100%{transform:translateY(0) rotate(0deg);}
+      50%{transform:translateY(-25px) rotate(10deg);}
+    }
+
+    .wrapper {
+      position:relative; z-index:1;
+      max-width:540px; margin:0 auto;
+      padding:20px 16px 60px;
+      display:flex; flex-direction:column; align-items:center; gap:16px;
+    }
+
+    .back-btn {
+      align-self:flex-start;
+      display:flex; align-items:center; gap:6px;
+      background:#fff; border:3px solid #eee; border-radius:40px; padding:8px 16px;
+      font-family:'Nunito',sans-serif; font-weight:800; font-size:14px; color:#888;
+      cursor:pointer; text-decoration:none;
+      box-shadow: 0 3px 0 #ddd;
+      transition: transform 0.1s;
+    }
+    .back-btn:hover { transform:translateY(-2px); }
+
+    .header { text-align:center; }
+    .game-title {
+      font-family:'Fredoka One', cursive;
+      font-size:clamp(28px,7vw,48px);
+      background: linear-gradient(135deg, var(--blue) 0%, var(--purple) 100%);
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+    }
+    .game-sub { font-size:13px; font-weight:700; color:#aaa; letter-spacing:1px; margin-top:2px; }
+
+    /* Progress */
+    .progress-row { display:flex; align-items:center; gap:12px; width:100%; }
+    .progress-bar-bg { flex:1; height:12px; background:#eee; border-radius:40px; overflow:hidden; box-shadow:inset 0 2px 4px rgba(0,0,0,0.08); }
+    .progress-bar-fill {
+      height:100%; border-radius:40px; width:0%;
+      background: linear-gradient(90deg, var(--blue), var(--purple));
+      transition: width 0.4s ease;
+      box-shadow: 0 2px 8px rgba(78,205,196,0.5);
+    }
+    .progress-label { font-family:'Fredoka One',cursive; font-size:18px; color:var(--purple); white-space:nowrap; }
+
+    /* Instructions */
+    .instructions {
+      background:#fff; border-radius:18px; padding:12px 18px;
+      box-shadow: 0 3px 0 rgba(0,0,0,0.07);
+      font-size:13px; font-weight:700; color:#888; text-align:center;
+      border: 2px solid #E8F4FF;
+    }
+    .instructions span { color:var(--blue); }
+
+    /* Match area */
+    .match-area {
+      width:100%; position:relative;
+    }
+
+    /* SVG lines layer */
+    .lines-svg {
+      position:absolute; top:0; left:0; width:100%; height:100%;
+      pointer-events:none; z-index:5;
+      overflow:visible;
+    }
+
+    .columns {
+      display:grid; grid-template-columns:1fr 1fr; gap:0 20px;
+      position:relative; z-index:10;
+    }
+
+    .col { display:flex; flex-direction:column; gap:10px; }
+
+    .word-pill {
+      padding:14px 16px; border-radius:18px; background:#fff;
+      box-shadow: 0 4px 0 rgba(0,0,0,0.08);
+      font-family:'Fredoka One', cursive; font-size:clamp(16px,4vw,22px);
+      text-align:center; cursor:pointer;
+      border: 3px solid transparent;
+      transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s, background 0.15s;
+      user-select:none; -webkit-tap-highlight-color:transparent;
+      position:relative;
+      color:#555;
+    }
+    .word-pill:hover { transform:translateY(-2px); box-shadow:0 6px 0 rgba(0,0,0,0.1); }
+    .word-pill:active { transform:translateY(2px); }
+
+    .word-pill.selected {
+      border-color: var(--blue);
+      background: #E8FFFE;
+      color:var(--blue);
+      box-shadow: 0 0 0 4px rgba(78,205,196,0.2), 0 4px 0 rgba(78,205,196,0.3);
+      animation: selectedPulse 1s ease-in-out infinite;
+    }
+    @keyframes selectedPulse {
+      0%,100%{box-shadow:0 0 0 4px rgba(78,205,196,0.2), 0 4px 0 rgba(78,205,196,0.3);}
+      50%{box-shadow:0 0 0 8px rgba(78,205,196,0.1), 0 4px 0 rgba(78,205,196,0.3);}
+    }
+
+    .word-pill.matched {
+      cursor:default; opacity:0.85;
+    }
+    .word-pill.matched:hover { transform:none; }
+
+    .word-pill.wrong-flash {
+      animation: wrongFlash 0.4s ease;
+    }
+    @keyframes wrongFlash {
+      0%,100%{background:#fff;}
+      25%,75%{background:#FFF0F0; border-color:var(--red);}
+    }
+
+    .word-pill.correct-flash {
+      animation: correctFlash 0.4s ease;
+    }
+    @keyframes correctFlash {
+      0%,100%{}
+      50%{transform:scale(1.06);}
+    }
+
+    /* Lines */
+    .match-line {
+      stroke-width: 4;
+      stroke-linecap: round;
+      fill: none;
+      stroke-dasharray: 300;
+      stroke-dashoffset: 300;
+      animation: drawLine 0.4s ease forwards;
+      opacity:0.8;
+    }
+    @keyframes drawLine {
+      to { stroke-dashoffset: 0; }
+    }
+
+    .draft-line {
+      stroke: var(--blue); stroke-width:3; stroke-dasharray:8 6;
+      fill:none; stroke-linecap:round; opacity:0.5;
+    }
+
+    /* Submit / Check button */
+    .check-btn {
+      width:100%; padding:18px; border:none; border-radius:22px; cursor:pointer;
+      font-family:'Fredoka One', cursive; font-size:22px; color:#fff;
+      background: linear-gradient(135deg, var(--blue), var(--purple));
+      box-shadow: 0 6px 0 rgba(78,205,196,0.4);
+      transition: transform 0.1s, box-shadow 0.1s, opacity 0.2s;
+    }
+    .check-btn:disabled { opacity:0.5; cursor:not-allowed; }
+    .check-btn:not(:disabled):hover { transform:translateY(-3px); box-shadow:0 9px 0 rgba(78,205,196,0.4); }
+    .check-btn:active { transform:translateY(3px); }
+
+    /* Feedback toast */
+    .toast {
+      position:fixed; bottom:20px; left:50%; transform:translateX(-50%);
+      background:#333; color:#fff; border-radius:40px; padding:12px 24px;
+      font-family:'Fredoka One',cursive; font-size:18px;
+      opacity:0; transition:opacity 0.25s; z-index:200;
+      pointer-events:none; white-space:nowrap;
+    }
+    .toast.show { opacity:1; }
+    .toast.green { background:var(--green); }
+    .toast.red   { background:var(--red); }
+
+    /* Results */
+    #results-screen { display:none; width:100%; }
+    .results-card {
+      background:#fff; border-radius:28px; padding:28px 24px;
+      box-shadow: 0 8px 0 rgba(0,0,0,0.08);
+      text-align:center; position:relative; overflow:hidden;
+    }
+    .results-card::before {
+      content:''; position:absolute; top:0; left:0; right:0; height:6px;
+      background: linear-gradient(90deg, var(--blue), var(--purple), var(--pink));
+    }
+    .result-emoji { font-size:64px; margin-bottom:8px; animation:popIn 0.4s cubic-bezier(0.175,0.885,0.32,1.275); }
+    .result-title {
+      font-family:'Fredoka One',cursive; font-size:clamp(24px,7vw,40px);
+      background: linear-gradient(135deg,var(--blue),var(--purple));
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+      margin-bottom:4px;
+    }
+    .result-score-big {
+      font-family:'Fredoka One',cursive; font-size:clamp(42px,11vw,66px);
+      color:var(--purple); line-height:1; margin:10px 0 4px;
+    }
+    .result-score-label { font-size:13px; font-weight:800; color:#bbb; letter-spacing:2px; text-transform:uppercase; }
+
+    .stars-row { display:flex; justify-content:center; gap:8px; margin:14px 0; font-size:34px; }
+    .star { opacity:0.2; transition:opacity 0.3s, transform 0.4s cubic-bezier(0.175,0.885,0.32,1.275); }
+    .star.lit { opacity:1; transform:scale(1.25); }
+
+    .review-pairs {
+      margin-top:18px; text-align:left;
+    }
+    .review-title { font-size:12px; font-weight:800; color:#bbb; letter-spacing:2px; text-transform:uppercase; margin-bottom:10px; }
+    .pair-item {
+      display:flex; align-items:center; gap:12px;
+      padding:10px 14px; border-radius:14px; margin-bottom:6px;
+      font-weight:700; font-size:15px;
+    }
+    .pair-item .pi-w1 { flex:1; color:#555; }
+    .pair-item .pi-arrow { color:#ccc; }
+    .pair-item .pi-w2 { flex:1; font-family:'Fredoka One',cursive; font-size:18px; }
+    .pair-item .pi-icon { font-size:18px; }
+
+    .play-again-btn {
+      width:100%; padding:16px; border:none; border-radius:20px; cursor:pointer;
+      font-family:'Fredoka One',cursive; font-size:22px; color:#fff;
+      background: linear-gradient(135deg, var(--blue), var(--purple));
+      box-shadow: 0 6px 0 rgba(168,85,247,0.3);
+      transition: transform 0.1s; margin-top:14px;
+    }
+    .play-again-btn:hover { transform:translateY(-3px); }
+
+    @keyframes popIn {
+      from { transform:scale(0.5); opacity:0; }
+      to   { transform:scale(1);   opacity:1; }
+    }
+
+    /* Confetti */
+    .confetti-piece {
+      position:fixed; width:10px; height:10px;
+      border-radius:2px; pointer-events:none; z-index:999;
+      animation: confettiFall linear forwards;
+    }
+    @keyframes confettiFall {
+      0%   { transform:translateY(-20px) rotate(0deg); opacity:1; }
+      100% { transform:translateY(100vh) rotate(720deg); opacity:0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-shapes">
+    <div class="shape"></div><div class="shape"></div>
+    <div class="shape"></div><div class="shape"></div>
+  </div>
+
+  <div class="wrapper">
+    <a class="back-btn" href="home-screen.html">← Back</a>
+
+    <!-- GAME SCREEN -->
+    <div id="game-screen" style="width:100%;display:flex;flex-direction:column;align-items:center;gap:14px;">
+      <div class="header">
+        <div class="game-title">Synonym Match 🔗</div>
+        <div class="game-sub">Connect words with the same meaning!</div>
+      </div>
+
+      <div class="progress-row">
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="progress-fill"></div>
+        </div>
+        <div class="progress-label" id="match-count">0 / 6</div>
+      </div>
+
+      <div class="instructions">
+        Tap a word on the <span>LEFT</span>, then tap its synonym on the <span>RIGHT</span>! 🎯
+      </div>
+
+      <div class="match-area" id="match-area">
+        <svg class="lines-svg" id="lines-svg"></svg>
+        <div class="columns" id="columns">
+          <div class="col" id="col-left"></div>
+          <div class="col" id="col-right"></div>
+        </div>
+      </div>
+
+      <button class="check-btn" id="check-btn" onclick="checkAll()" disabled>
+        ✓ Check Matches!
+      </button>
+    </div>
+
+    <!-- RESULTS SCREEN -->
+    <div id="results-screen">
+      <div class="results-card">
+        <div class="result-emoji" id="result-emoji">🏆</div>
+        <div class="result-title" id="result-title">Perfect Match!</div>
+        <div class="result-score-big" id="result-score">6 / 6</div>
+        <div class="result-score-label">Correct Pairs</div>
+
+        <div class="stars-row">
+          <span class="star" id="star1">⭐</span>
+          <span class="star" id="star2">⭐</span>
+          <span class="star" id="star3">⭐</span>
+        </div>
+
+        <div class="review-pairs">
+          <div class="review-title">📋 All Pairs</div>
+          <div id="review-list"></div>
+        </div>
+
+        <button class="play-again-btn" onclick="restartGame()">🔄 Play Again!</button>
+        <a class="back-btn" href="home-screen.html" style="margin-top:12px;display:inline-flex;">🏠 Home</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+<script>
+  const PAIRS = [
+    { w1: "smart",     w2: "clever"  },
+    { w1: "quick",     w2: "fast"    },
+    { w1: "beautiful", w2: "pretty"  },
+    { w1: "easy",      w2: "simple"  },
+    { w1: "angry",     w2: "mad"     },
+    { w1: "begin",     w2: "start"   },
+  ];
+
+  const PAIR_COLORS = ['var(--p0)','var(--p1)','var(--p2)','var(--p3)','var(--p4)','var(--p5)'];
+
+  let selectedLeft  = null;  // { idx, el }
+  let matchedPairs  = {};    // left idx → right idx
+  let rightOrder    = [];    // shuffled right word indices
+  let matchCount    = 0;
+  let resultLog     = [];
+
+  function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  function buildBoard() {
+    const colL = document.getElementById('col-left');
+    const colR = document.getElementById('col-right');
+    colL.innerHTML = ''; colR.innerHTML = '';
+    document.getElementById('lines-svg').innerHTML = '';
+    selectedLeft = null; matchedPairs = {}; matchCount = 0; resultLog = [];
+    updateProgress();
+
+    rightOrder = shuffle(PAIRS.map((_, i) => i));
+
+    PAIRS.forEach((pair, i) => {
+      const l = document.createElement('div');
+      l.className = 'word-pill';
+      l.textContent = pair.w1;
+      l.dataset.side  = 'left';
+      l.dataset.idx   = i;
+      l.addEventListener('click', () => clickLeft(i, l));
+      colL.appendChild(l);
+    });
+
+    rightOrder.forEach(pairIdx => {
+      const r = document.createElement('div');
+      r.className = 'word-pill';
+      r.textContent = PAIRS[pairIdx].w2;
+      r.dataset.side    = 'right';
+      r.dataset.pairIdx = pairIdx;
+      r.addEventListener('click', () => clickRight(pairIdx, r));
+      document.getElementById('col-right').appendChild(r);
+    });
+
+    document.getElementById('check-btn').disabled = true;
+  }
+
+  function clickLeft(idx, el) {
+    if (matchedPairs[idx] !== undefined) return; // already matched
+
+    // Deselect previous
+    if (selectedLeft) {
+      selectedLeft.el.classList.remove('selected');
+    }
+
+    if (selectedLeft && selectedLeft.idx === idx) {
+      // Clicking same = deselect
+      selectedLeft = null;
+      return;
+    }
+
+    selectedLeft = { idx, el };
+    el.classList.add('selected');
+    showToast('Now tap its synonym on the right! →', '');
+  }
+
+  function clickRight(pairIdx, el) {
+    // Check if already matched
+    if (Object.values(matchedPairs).includes(pairIdx)) return;
+
+    if (!selectedLeft) {
+      showToast('👆 First tap a word on the LEFT!', 'red');
+      el.classList.add('wrong-flash');
+      setTimeout(() => el.classList.remove('wrong-flash'), 500);
+      return;
+    }
+
+    const leftIdx  = selectedLeft.idx;
+    const leftEl   = selectedLeft.el;
+    const isCorrect = (leftIdx === pairIdx);
+
+    selectedLeft.el.classList.remove('selected');
+    selectedLeft = null;
+
+    if (isCorrect) {
+      // Correct match!
+      const color = PAIR_COLORS[leftIdx % PAIR_COLORS.length];
+      matchedPairs[leftIdx] = pairIdx;
+      matchCount++;
+      updateProgress();
+
+      // Style pills
+      leftEl.classList.add('matched', 'correct-flash');
+      el.classList.add('matched', 'correct-flash');
+      leftEl.style.borderColor  = color;
+      leftEl.style.background   = hexToRgba(color, 0.1);
+      leftEl.style.color        = color;
+      el.style.borderColor      = color;
+      el.style.background       = hexToRgba(color, 0.1);
+      el.style.color            = color;
+
+      drawLine(leftIdx, pairIdx, color);
+      showToast(`✅ "${PAIRS[leftIdx].w1}" = "${PAIRS[leftIdx].w2}"`, 'green');
+
+      if (matchCount === PAIRS.length) {
+        setTimeout(() => {
+          document.getElementById('check-btn').disabled = false;
+          document.getElementById('check-btn').textContent = '🎉 See Results!';
+          showToast('🏆 All matched! Tap "See Results"!', 'green');
+        }, 300);
+      }
+    } else {
+      // Wrong match
+      leftEl.classList.add('wrong-flash');
+      el.classList.add('wrong-flash');
+      setTimeout(() => {
+        leftEl.classList.remove('wrong-flash');
+        el.classList.remove('wrong-flash');
+      }, 500);
+      showToast(`❌ Nope! Try again!`, 'red');
+    }
+  }
+
+  function drawLine(leftIdx, rightIdx, color) {
+    const area    = document.getElementById('match-area');
+    const areaRect = area.getBoundingClientRect();
+    const leftEl  = document.getElementById('col-left').children[leftIdx];
+    const rightCol = document.getElementById('col-right');
+    // Find right pill with this pairIdx
+    let rightEl;
+    for (const child of rightCol.children) {
+      if (parseInt(child.dataset.pairIdx) === rightIdx) { rightEl = child; break; }
+    }
+    if (!leftEl || !rightEl) return;
+
+    const lr = leftEl.getBoundingClientRect();
+    const rr = rightEl.getBoundingClientRect();
+
+    const x1 = lr.right  - areaRect.left;
+    const y1 = lr.top    + lr.height / 2 - areaRect.top;
+    const x2 = rr.left   - areaRect.left;
+    const y2 = rr.top    + rr.height / 2 - areaRect.top;
+
+    const cx1 = x1 + (x2 - x1) * 0.4;
+    const cx2 = x2 - (x2 - x1) * 0.4;
+
+    const svg = document.getElementById('lines-svg');
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path.setAttribute('d', `M ${x1} ${y1} C ${cx1} ${y1}, ${cx2} ${y2}, ${x2} ${y2}`);
+    path.setAttribute('class', 'match-line');
+    path.setAttribute('stroke', color);
+    path.setAttribute('data-left', leftIdx);
+    svg.appendChild(path);
+  }
+
+  function updateProgress() {
+    const pct = matchCount / PAIRS.length * 100;
+    document.getElementById('progress-fill').style.width = pct + '%';
+    document.getElementById('match-count').textContent = `${matchCount} / ${PAIRS.length}`;
+  }
+
+  function checkAll() {
+    if (matchCount < PAIRS.length) {
+      showToast(`Still ${PAIRS.length - matchCount} pairs to match!`, 'red');
+      return;
+    }
+    showResults();
+  }
+
+  function showResults() {
+    document.getElementById('game-screen').style.display   = 'none';
+    document.getElementById('results-screen').style.display = 'block';
+
+    // All correct since we only allow correct matches
+    const correct = matchCount;
+    const total   = PAIRS.length;
+    const pct     = correct / total;
+
+    document.getElementById('result-score').textContent = `${correct} / ${total}`;
+
+    let emoji, title;
+    if (pct === 1)       { emoji='🏆'; title='Perfect Match!'; launchConfetti(); }
+    else if (pct >= 0.8) { emoji='🎉'; title='Almost Perfect!'; }
+    else if (pct >= 0.6) { emoji='😊'; title='Good Work!'; }
+    else                  { emoji='💪'; title='Keep Going!'; }
+
+    document.getElementById('result-emoji').textContent = emoji;
+    document.getElementById('result-title').textContent = title;
+
+    setTimeout(() => { if (pct >= 0.34) document.getElementById('star1').classList.add('lit'); }, 300);
+    setTimeout(() => { if (pct >= 0.67) document.getElementById('star2').classList.add('lit'); }, 600);
+    setTimeout(() => { if (pct === 1)   document.getElementById('star3').classList.add('lit'); }, 900);
+
+    // Build review
+    const list = document.getElementById('review-list');
+    list.innerHTML = PAIRS.map((pair, i) => {
+      const color = PAIR_COLORS[i % PAIR_COLORS.length];
+      return `<div class="pair-item" style="background:${hexToRgba(color,0.08)}">
+        <span class="pi-w1">${pair.w1}</span>
+        <span class="pi-arrow">↔</span>
+        <span class="pi-w2" style="color:${color}">${pair.w2}</span>
+        <span class="pi-icon">✅</span>
+      </div>`;
+    }).join('');
+  }
+
+  function restartGame() {
+    ['star1','star2','star3'].forEach(id => document.getElementById(id).classList.remove('lit'));
+    document.getElementById('game-screen').style.display   = 'flex';
+    document.getElementById('results-screen').style.display = 'none';
+    document.getElementById('check-btn').textContent = '✓ Check Matches!';
+    buildBoard();
+  }
+
+  let toastTimer;
+  function showToast(msg, type) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className   = `toast show ${type}`;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.className = 'toast', 2000);
+  }
+
+  function hexToRgba(cssVar, alpha) {
+    // For CSS var colors, just use a simple mapping
+    const map = {
+      'var(--p0)': `rgba(255,107,157,${alpha})`,
+      'var(--p1)': `rgba(78,205,196,${alpha})`,
+      'var(--p2)': `rgba(168,85,247,${alpha})`,
+      'var(--p3)': `rgba(255,217,61,${alpha})`,
+      'var(--p4)': `rgba(255,140,66,${alpha})`,
+      'var(--p5)': `rgba(107,203,119,${alpha})`,
+    };
+    return map[cssVar] || `rgba(78,205,196,${alpha})`;
+  }
+
+  function launchConfetti() {
+    const colors = ['#FF6B9D','#4ECDC4','#FFD93D','#A855F7','#FF8C42','#6BCB77'];
+    for (let i = 0; i < 60; i++) {
+      setTimeout(() => {
+        const c = document.createElement('div');
+        c.className = 'confetti-piece';
+        c.style.left      = Math.random() * 100 + 'vw';
+        c.style.top       = '-20px';
+        c.style.background = colors[Math.floor(Math.random() * colors.length)];
+        c.style.width     = (8 + Math.random() * 8) + 'px';
+        c.style.height    = (8 + Math.random() * 8) + 'px';
+        c.style.animationDuration = (1.5 + Math.random() * 2) + 's';
+        c.style.animationDelay   = '0s';
+        document.body.appendChild(c);
+        setTimeout(() => c.remove(), 4000);
+      }, i * 30);
+    }
+  }
+
+  // Rebuild lines on resize
+  window.addEventListener('resize', () => {
+    if (Object.keys(matchedPairs).length > 0) {
+      document.getElementById('lines-svg').innerHTML = '';
+      Object.entries(matchedPairs).forEach(([leftIdx, rightIdx]) => {
+        const color = PAIR_COLORS[parseInt(leftIdx) % PAIR_COLORS.length];
+        drawLine(parseInt(leftIdx), parseInt(rightIdx), color);
+      });
+    }
+  });
+
+  buildBoard();
+</script>
+</body>
+</html>

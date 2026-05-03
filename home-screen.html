@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Word Playground 🎉</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --yellow: #FFD93D;
+      --pink:   #FF6B9D;
+      --blue:   #4ECDC4;
+      --purple: #A855F7;
+      --orange: #FF8C42;
+      --green:  #6BCB77;
+      --bg:     #FFF9F0;
+    }
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: var(--bg);
+      min-height: 100dvh;
+      overflow-x: hidden;
+    }
+
+    /* Floating shapes bg */
+    .bg-shapes { position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden; }
+    .shape {
+      position:absolute; border-radius:50%; opacity:0.13;
+      animation: floatShape 8s ease-in-out infinite;
+    }
+    .shape:nth-child(1){width:220px;height:220px;background:var(--pink);top:-60px;left:-60px;animation-delay:0s;}
+    .shape:nth-child(2){width:180px;height:180px;background:var(--blue);top:10%;right:-40px;animation-delay:1.5s;}
+    .shape:nth-child(3){width:140px;height:140px;background:var(--yellow);bottom:20%;left:5%;animation-delay:3s;}
+    .shape:nth-child(4){width:200px;height:200px;background:var(--purple);bottom:-60px;right:10%;animation-delay:2s;}
+    .shape:nth-child(5){width:100px;height:100px;background:var(--orange);top:45%;left:40%;animation-delay:4s;}
+    @keyframes floatShape {
+      0%,100%{transform:translateY(0) rotate(0deg);}
+      50%{transform:translateY(-28px) rotate(15deg);}
+    }
+
+    .wrapper { position:relative; z-index:1; max-width:680px; margin:0 auto; padding:32px 20px 60px; }
+
+    /* Header */
+    .header { text-align:center; margin-bottom:40px; }
+    .logo {
+      font-family:'Fredoka One', cursive;
+      font-size:clamp(38px,8vw,64px);
+      line-height:1.1;
+      background: linear-gradient(135deg, var(--pink) 0%, var(--purple) 50%, var(--blue) 100%);
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+      filter: drop-shadow(3px 3px 0px rgba(0,0,0,0.08));
+    }
+    .logo-sub {
+      font-size:clamp(13px,3vw,16px);
+      color:#888; font-weight:700; letter-spacing:3px;
+      text-transform:uppercase; margin-top:4px;
+    }
+    .stars { font-size:28px; margin-top:6px; animation: starBounce 1.5s ease-in-out infinite; }
+    @keyframes starBounce {
+      0%,100%{transform:scale(1);}50%{transform:scale(1.15);}
+    }
+
+    /* Subtitle */
+    .subtitle {
+      text-align:center;
+      font-size:17px; font-weight:700; color:#555;
+      margin-bottom:32px;
+    }
+
+    /* Cards */
+    .cards { display:flex; flex-direction:column; gap:20px; }
+
+    .card {
+      display:flex; align-items:center; gap:20px;
+      background:#fff;
+      border-radius:24px;
+      padding:22px 24px;
+      text-decoration:none; color:inherit;
+      border: 3px solid transparent;
+      box-shadow: 0 6px 0 rgba(0,0,0,0.08), 0 2px 20px rgba(0,0,0,0.06);
+      transition: transform 0.15s, box-shadow 0.15s;
+      position:relative; overflow:hidden;
+    }
+    .card::before {
+      content:''; position:absolute; top:0; left:0; right:0; height:5px;
+      border-radius:24px 24px 0 0;
+    }
+    .card:hover { transform:translateY(-4px); box-shadow:0 10px 0 rgba(0,0,0,0.1), 0 4px 30px rgba(0,0,0,0.1); }
+    .card:active { transform:translateY(0); }
+
+    .card.easy   { border-color:#6BCB7740; } .card.easy::before   { background:var(--green); }
+    .card.medium { border-color:#4ECDC440; } .card.medium::before { background:var(--blue); }
+    .card.hard   { border-color:#FF6B9D40; } .card.hard::before   { background:var(--pink); }
+
+    .card-icon {
+      width:72px; height:72px; border-radius:18px; flex-shrink:0;
+      display:flex; align-items:center; justify-content:center;
+      font-size:36px;
+    }
+    .card.easy   .card-icon { background:#6BCB7720; }
+    .card.medium .card-icon { background:#4ECDC420; }
+    .card.hard   .card-icon { background:#FF6B9D20; }
+
+    .card-body { flex:1; }
+    .card-title {
+      font-family:'Fredoka One', cursive;
+      font-size:22px; line-height:1.2;
+      margin-bottom:4px;
+    }
+    .card.easy   .card-title { color:var(--green); }
+    .card.medium .card-title { color:var(--blue); }
+    .card.hard   .card-title { color:var(--pink); }
+
+    .card-desc { font-size:13px; color:#888; font-weight:600; line-height:1.5; }
+
+    .card-badge {
+      font-size:10px; font-weight:800; letter-spacing:2px; text-transform:uppercase;
+      padding:4px 10px; border-radius:20px; flex-shrink:0;
+    }
+    .card.easy   .card-badge { background:#6BCB7720; color:var(--green); }
+    .card.medium .card-badge { background:#4ECDC420; color:var(--blue); }
+    .card.hard   .card-badge { background:#FF6B9D20; color:var(--pink); }
+
+    /* Footer */
+    .footer { text-align:center; margin-top:48px; font-size:13px; color:#bbb; font-weight:600; }
+  </style>
+</head>
+<body>
+  <div class="bg-shapes">
+    <div class="shape"></div><div class="shape"></div><div class="shape"></div>
+    <div class="shape"></div><div class="shape"></div>
+  </div>
+
+  <div class="wrapper">
+    <div class="header">
+      <div class="logo">Word Playground</div>
+      <div class="logo-sub">English Learning Games</div>
+      <div class="stars">⭐ 🎮 ⭐</div>
+    </div>
+
+    <div class="subtitle">Pick a game and start learning! 🚀</div>
+
+    <div class="cards">
+
+      <a class="card easy" href="antonym.html">
+        <div class="card-icon">✅</div>
+        <div class="card-body">
+          <div class="card-title">Flip or Flop!</div>
+          <div class="card-desc">Are these words opposites? Answer TRUE or FALSE as fast as you can!</div>
+        </div>
+        <div class="card-badge">Easy</div>
+      </a>
+
+      <a class="card medium" href="wordmatch.html">
+        <div class="card-icon">🔗</div>
+        <div class="card-body">
+          <div class="card-title">Synonym Match</div>
+          <div class="card-desc">Drag lines to connect words with the same meaning. Match them all!</div>
+        </div>
+        <div class="card-badge">Medium</div>
+      </a>
+
+      <a class="card hard" href="typing.html">
+        <div class="card-icon">⌨️</div>
+        <div class="card-body">
+          <div class="card-title">Plural Rush!</div>
+          <div class="card-desc">Type the correct plural form before the timer runs out!</div>
+        </div>
+        <div class="card-badge">Hard</div>
+      </a>
+
+    </div>
+
+    <div class="footer">Made with ❤️ for English Communication Students</div>
+  </div>
+</body>
+</html>
