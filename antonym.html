@@ -45,7 +45,7 @@
       position:relative; z-index:1;
       width:100%; max-width:520px;
       padding: 24px 20px 48px;
-      display:flex; flex-direction:column; alignf-items:center; gap:20px;
+      display:flex; flex-direction:column; align-items:center; gap:20px;
     }
 
     /* Back button */
@@ -493,7 +493,7 @@
 
     const ov = document.getElementById('feedback-overlay');
     document.getElementById('fb-emoji').textContent = '⏰';
-    document.getElementById('fb-text').textContent  = 'Time's Up!';
+    document.getElementById('fb-text').textContent  = 'Time`s Up!';
     document.getElementById('fb-sub').textContent   = `It's ${q.isTrue ? 'TRUE' : 'FALSE'} — "${q.w1}" and "${q.w2}" are ${q.isTrue ? '' : 'NOT '}opposites.`;
     ov.className = 'feedback-overlay show wrong';
 
