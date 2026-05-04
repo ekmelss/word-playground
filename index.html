@@ -7,86 +7,149 @@
   <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
-      --yellow: #FFD93D;
-      --pink:   #FF6B9D;
-      --blue:   #4ECDC4;
-      --purple: #A855F7;
-      --orange: #FF8C42;
-      --green:  #6BCB77;
-      --bg:     #FFF9F0;
+      --yellow: #FFD93D; --pink: #FF6B9D; --blue: #4ECDC4;
+      --purple: #A855F7; --orange: #FF8C42; --green: #6BCB77; --bg: #FFF9F0;
     }
     *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:'Nunito',sans-serif; background:var(--bg); min-height:100dvh; overflow-x:hidden; }
 
-    body {
-      font-family: 'Nunito', sans-serif;
-      background: var(--bg);
-      min-height: 100dvh;
-      overflow-x: hidden;
+    /* ── LOADING SPLASH ── */
+    #splash {
+      position:fixed; inset:0; z-index:9999;
+      background: linear-gradient(135deg, #FF6B9D 0%, #A855F7 50%, #4ECDC4 100%);
+      display:flex; flex-direction:column; align-items:center; justify-content:center; gap:24px;
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    #splash.hide { opacity:0; pointer-events:none; transform:scale(1.04); }
+
+    .splash-logo {
+      font-family:'Fredoka One', cursive;
+      font-size:clamp(36px,9vw,60px); color:#fff;
+      text-shadow: 0 4px 0 rgba(0,0,0,0.15);
+      text-align:center; line-height:1.2;
+      animation: splashPop 0.5s cubic-bezier(0.175,0.885,0.32,1.275) both;
+    }
+    @keyframes splashPop {
+      from { transform:scale(0.6); opacity:0; }
+      to   { transform:scale(1);   opacity:1; }
     }
 
-    /* Floating shapes bg */
+    .splash-mascot {
+      font-size:80px;
+      animation: splashBounce 0.8s cubic-bezier(0.175,0.885,0.32,1.275) 0.2s both;
+    }
+    @keyframes splashBounce {
+      from { transform:translateY(40px) scale(0.5); opacity:0; }
+      to   { transform:translateY(0)    scale(1);   opacity:1; }
+    }
+
+    .splash-dots { display:flex; gap:10px; }
+    .splash-dot {
+      width:14px; height:14px; border-radius:50%; background:rgba(255,255,255,0.7);
+      animation: dotBounce 0.7s ease-in-out infinite;
+    }
+    .splash-dot:nth-child(2) { animation-delay:0.15s; }
+    .splash-dot:nth-child(3) { animation-delay:0.30s; }
+    @keyframes dotBounce {
+      0%,100%{ transform:translateY(0);   background:rgba(255,255,255,0.7); }
+      50%    { transform:translateY(-12px); background:#fff; }
+    }
+
+    .splash-sub {
+      font-family:'Nunito',sans-serif; font-size:14px; font-weight:700;
+      color:rgba(255,255,255,0.8); letter-spacing:3px; text-transform:uppercase;
+      animation: splashPop 0.5s cubic-bezier(0.175,0.885,0.32,1.275) 0.1s both;
+    }
+
+    /* ── BG SHAPES ── */
     .bg-shapes { position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden; }
-    .shape {
-      position:absolute; border-radius:50%; opacity:0.13;
-      animation: floatShape 8s ease-in-out infinite;
-    }
+    .shape { position:absolute; border-radius:50%; opacity:0.13; animation:floatShape 8s ease-in-out infinite; }
     .shape:nth-child(1){width:220px;height:220px;background:var(--pink);top:-60px;left:-60px;animation-delay:0s;}
     .shape:nth-child(2){width:180px;height:180px;background:var(--blue);top:10%;right:-40px;animation-delay:1.5s;}
     .shape:nth-child(3){width:140px;height:140px;background:var(--yellow);bottom:20%;left:5%;animation-delay:3s;}
     .shape:nth-child(4){width:200px;height:200px;background:var(--purple);bottom:-60px;right:10%;animation-delay:2s;}
     .shape:nth-child(5){width:100px;height:100px;background:var(--orange);top:45%;left:40%;animation-delay:4s;}
-    @keyframes floatShape {
-      0%,100%{transform:translateY(0) rotate(0deg);}
-      50%{transform:translateY(-28px) rotate(15deg);}
-    }
+    @keyframes floatShape { 0%,100%{transform:translateY(0) rotate(0deg);}50%{transform:translateY(-28px) rotate(15deg);} }
 
     .wrapper { position:relative; z-index:1; max-width:680px; margin:0 auto; padding:32px 20px 60px; }
 
-    /* Header */
-    .header { text-align:center; margin-bottom:40px; }
+    /* ── HEADER ── */
+    .header { text-align:center; margin-bottom:32px; }
     .logo {
-      font-family:'Fredoka One', cursive;
-      font-size:clamp(38px,8vw,64px);
-      line-height:1.1;
-      background: linear-gradient(135deg, var(--pink) 0%, var(--purple) 50%, var(--blue) 100%);
+      font-family:'Fredoka One', cursive; font-size:clamp(38px,8vw,64px); line-height:1.1;
+      background:linear-gradient(135deg, var(--pink) 0%, var(--purple) 50%, var(--blue) 100%);
       -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
-      filter: drop-shadow(3px 3px 0px rgba(0,0,0,0.08));
+      filter:drop-shadow(3px 3px 0px rgba(0,0,0,0.08));
     }
-    .logo-sub {
-      font-size:clamp(13px,3vw,16px);
-      color:#888; font-weight:700; letter-spacing:3px;
-      text-transform:uppercase; margin-top:4px;
-    }
-    .stars { font-size:28px; margin-top:6px; animation: starBounce 1.5s ease-in-out infinite; }
-    @keyframes starBounce {
-      0%,100%{transform:scale(1);}50%{transform:scale(1.15);}
-    }
+    .logo-sub { font-size:clamp(13px,3vw,16px); color:#888; font-weight:700; letter-spacing:3px; text-transform:uppercase; margin-top:4px; }
+    .stars { font-size:28px; margin-top:6px; animation:starBounce 1.5s ease-in-out infinite; }
+    @keyframes starBounce { 0%,100%{transform:scale(1);}50%{transform:scale(1.15);} }
 
-    /* Subtitle */
-    .subtitle {
-      text-align:center;
-      font-size:17px; font-weight:700; color:#555;
-      margin-bottom:32px;
-    }
-
-    /* Cards */
-    .cards { display:flex; flex-direction:column; gap:20px; }
-
-    .card {
-      display:flex; align-items:center; gap:20px;
-      background:#fff;
-      border-radius:24px;
-      padding:22px 24px;
-      text-decoration:none; color:inherit;
-      border: 3px solid transparent;
-      box-shadow: 0 6px 0 rgba(0,0,0,0.08), 0 2px 20px rgba(0,0,0,0.06);
-      transition: transform 0.15s, box-shadow 0.15s;
+    /* ── WORD OF THE DAY ── */
+    .wotd-card {
+      background:#fff; border-radius:24px; padding:20px 22px; margin-bottom:28px;
+      box-shadow: 0 6px 0 rgba(168,85,247,0.15), 0 2px 20px rgba(168,85,247,0.08);
+      border: 3px solid rgba(168,85,247,0.2);
       position:relative; overflow:hidden;
+      animation: wotdEntrance 0.6s cubic-bezier(0.175,0.885,0.32,1.275) 0.3s both;
     }
-    .card::before {
+    @keyframes wotdEntrance {
+      from { transform:translateY(20px); opacity:0; }
+      to   { transform:translateY(0);    opacity:1; }
+    }
+    .wotd-card::before {
       content:''; position:absolute; top:0; left:0; right:0; height:5px;
+      background:linear-gradient(90deg, var(--purple), var(--pink), var(--blue));
       border-radius:24px 24px 0 0;
     }
+    .wotd-header {
+      display:flex; align-items:center; gap:8px; margin-bottom:12px;
+    }
+    .wotd-badge {
+      font-size:10px; font-weight:800; letter-spacing:2px; text-transform:uppercase;
+      background:linear-gradient(135deg,var(--purple),var(--pink));
+      color:#fff; padding:4px 10px; border-radius:20px;
+    }
+    .wotd-date { font-size:12px; font-weight:700; color:#bbb; margin-left:auto; }
+
+    .wotd-body { display:flex; align-items:flex-start; gap:14px; }
+    .wotd-icon { font-size:40px; flex-shrink:0; animation:wotdIconPop 0.5s cubic-bezier(0.175,0.885,0.32,1.275) 0.6s both; }
+    @keyframes wotdIconPop { from{transform:scale(0) rotate(-20deg);}to{transform:scale(1) rotate(0deg);} }
+
+    .wotd-content { flex:1; }
+    .wotd-word {
+      font-family:'Fredoka One', cursive; font-size:28px; color:var(--purple);
+      line-height:1.1; margin-bottom:2px;
+    }
+    .wotd-bm { font-size:13px; font-weight:800; color:var(--pink); margin-bottom:6px; }
+    .wotd-def { font-size:13px; font-weight:600; color:#666; line-height:1.6; margin-bottom:6px; }
+    .wotd-example {
+      font-size:12px; font-weight:700; color:#aaa;
+      background:#f9f5ff; border-left:3px solid var(--purple);
+      padding:6px 10px; border-radius:0 8px 8px 0;
+      font-style:italic;
+    }
+
+    /* ── SUBTITLE ── */
+    .subtitle { text-align:center; font-size:17px; font-weight:700; color:#555; margin-bottom:32px; }
+
+    /* ── GAME CARDS ── */
+    .cards { display:flex; flex-direction:column; gap:20px; }
+    .card {
+      display:flex; align-items:center; gap:20px; background:#fff; border-radius:24px;
+      padding:22px 24px; text-decoration:none; color:inherit; border:3px solid transparent;
+      box-shadow:0 6px 0 rgba(0,0,0,0.08), 0 2px 20px rgba(0,0,0,0.06);
+      transition:transform 0.15s, box-shadow 0.15s; position:relative; overflow:hidden;
+      animation: cardEntrance 0.5s cubic-bezier(0.175,0.885,0.32,1.275) both;
+    }
+    .card:nth-child(1){ animation-delay:0.5s; }
+    .card:nth-child(2){ animation-delay:0.65s; }
+    .card:nth-child(3){ animation-delay:0.8s; }
+    @keyframes cardEntrance {
+      from { transform:translateX(-30px); opacity:0; }
+      to   { transform:translateX(0);     opacity:1; }
+    }
+    .card::before { content:''; position:absolute; top:0; left:0; right:0; height:5px; border-radius:24px 24px 0 0; }
     .card:hover { transform:translateY(-4px); box-shadow:0 10px 0 rgba(0,0,0,0.1), 0 4px 30px rgba(0,0,0,0.1); }
     .card:active { transform:translateY(0); }
 
@@ -94,40 +157,40 @@
     .card.medium { border-color:#4ECDC440; } .card.medium::before { background:var(--blue); }
     .card.hard   { border-color:#FF6B9D40; } .card.hard::before   { background:var(--pink); }
 
-    .card-icon {
-      width:72px; height:72px; border-radius:18px; flex-shrink:0;
-      display:flex; align-items:center; justify-content:center;
-      font-size:36px;
-    }
+    .card-icon { width:72px; height:72px; border-radius:18px; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:36px; }
     .card.easy   .card-icon { background:#6BCB7720; }
     .card.medium .card-icon { background:#4ECDC420; }
     .card.hard   .card-icon { background:#FF6B9D20; }
 
     .card-body { flex:1; }
-    .card-title {
-      font-family:'Fredoka One', cursive;
-      font-size:22px; line-height:1.2;
-      margin-bottom:4px;
-    }
+    .card-title { font-family:'Fredoka One',cursive; font-size:22px; line-height:1.2; margin-bottom:4px; }
     .card.easy   .card-title { color:var(--green); }
     .card.medium .card-title { color:var(--blue); }
     .card.hard   .card-title { color:var(--pink); }
-
     .card-desc { font-size:13px; color:#888; font-weight:600; line-height:1.5; }
 
-    .card-badge {
-      font-size:10px; font-weight:800; letter-spacing:2px; text-transform:uppercase;
-      padding:4px 10px; border-radius:20px; flex-shrink:0;
-    }
+    .card-badge { font-size:10px; font-weight:800; letter-spacing:2px; text-transform:uppercase; padding:4px 10px; border-radius:20px; flex-shrink:0; }
     .card.easy   .card-badge { background:#6BCB7720; color:var(--green); }
     .card.medium .card-badge { background:#4ECDC420; color:var(--blue); }
     .card.hard   .card-badge { background:#FF6B9D20; color:var(--pink); }
 
-    /* Footer */
     .footer { text-align:center; margin-top:48px; font-size:13px; color:#bbb; font-weight:600; }
   </style>
 </head>
 <body>
+
+  <!-- LOADING SPLASH -->
+  <div id="splash">
+    <div class="splash-mascot">🦉</div>
+    <div class="splash-logo">Word<br>Playground</div>
+    <div class="splash-sub">English Learning Games</div>
+    <div class="splash-dots">
+      <div class="splash-dot"></div>
+      <div class="splash-dot"></div>
+      <div class="splash-dot"></div>
+    </div>
+  </div>
+
   <div class="bg-shapes">
     <div class="shape"></div><div class="shape"></div><div class="shape"></div>
     <div class="shape"></div><div class="shape"></div>
@@ -140,10 +203,26 @@
       <div class="stars">⭐ 🎮 ⭐</div>
     </div>
 
+    <!-- WORD OF THE DAY -->
+    <div class="wotd-card">
+      <div class="wotd-header">
+        <div class="wotd-badge">✨ Word of the Day</div>
+        <div class="wotd-date" id="wotd-date"></div>
+      </div>
+      <div class="wotd-body">
+        <div class="wotd-icon" id="wotd-icon">📖</div>
+        <div class="wotd-content">
+          <div class="wotd-word" id="wotd-word">Loading...</div>
+          <div class="wotd-bm"  id="wotd-bm"></div>
+          <div class="wotd-def" id="wotd-def"></div>
+          <div class="wotd-example" id="wotd-example"></div>
+        </div>
+      </div>
+    </div>
+
     <div class="subtitle">Pick a game and start learning! 🚀</div>
 
     <div class="cards">
-
       <a class="card easy" href="antonym.html">
         <div class="card-icon">✅</div>
         <div class="card-body">
@@ -152,16 +231,14 @@
         </div>
         <div class="card-badge">Easy</div>
       </a>
-
       <a class="card medium" href="wordmatch.html">
         <div class="card-icon">🔗</div>
         <div class="card-body">
           <div class="card-title">Synonym Match</div>
-          <div class="card-desc">Drag lines to connect words with the same meaning. Match them all!</div>
+          <div class="card-desc">Tap to connect words with the same meaning. Match them all!</div>
         </div>
         <div class="card-badge">Medium</div>
       </a>
-
       <a class="card hard" href="typing.html">
         <div class="card-icon">⌨️</div>
         <div class="card-body">
@@ -170,10 +247,60 @@
         </div>
         <div class="card-badge">Hard</div>
       </a>
-
     </div>
 
-    <div class="footer">Made with ❤️ by Hani & Akmal</div>
+    <div class="footer">Made with ❤️ for English Communication Students</div>
   </div>
+
+<script>
+  // ── WORD OF THE DAY DATA ──
+  const WOTD_LIST = [
+    { word:"analyze",    bm:"menganalisis",  icon:"🔍", def:"To examine something carefully and in detail.", example:"\"We need to analyze the data before making a decision.\"" },
+    { word:"collaborate",bm:"bekerjasama",   icon:"🤝", def:"To work together with others toward a shared goal.", example:"\"The students collaborate on the group project.\"" },
+    { word:"evaluate",   bm:"menilai",       icon:"⚖️", def:"To judge or assess the quality or value of something.", example:"\"The teacher will evaluate your essay next week.\"" },
+    { word:"persuade",   bm:"memujuk",       icon:"💬", def:"To convince someone to do or believe something.", example:"\"She tried to persuade her friend to join the club.\"" },
+    { word:"significant",bm:"signifikan",    icon:"⭐", def:"Important or meaningful; having a notable effect.", example:"\"The discovery was significant for science.\"" },
+    { word:"hypothesis", bm:"hipotesis",     icon:"🧪", def:"An idea or explanation that is tested through research.", example:"\"The scientist formed a hypothesis about climate change.\"" },
+    { word:"articulate", bm:"petah",         icon:"🗣️", def:"Able to express thoughts and ideas clearly and fluently.", example:"\"She gave an articulate speech to the whole school.\"" },
+    { word:"credibility",bm:"kredibiliti",   icon:"🏆", def:"The quality of being trusted and believed.", example:"\"His experience gives him credibility as a speaker.\"" },
+    { word:"nuance",     bm:"nuansa",        icon:"🎨", def:"A subtle difference in meaning, tone, or feeling.", example:"\"Good writing requires attention to nuance.\"" },
+    { word:"conclude",   bm:"menyimpulkan",  icon:"✅", def:"To bring something to an end; to reach a decision.", example:"\"We can conclude that exercise improves health.\"" },
+    { word:"evidence",   bm:"bukti",         icon:"📋", def:"Facts or information that help prove something is true.", example:"\"The evidence clearly supports his argument.\"" },
+    { word:"interpret",  bm:"mentafsir",     icon:"🔎", def:"To explain or understand the meaning of something.", example:"\"How do you interpret this poem?\"" },
+    { word:"communicate",bm:"berkomunikasi", icon:"📡", def:"To share information or express ideas to others.", example:"\"It is important to communicate clearly in class.\"" },
+    { word:"rhetoric",   bm:"retorik",       icon:"📢", def:"The art of using language effectively and persuasively.", example:"\"Politicians use rhetoric to win votes.\"" },
+    { word:"validate",   bm:"mengesahkan",   icon:"✔️", def:"To confirm that something is accurate or acceptable.", example:"\"The experiment helps validate the theory.\"" },
+    { word:"synthesize", bm:"mensintesis",   icon:"⚗️", def:"To combine different ideas or information into one whole.", example:"\"Good essays synthesize ideas from multiple sources.\"" },
+    { word:"coherent",   bm:"koheren",       icon:"🧩", def:"Logical and consistent; easy to understand.", example:"\"Please write a coherent paragraph with a clear topic sentence.\"" },
+    { word:"feedback",   bm:"maklum balas",  icon:"💡", def:"Information given to help improve performance.", example:"\"Her teacher gave useful feedback on the essay.\"" },
+    { word:"argue",      bm:"berhujah",      icon:"⚡", def:"To give reasons or evidence to support a point of view.", example:"\"Students argue their opinions in a debate.\"" },
+    { word:"proposal",   bm:"cadangan",      icon:"📝", def:"A formal suggestion or plan presented for consideration.", example:"\"He submitted a proposal for the new project.\"" },
+    { word:"elaborate",  bm:"menghuraikan",  icon:"🌿", def:"To explain something in more detail.", example:"\"Can you elaborate on your answer?\"" },
+  ];
+
+  // Pick word based on day of year
+  const now  = new Date();
+  const start = new Date(now.getFullYear(), 0, 0);
+  const dayOfYear = Math.floor((now - start) / 86400000);
+  const wotd = WOTD_LIST[dayOfYear % WOTD_LIST.length];
+
+  document.getElementById('wotd-word').textContent    = wotd.word;
+  document.getElementById('wotd-bm').textContent      = '🇲🇾 BM: ' + wotd.bm;
+  document.getElementById('wotd-def').textContent     = wotd.def;
+  document.getElementById('wotd-example').textContent = wotd.example;
+  document.getElementById('wotd-icon').textContent    = wotd.icon;
+
+  // Format date
+  const dateStr = now.toLocaleDateString('en-MY', { weekday:'short', day:'numeric', month:'short' });
+  document.getElementById('wotd-date').textContent = dateStr;
+
+  // ── DISMISS SPLASH ──
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      document.getElementById('splash').classList.add('hide');
+      setTimeout(() => document.getElementById('splash').remove(), 700);
+    }, 1800);
+  });
+</script>
 </body>
 </html>

@@ -6,266 +6,132 @@
   <title>Plural Rush! ⌨️</title>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --yellow: #FFD93D;
-      --pink:   #FF6B9D;
-      --blue:   #4ECDC4;
-      --purple: #A855F7;
-      --orange: #FF8C42;
-      --green:  #6BCB77;
-      --red:    #FF4757;
-      --bg:     #FFF9F0;
-    }
+    :root { --yellow:#FFD93D; --pink:#FF6B9D; --blue:#4ECDC4; --purple:#A855F7; --orange:#FF8C42; --green:#6BCB77; --red:#FF4757; --bg:#FFF9F0; }
     *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
-
-    body {
-      font-family: 'Nunito', sans-serif;
-      background: var(--bg);
-      min-height: 100dvh;
-      overflow-x: hidden;
-    }
+    body { font-family:'Nunito',sans-serif; background:var(--bg); min-height:100dvh; overflow-x:hidden; }
 
     .bg-shapes { position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden; }
-    .shape { position:absolute; border-radius:50%; opacity:0.12; animation: floatShape 8s ease-in-out infinite; }
+    .shape { position:absolute; border-radius:50%; opacity:0.12; animation:floatShape 8s ease-in-out infinite; }
     .shape:nth-child(1){width:240px;height:240px;background:var(--orange);top:-80px;right:-50px;animation-delay:0s;}
     .shape:nth-child(2){width:180px;height:180px;background:var(--blue);bottom:15%;left:-40px;animation-delay:2s;}
     .shape:nth-child(3){width:150px;height:150px;background:var(--yellow);top:40%;right:5%;animation-delay:3.5s;}
     .shape:nth-child(4){width:200px;height:200px;background:var(--pink);bottom:-70px;left:20%;animation-delay:1s;}
-    @keyframes floatShape {
-      0%,100%{transform:translateY(0) rotate(0deg);}
-      50%{transform:translateY(-30px) rotate(12deg);}
-    }
+    @keyframes floatShape { 0%,100%{transform:translateY(0) rotate(0deg);}50%{transform:translateY(-30px) rotate(12deg);} }
 
-    .wrapper {
-      position:relative; z-index:1;
-      max-width:520px; margin:0 auto;
-      padding:24px 20px 60px;
-      display:flex; flex-direction:column; align-items:center; gap:18px;
-    }
+    .wrapper { position:relative; z-index:1; max-width:520px; margin:0 auto; padding:24px 20px 120px; display:flex; flex-direction:column; align-items:center; gap:16px; }
 
-    .back-btn {
-      align-self:flex-start;
-      display:flex; align-items:center; gap:6px;
-      background:#fff; border:3px solid #eee; border-radius:40px; padding:8px 16px;
-      font-family:'Nunito',sans-serif; font-weight:800; font-size:14px; color:#888;
-      cursor:pointer; text-decoration:none;
-      box-shadow: 0 3px 0 #ddd;
-      transition: transform 0.1s, box-shadow 0.1s;
-    }
-    .back-btn:hover { transform:translateY(-2px); box-shadow:0 5px 0 #ddd; }
+    .back-btn { align-self:flex-start; display:flex; align-items:center; gap:6px; background:#fff; border:3px solid #eee; border-radius:40px; padding:8px 16px; font-family:'Nunito',sans-serif; font-weight:800; font-size:14px; color:#888; cursor:pointer; text-decoration:none; box-shadow:0 3px 0 #ddd; transition:transform 0.1s; }
+    .back-btn:hover { transform:translateY(-2px); }
 
-    /* Header */
+    #mute-btn { position:fixed; top:16px; right:16px; z-index:200; background:#fff; border:3px solid #eee; border-radius:50%; width:44px; height:44px; font-size:20px; cursor:pointer; box-shadow:0 3px 0 #ddd; display:flex; align-items:center; justify-content:center; transition:transform 0.1s; }
+    #mute-btn:hover { transform:scale(1.1); }
+
     .header { text-align:center; }
-    .game-title {
-      font-family:'Fredoka One', cursive;
-      font-size:clamp(30px,7vw,50px);
-      background: linear-gradient(135deg, var(--orange) 0%, var(--pink) 100%);
-      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
-    }
+    .game-title { font-family:'Fredoka One',cursive; font-size:clamp(30px,7vw,50px); background:linear-gradient(135deg,var(--orange) 0%,var(--pink) 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
     .game-sub { font-size:14px; font-weight:700; color:#aaa; letter-spacing:1px; margin-top:2px; }
 
-    /* Stats row */
     .stats-row { display:flex; gap:10px; width:100%; }
-    .stat-box {
-      flex:1; background:#fff; border-radius:18px; padding:10px 14px;
-      box-shadow: 0 4px 0 rgba(0,0,0,0.07); text-align:center;
-      border: 2px solid transparent;
-    }
-    .stat-box.score-box { border-color:#A855F720; }
+    .stat-box { flex:1; background:#fff; border-radius:18px; padding:10px 14px; box-shadow:0 4px 0 rgba(0,0,0,0.07); text-align:center; border:2px solid transparent; }
+    .stat-box.score-box  { border-color:#A855F720; }
     .stat-box.streak-box { border-color:#FFD93D40; }
     .stat-box .st-lbl { font-size:10px; font-weight:800; letter-spacing:1px; color:#bbb; text-transform:uppercase; }
-    .stat-box .st-val {
-      font-family:'Fredoka One', cursive; font-size:26px; line-height:1.2;
-    }
-    .score-box .st-val { color:var(--purple); }
+    .stat-box .st-val { font-family:'Fredoka One',cursive; font-size:26px; line-height:1.2; }
+    .score-box .st-val  { color:var(--purple); }
     .streak-box .st-val { color:var(--orange); }
 
-    /* Progress */
     .progress-wrap { width:100%; }
     .progress-info { display:flex; justify-content:space-between; font-size:12px; font-weight:800; color:#bbb; margin-bottom:6px; }
     .progress-info .q-num { color:var(--orange); }
     .progress-bar-bg { width:100%; height:12px; background:#eee; border-radius:40px; overflow:hidden; box-shadow:inset 0 2px 4px rgba(0,0,0,0.08); }
-    .progress-bar-fill {
-      height:100%; border-radius:40px;
-      background: linear-gradient(90deg, var(--orange), var(--pink));
-      transition: width 0.4s ease;
-      box-shadow: 0 2px 8px rgba(255,140,66,0.5);
-    }
+    .progress-bar-fill { height:100%; border-radius:40px; background:linear-gradient(90deg,var(--orange),var(--pink)); transition:width 0.4s ease; box-shadow:0 2px 8px rgba(255,140,66,0.5); }
 
-    /* Timer bar */
     .timer-bar-wrap { width:100%; }
     .timer-bar-bg { width:100%; height:20px; background:#eee; border-radius:40px; overflow:hidden; box-shadow:inset 0 2px 4px rgba(0,0,0,0.08); }
-    .timer-bar-fill {
-      height:100%; border-radius:40px;
-      background: linear-gradient(90deg, var(--green), var(--blue));
-      transition: width 0.9s linear, background 0.3s;
-    }
-    .timer-bar-fill.half   { background: linear-gradient(90deg, var(--yellow), var(--orange)); }
-    .timer-bar-fill.urgent { background: linear-gradient(90deg, var(--red), var(--pink)); animation: urgentPulse 0.5s ease-in-out infinite; }
+    .timer-bar-fill { height:100%; border-radius:40px; background:linear-gradient(90deg,var(--green),var(--blue)); transition:width 0.9s linear, background 0.3s; }
+    .timer-bar-fill.half   { background:linear-gradient(90deg,var(--yellow),var(--orange)); }
+    .timer-bar-fill.urgent { background:linear-gradient(90deg,var(--red),var(--pink)); animation:urgentPulse 0.5s ease-in-out infinite; }
     @keyframes urgentPulse { 0%,100%{opacity:1;}50%{opacity:0.7;} }
     .timer-label { text-align:center; font-size:12px; font-weight:800; color:#aaa; margin-top:4px; }
     .timer-label span { color:var(--orange); font-family:'Fredoka One',cursive; font-size:16px; }
 
-    /* Word card */
-    .word-card {
-      width:100%; background:#fff; border-radius:28px; padding:32px 24px;
-      box-shadow: 0 8px 0 rgba(0,0,0,0.08), 0 2px 30px rgba(0,0,0,0.05);
-      text-align:center;
-      position:relative; overflow:hidden;
-    }
-    .word-card::before {
-      content:''; position:absolute; top:0; left:0; right:0; height:6px;
-      border-radius:28px 28px 0 0;
-      background: linear-gradient(90deg, var(--orange), var(--pink));
-    }
-
+    .word-card { width:100%; background:#fff; border-radius:28px; padding:32px 24px; box-shadow:0 8px 0 rgba(0,0,0,0.08), 0 2px 30px rgba(0,0,0,0.05); text-align:center; position:relative; overflow:hidden; }
+    .word-card::before { content:''; position:absolute; top:0; left:0; right:0; height:6px; border-radius:28px 28px 0 0; background:linear-gradient(90deg,var(--orange),var(--pink)); }
     .word-prompt { font-size:13px; font-weight:800; color:#ccc; letter-spacing:2px; text-transform:uppercase; margin-bottom:12px; }
-
-    .main-word {
-      font-family:'Fredoka One', cursive;
-      font-size:clamp(36px,9vw,58px);
-      color:var(--orange);
-      text-shadow: 0 4px 0 rgba(255,140,66,0.2);
-      margin-bottom:6px;
-      animation: wordPop 0.3s cubic-bezier(0.175,0.885,0.32,1.275);
-    }
-    @keyframes wordPop {
-      from { transform:scale(0.7); opacity:0; }
-      to   { transform:scale(1);   opacity:1; }
-    }
-
+    .main-word { font-family:'Fredoka One',cursive; font-size:clamp(36px,9vw,58px); color:var(--orange); text-shadow:0 4px 0 rgba(255,140,66,0.2); margin-bottom:6px; animation:wordPop 0.3s cubic-bezier(0.175,0.885,0.32,1.275); }
+    @keyframes wordPop { from{transform:scale(0.7);opacity:0;}to{transform:scale(1);opacity:1;} }
     .hint-text { font-size:13px; font-weight:700; color:#ccc; margin-bottom:20px; }
-    .hint-badge {
-      display:inline-block; background:#FFF3E0; color:var(--orange);
-      border-radius:20px; padding:4px 12px;
-      font-size:12px; font-weight:800;
-    }
+    .hint-badge { display:inline-block; background:#FFF3E0; color:var(--orange); border-radius:20px; padding:4px 12px; font-size:12px; font-weight:800; }
 
-    /* Input area */
     .input-area { display:flex; gap:10px; align-items:center; flex-wrap:wrap; justify-content:center; }
-    .plural-input {
-      flex:1; min-width:180px;
-      padding:14px 18px; border-radius:18px;
-      border: 3px solid #eee;
-      font-family:'Fredoka One', cursive; font-size:24px;
-      color:#555; outline:none;
-      background:#FAFAFA;
-      transition: border-color 0.2s, box-shadow 0.2s;
-      text-align:center;
-    }
+    .plural-input { flex:1; min-width:180px; padding:14px 18px; border-radius:18px; border:3px solid #eee; font-family:'Fredoka One',cursive; font-size:24px; color:#555; outline:none; background:#FAFAFA; transition:border-color 0.2s, box-shadow 0.2s; text-align:center; }
     .plural-input:focus { border-color:var(--orange); box-shadow:0 0 0 4px rgba(255,140,66,0.15); }
-    .plural-input.correct { border-color:var(--green); background:#F0FFF4; color:var(--green); animation: correctShake 0.4s; }
-    .plural-input.wrong   { border-color:var(--red);   background:#FFF0F0; color:var(--red);   animation: wrongShake 0.4s; }
-    @keyframes correctShake {
-      0%,100%{transform:translateY(0);}25%{transform:translateY(-6px);}75%{transform:translateY(-3px);}
-    }
-    @keyframes wrongShake {
-      0%,100%{transform:translateX(0);}25%{transform:translateX(-8px);}75%{transform:translateX(8px);}
-    }
+    .plural-input.correct { border-color:var(--green); background:#F0FFF4; color:var(--green); animation:correctShake 0.4s; }
+    .plural-input.wrong   { border-color:var(--red);   background:#FFF0F0; color:var(--red);   animation:wrongShake 0.4s; }
+    @keyframes correctShake { 0%,100%{transform:translateY(0);}25%{transform:translateY(-6px);}75%{transform:translateY(-3px);} }
+    @keyframes wrongShake   { 0%,100%{transform:translateX(0);}25%{transform:translateX(-8px);}75%{transform:translateX(8px);} }
 
-    .submit-btn {
-      padding:14px 22px; border:none; border-radius:18px; cursor:pointer;
-      font-family:'Fredoka One', cursive; font-size:18px; color:#fff;
-      background: linear-gradient(135deg, var(--orange), var(--pink));
-      box-shadow: 0 5px 0 rgba(255,71,87,0.3);
-      transition: transform 0.1s, box-shadow 0.1s;
-      white-space:nowrap;
-    }
-    .submit-btn:hover { transform:translateY(-2px); box-shadow:0 7px 0 rgba(255,71,87,0.3); }
+    .submit-btn { padding:14px 22px; border:none; border-radius:18px; cursor:pointer; font-family:'Fredoka One',cursive; font-size:18px; color:#fff; background:linear-gradient(135deg,var(--orange),var(--pink)); box-shadow:0 5px 0 rgba(255,71,87,0.3); transition:transform 0.1s, box-shadow 0.1s; white-space:nowrap; }
+    .submit-btn:hover { transform:translateY(-2px); }
     .submit-btn:active { transform:translateY(3px); box-shadow:0 2px 0 rgba(255,71,87,0.3); }
 
-    /* Feedback inline */
-    .inline-fb {
-      min-height:32px; text-align:center;
-      font-family:'Fredoka One', cursive; font-size:18px;
-      transition: opacity 0.2s;
-    }
+    .inline-fb { min-height:32px; text-align:center; font-family:'Fredoka One',cursive; font-size:18px; transition:opacity 0.2s; }
     .inline-fb.show-correct { color:var(--green); }
     .inline-fb.show-wrong   { color:var(--red); }
 
-    /* Hint reveal button */
-    .hint-btn {
-      padding:8px 18px; border:2px solid #eee; border-radius:40px;
-      background:#fff; cursor:pointer; font-family:'Nunito',sans-serif;
-      font-weight:800; font-size:12px; color:#bbb; letter-spacing:1px;
-      transition: all 0.15s;
-    }
+    .hint-btn { padding:8px 18px; border:2px solid #eee; border-radius:40px; background:#fff; cursor:pointer; font-family:'Nunito',sans-serif; font-weight:800; font-size:12px; color:#bbb; letter-spacing:1px; transition:all 0.15s; }
     .hint-btn:hover { border-color:var(--orange); color:var(--orange); }
-
-    /* Keyboard shortcuts hint */
     .key-hint { font-size:12px; color:#ccc; font-weight:700; text-align:center; }
-    .key-hint kbd {
-      background:#f0f0f0; border-radius:6px; padding:2px 6px;
-      font-family:'Nunito',sans-serif; font-size:11px; color:#999;
-      border: 1px solid #ddd;
-    }
+    .key-hint kbd { background:#f0f0f0; border-radius:6px; padding:2px 6px; font-family:'Nunito',sans-serif; font-size:11px; color:#999; border:1px solid #ddd; }
 
-    /* Results screen */
+    /* MASCOT */
+    #mascot { position:fixed; bottom:16px; left:50%; transform:translateX(-50%); z-index:150; font-size:56px; line-height:1; animation:mascotIdle 2.5s ease-in-out infinite; cursor:default; user-select:none; filter:drop-shadow(0 4px 8px rgba(0,0,0,0.15)); }
+    @keyframes mascotIdle { 0%,100%{transform:translateX(-50%) translateY(0);}50%{transform:translateX(-50%) translateY(-8px);} }
+    #mascot.jump  { animation:mascotJump 0.5s cubic-bezier(0.175,0.885,0.32,1.275) forwards; }
+    #mascot.shake { animation:mascotShake 0.4s ease forwards; }
+    #mascot.spin  { animation:mascotSpin 0.8s cubic-bezier(0.175,0.885,0.32,1.275) forwards; }
+    @keyframes mascotJump  { 0%{transform:translateX(-50%) translateY(0) scale(1);}40%{transform:translateX(-50%) translateY(-40px) scale(1.2);}70%{transform:translateX(-50%) translateY(-20px) scale(0.95);}100%{transform:translateX(-50%) translateY(0) scale(1);} }
+    @keyframes mascotShake { 0%,100%{transform:translateX(-50%);}20%{transform:translateX(calc(-50% - 10px));}40%{transform:translateX(calc(-50% + 10px));}60%{transform:translateX(calc(-50% - 6px));}80%{transform:translateX(calc(-50% + 6px));} }
+    @keyframes mascotSpin  { 0%{transform:translateX(-50%) rotate(0) scale(1);}50%{transform:translateX(-50%) rotate(180deg) scale(1.4);}100%{transform:translateX(-50%) rotate(360deg) scale(1);} }
+
+    /* RESULTS */
     #results-screen { display:none; width:100%; }
-    .results-card {
-      background:#fff; border-radius:28px; padding:28px 24px;
-      box-shadow: 0 8px 0 rgba(0,0,0,0.08);
-      text-align:center; position:relative; overflow:hidden;
-    }
-    .results-card::before {
-      content:''; position:absolute; top:0; left:0; right:0; height:6px;
-      background: linear-gradient(90deg, var(--orange), var(--yellow), var(--pink));
-    }
-    .result-emoji { font-size:60px; margin-bottom:8px; animation: popIn 0.4s cubic-bezier(0.175,0.885,0.32,1.275); }
-    .result-title {
-      font-family:'Fredoka One', cursive; font-size:clamp(26px,7vw,40px);
-      background: linear-gradient(135deg, var(--orange), var(--pink));
-      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
-      margin-bottom:4px;
-    }
-    .result-score-big {
-      font-family:'Fredoka One', cursive; font-size:clamp(44px,11vw,68px);
-      color:var(--orange); line-height:1; margin:10px 0 4px;
-    }
+    .results-card { background:#fff; border-radius:28px; padding:28px 24px; box-shadow:0 8px 0 rgba(0,0,0,0.08); text-align:center; position:relative; overflow:hidden; }
+    .results-card::before { content:''; position:absolute; top:0; left:0; right:0; height:6px; background:linear-gradient(90deg,var(--orange),var(--yellow),var(--pink)); }
+    .result-emoji { font-size:60px; margin-bottom:8px; animation:popIn 0.4s cubic-bezier(0.175,0.885,0.32,1.275); }
+    .result-title { font-family:'Fredoka One',cursive; font-size:clamp(26px,7vw,40px); background:linear-gradient(135deg,var(--orange),var(--pink)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; margin-bottom:4px; }
+    .result-score-big { font-family:'Fredoka One',cursive; font-size:clamp(44px,11vw,68px); color:var(--orange); line-height:1; margin:10px 0 4px; }
     .result-score-label { font-size:13px; font-weight:800; color:#bbb; letter-spacing:2px; text-transform:uppercase; }
-
     .stars-row { display:flex; justify-content:center; gap:8px; margin:14px 0; font-size:34px; }
     .star { opacity:0.2; transition:opacity 0.3s, transform 0.4s cubic-bezier(0.175,0.885,0.32,1.275); }
     .star.lit { opacity:1; transform:scale(1.25); }
-
     .review-section { margin-top:18px; text-align:left; }
     .review-title { font-size:12px; font-weight:800; color:#bbb; letter-spacing:2px; text-transform:uppercase; margin-bottom:10px; }
-    .review-item {
-      display:grid; grid-template-columns: 1fr auto 1fr;
-      align-items:center; gap:8px;
-      padding:10px 14px; border-radius:14px; margin-bottom:6px;
-      font-weight:700; font-size:14px;
-    }
-    .review-item.corr { background:#F0FFF4; }
+    .review-item { display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:8px; padding:10px 14px; border-radius:14px; margin-bottom:6px; font-weight:700; font-size:14px; }
+    .review-item.corr       { background:#F0FFF4; }
     .review-item.wrong-item { background:#FFF0F0; }
-    .ri-word { color:#555; }
+    .ri-word  { color:#555; }
     .ri-arrow { color:#ccc; text-align:center; font-size:12px; }
     .ri-answer { font-family:'Fredoka One',cursive; font-size:16px; text-align:right; }
-    .review-item.corr .ri-answer  { color:var(--green); }
+    .review-item.corr .ri-answer       { color:var(--green); }
     .review-item.wrong-item .ri-answer { color:var(--red); }
     .ri-correct-lbl { font-size:11px; font-weight:800; color:var(--red); display:block; }
-
-    .play-again-btn {
-      width:100%; padding:16px; border:none; border-radius:20px; cursor:pointer;
-      font-family:'Fredoka One', cursive; font-size:22px; color:#fff;
-      background: linear-gradient(135deg, var(--orange), var(--pink));
-      box-shadow: 0 6px 0 rgba(255,71,87,0.3);
-      transition: transform 0.1s, box-shadow 0.1s; margin-top:14px;
-    }
+    .play-again-btn { width:100%; padding:16px; border:none; border-radius:20px; cursor:pointer; font-family:'Fredoka One',cursive; font-size:22px; color:#fff; background:linear-gradient(135deg,var(--orange),var(--pink)); box-shadow:0 6px 0 rgba(255,71,87,0.3); transition:transform 0.1s; margin-top:14px; }
     .play-again-btn:hover { transform:translateY(-3px); }
-    .play-again-btn:active { transform:translateY(3px); }
 
-    @keyframes popIn {
-      from { transform:scale(0.5); opacity:0; }
-      to   { transform:scale(1);   opacity:1; }
-    }
+    @keyframes popIn { from{transform:scale(0.5);opacity:0;}to{transform:scale(1);opacity:1;} }
+    .confetti-piece { position:fixed; width:10px; height:10px; border-radius:2px; pointer-events:none; z-index:999; animation:confettiFall linear forwards; }
+    @keyframes confettiFall { 0%{transform:translateY(-20px) rotate(0deg);opacity:1;}100%{transform:translateY(100vh) rotate(720deg);opacity:0;} }
   </style>
 </head>
 <body>
+  <button id="mute-btn" onclick="toggleMute()" title="Toggle sound">🔊</button>
+
   <div class="bg-shapes">
-    <div class="shape"></div><div class="shape"></div>
-    <div class="shape"></div><div class="shape"></div>
+    <div class="shape"></div><div class="shape"></div><div class="shape"></div><div class="shape"></div>
   </div>
+
+  <!-- MASCOT -->
+  <div id="mascot">🦉</div>
 
   <div class="wrapper">
     <a class="back-btn" href="index.html">← Back</a>
@@ -311,20 +177,15 @@
         <div class="hint-text">
           <span class="hint-badge" id="rule-badge">-y → -ies</span>
         </div>
-
         <div class="input-area">
-          <input type="text" class="plural-input" id="plural-input"
-            placeholder="type here…" autocomplete="off" autocorrect="off"
-            spellcheck="false" autocapitalize="off">
+          <input type="text" class="plural-input" id="plural-input" placeholder="type here…" autocomplete="off" autocorrect="off" spellcheck="false" autocapitalize="off">
           <button class="submit-btn" onclick="submitAnswer()">CHECK ✓</button>
         </div>
-
         <div class="inline-fb" id="inline-fb"></div>
       </div>
 
       <button class="hint-btn" id="hint-reveal-btn" onclick="revealHint()">💡 Show Hint</button>
       <div class="hint-text" id="hint-text-reveal" style="opacity:0;transition:opacity 0.3s;"></div>
-
       <div class="key-hint">Press <kbd>Enter</kbd> to check</div>
     </div>
 
@@ -335,18 +196,15 @@
         <div class="result-title" id="result-title">Word Master!</div>
         <div class="result-score-big" id="result-score">0</div>
         <div class="result-score-label">Points Earned</div>
-
         <div class="stars-row">
           <span class="star" id="star1">⭐</span>
           <span class="star" id="star2">⭐</span>
           <span class="star" id="star3">⭐</span>
         </div>
-
         <div class="review-section">
           <div class="review-title">📋 Word Review</div>
           <div id="review-list"></div>
         </div>
-
         <button class="play-again-btn" onclick="restartGame()">🔄 Play Again!</button>
         <a class="back-btn" href="index.html" style="margin-top:12px;display:inline-flex;">🏠 Home</a>
       </div>
@@ -354,26 +212,108 @@
   </div>
 
 <script>
+  // ── SOUND ENGINE ──
+  let muted = false;
+  let audioCtx;
+  function getAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); return audioCtx; }
+  function toggleMute() { muted = !muted; document.getElementById('mute-btn').textContent = muted ? '🔇' : '🔊'; }
+
+  function playCorrect() {
+    if (muted) return;
+    const ctx = getAudio();
+    [523,659,784].forEach((freq,i) => {
+      const osc = ctx.createOscillator(), gain = ctx.createGain();
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.frequency.value = freq;
+      const t = ctx.currentTime + i * 0.09;
+      gain.gain.setValueAtTime(0.22, t);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.25);
+      osc.start(t); osc.stop(t + 0.25);
+    });
+  }
+
+  function playWrong() {
+    if (muted) return;
+    const ctx = getAudio();
+    const osc = ctx.createOscillator(), gain = ctx.createGain();
+    osc.type = 'sawtooth';
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.frequency.setValueAtTime(220, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(80, ctx.currentTime + 0.3);
+    gain.gain.setValueAtTime(0.18, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
+    osc.start(); osc.stop(ctx.currentTime + 0.3);
+  }
+
+  function playTick() {
+    if (muted) return;
+    const ctx = getAudio();
+    const osc = ctx.createOscillator(), gain = ctx.createGain();
+    osc.frequency.value = 880;
+    osc.connect(gain); gain.connect(ctx.destination);
+    gain.gain.setValueAtTime(0.08, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.06);
+    osc.start(); osc.stop(ctx.currentTime + 0.06);
+  }
+
+  function playFanfare() {
+    if (muted) return;
+    const ctx = getAudio();
+    [523,659,784,1047,1319].forEach((freq,i) => {
+      const osc = ctx.createOscillator(), gain = ctx.createGain();
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.frequency.value = freq;
+      const t = ctx.currentTime + i * 0.1;
+      gain.gain.setValueAtTime(0.2, t);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.35);
+      osc.start(t); osc.stop(t + 0.35);
+    });
+  }
+
+  function launchConfetti() {
+    const colors = ['#FF6B9D','#4ECDC4','#FFD93D','#A855F7','#FF8C42','#6BCB77'];
+    for (let i = 0; i < 70; i++) {
+      setTimeout(() => {
+        const c = document.createElement('div');
+        c.className = 'confetti-piece';
+        c.style.left = Math.random() * 100 + 'vw';
+        c.style.background = colors[Math.floor(Math.random()*colors.length)];
+        c.style.width  = (8 + Math.random()*8) + 'px';
+        c.style.height = (8 + Math.random()*8) + 'px';
+        c.style.animationDuration = (1.5 + Math.random()*2) + 's';
+        document.body.appendChild(c);
+        setTimeout(() => c.remove(), 4000);
+      }, i * 25);
+    }
+  }
+
+  // ── MASCOT ──
+  function mascotReact(type) {
+    const m = document.getElementById('mascot');
+    const faces = { correct:'🦉', wrong:'😱', perfect:'🤩', timeout:'😅' };
+    m.textContent = faces[type] || '🦉';
+    m.className = '';
+    void m.offsetWidth;
+    if (type==='correct') m.classList.add('jump');
+    else if (type==='wrong'||type==='timeout') m.classList.add('shake');
+    else if (type==='perfect') m.classList.add('spin');
+    setTimeout(() => { m.textContent = '🦉'; m.className = ''; }, 800);
+  }
+
+  // ── GAME DATA ──
   const WORDS = [
-    { singular: "baby",   plural: "babies",   hint: "Drop -y, add -ies",    rule: "-y → -ies" },
-    { singular: "city",   plural: "cities",   hint: "Drop -y, add -ies",    rule: "-y → -ies" },
-    { singular: "mouse",  plural: "mice",     hint: "Irregular plural!",    rule: "Irregular" },
-    { singular: "party",  plural: "parties",  hint: "Drop -y, add -ies",    rule: "-y → -ies" },
-    { singular: "tomato", plural: "tomatoes", hint: "Add -es at the end",   rule: "+ -es" },
-    { singular: "child",  plural: "children", hint: "Irregular plural!",    rule: "Irregular" },
-    { singular: "man",    plural: "men",      hint: "Vowel change: a → e",  rule: "Irregular" },
-    { singular: "goose",  plural: "geese",    hint: "Vowel change: oo → ee",rule: "Irregular" },
+    { singular:"baby",   plural:"babies",   hint:"Drop -y, add -ies",     rule:"-y → -ies"  },
+    { singular:"city",   plural:"cities",   hint:"Drop -y, add -ies",     rule:"-y → -ies"  },
+    { singular:"mouse",  plural:"mice",     hint:"Irregular plural!",     rule:"Irregular"   },
+    { singular:"party",  plural:"parties",  hint:"Drop -y, add -ies",     rule:"-y → -ies"  },
+    { singular:"tomato", plural:"tomatoes", hint:"Add -es at the end",    rule:"+ -es"       },
+    { singular:"child",  plural:"children", hint:"Irregular plural!",     rule:"Irregular"   },
+    { singular:"man",    plural:"men",      hint:"Vowel change: a → e",   rule:"Irregular"   },
+    { singular:"goose",  plural:"geese",    hint:"Vowel change: oo → ee", rule:"Irregular"   },
   ];
 
   const TIMER_MAX = 15;
-  let current   = 0;
-  let score     = 0;
-  let streak    = 0;
-  let timerVal  = TIMER_MAX;
-  let timerInt  = null;
-  let answered  = false;
-  let hintUsed  = false;
-  let log       = [];
+  let current=0, score=0, streak=0, timerVal=TIMER_MAX, timerInt=null, answered=false, hintUsed=false, log=[];
 
   function startTimer() {
     clearInterval(timerInt);
@@ -382,10 +322,8 @@
     timerInt = setInterval(() => {
       timerVal--;
       updateTimerUI();
-      if (timerVal <= 0) {
-        clearInterval(timerInt);
-        if (!answered) timeOut();
-      }
+      if (timerVal <= 4) playTick();
+      if (timerVal <= 0) { clearInterval(timerInt); if (!answered) timeOut(); }
     }, 1000);
   }
 
@@ -394,42 +332,30 @@
     const bar = document.getElementById('timer-bar');
     bar.style.width = pct + '%';
     document.getElementById('timer-num').textContent = timerVal;
-
-    if (timerVal <= 4) {
-      bar.className = 'timer-bar-fill urgent';
-    } else if (timerVal <= 8) {
-      bar.className = 'timer-bar-fill half';
-    } else {
-      bar.className = 'timer-bar-fill';
-    }
+    if (timerVal <= 4)      bar.className = 'timer-bar-fill urgent';
+    else if (timerVal <= 8) bar.className = 'timer-bar-fill half';
+    else                    bar.className = 'timer-bar-fill';
   }
 
   function loadWord(idx) {
-    answered = false;
-    hintUsed = false;
+    answered = false; hintUsed = false;
     const w = WORDS[idx];
-
-    document.getElementById('main-word').textContent  = w.singular;
-    document.getElementById('rule-badge').textContent = w.rule;
-    document.getElementById('q-num').textContent      = `${idx+1} / ${WORDS.length}`;
-    document.getElementById('progress-fill').style.width = (idx / WORDS.length * 100) + '%';
-    document.getElementById('inline-fb').textContent  = '';
-    document.getElementById('inline-fb').className    = 'inline-fb';
+    document.getElementById('main-word').textContent     = w.singular;
+    document.getElementById('rule-badge').textContent    = w.rule;
+    document.getElementById('q-num').textContent         = `${idx+1} / ${WORDS.length}`;
+    document.getElementById('progress-fill').style.width = (idx/WORDS.length*100) + '%';
+    document.getElementById('inline-fb').textContent     = '';
+    document.getElementById('inline-fb').className       = 'inline-fb';
     document.getElementById('hint-text-reveal').style.opacity = '0';
     document.getElementById('hint-text-reveal').textContent   = '';
-    document.getElementById('hint-reveal-btn').disabled = false;
-    document.getElementById('hint-reveal-btn').style.opacity = '1';
+    document.getElementById('hint-reveal-btn').disabled  = false;
+    document.getElementById('hint-reveal-btn').style.opacity  = '1';
 
     const input = document.getElementById('plural-input');
-    input.value = '';
-    input.className = 'plural-input';
-    input.disabled  = false;
-    input.focus();
+    input.value = ''; input.className = 'plural-input'; input.disabled = false; input.focus();
 
-    // Word pop animation
     const mw = document.getElementById('main-word');
-    mw.style.animation = 'none';
-    void mw.offsetWidth;
+    mw.style.animation = 'none'; void mw.offsetWidth;
     mw.style.animation = 'wordPop 0.3s cubic-bezier(0.175,0.885,0.32,1.275)';
 
     startTimer();
@@ -439,8 +365,7 @@
     if (answered) return;
     const w = WORDS[current];
     const h = document.getElementById('hint-text-reveal');
-    h.textContent = '💡 ' + w.hint;
-    h.style.opacity = '1';
+    h.textContent = '💡 ' + w.hint; h.style.opacity = '1';
     document.getElementById('hint-reveal-btn').disabled = true;
     document.getElementById('hint-reveal-btn').style.opacity = '0.5';
     hintUsed = true;
@@ -457,28 +382,30 @@
 
     const w = WORDS[current];
     const isCorrect = typed === w.plural.toLowerCase();
-    const timeBonus = Math.ceil(timerVal / TIMER_MAX * 5); // 0-5 bonus for speed
+    const timeBonus = Math.ceil(timerVal / TIMER_MAX * 5);
     const hintPenalty = hintUsed ? 2 : 0;
-
     let pts = 0;
+
     if (isCorrect) {
       streak++;
-      pts = 10 + timeBonus - hintPenalty + (streak > 1 ? Math.min(streak - 1, 5) : 0);
+      pts = 10 + timeBonus - hintPenalty + (streak > 1 ? Math.min(streak-1, 5) : 0);
       score += pts;
       document.getElementById('score-val').textContent  = score;
       document.getElementById('streak-val').textContent = streak;
-
       input.className = 'plural-input correct';
+      playCorrect();
+      mascotReact('correct');
       showFb(true, pts, w);
     } else {
       streak = 0;
       document.getElementById('streak-val').textContent = streak;
       input.className = 'plural-input wrong';
+      playWrong();
+      mascotReact('wrong');
       showFb(false, 0, w);
     }
 
-    log.push({ singular: w.singular, plural: w.plural, typed, isCorrect });
-
+    log.push({ singular:w.singular, plural:w.plural, typed, isCorrect });
     input.disabled = true;
     setTimeout(() => {
       current++;
@@ -488,21 +415,19 @@
   }
 
   function timeOut() {
-    answered = true;
-    streak = 0;
+    answered = true; streak = 0;
     document.getElementById('streak-val').textContent = streak;
-
     const w = WORDS[current];
-    log.push({ singular: w.singular, plural: w.plural, typed: '', isCorrect: false });
+    log.push({ singular:w.singular, plural:w.plural, typed:'', isCorrect:false });
+    playWrong();
+    mascotReact('timeout');
 
     const fb = document.getElementById('inline-fb');
     fb.textContent = `⏰ Time's up! Answer: ${w.plural}`;
     fb.className   = 'inline-fb show-wrong';
 
     const input = document.getElementById('plural-input');
-    input.value    = w.plural;
-    input.className = 'plural-input wrong';
-    input.disabled  = true;
+    input.value = w.plural; input.className = 'plural-input wrong'; input.disabled = true;
 
     setTimeout(() => {
       current++;
@@ -513,43 +438,42 @@
 
   function showFb(ok, pts, w) {
     const fb = document.getElementById('inline-fb');
-    const messages = ok
+    const msgs = ok
       ? [`+${pts} pts! 🎉`, `+${pts} pts! Correct! ✅`, `Yes! +${pts} pts! 🔥`]
-      : [`Wrong! Answer: "${w.plural}" ❌`, `Oops! It's "${w.plural}" 😅`, `Not quite! "${w.plural}" ❌`];
-    fb.textContent = messages[Math.floor(Math.random() * messages.length)];
-    fb.className   = `inline-fb ${ok ? 'show-correct' : 'show-wrong'}`;
+      : [`Wrong! Answer: "${w.plural}" ❌`, `Oops! It's "${w.plural}" 😅`];
+    fb.textContent = msgs[Math.floor(Math.random()*msgs.length)];
+    fb.className   = `inline-fb ${ok?'show-correct':'show-wrong'}`;
   }
 
   function showResults() {
     clearInterval(timerInt);
     document.getElementById('game-screen').style.display   = 'none';
     document.getElementById('results-screen').style.display = 'block';
-
+    document.getElementById('mascot').style.display = 'none';
     document.getElementById('result-score').textContent = score;
 
-    const correct = log.filter(l => l.isCorrect).length;
+    const correct = log.filter(l=>l.isCorrect).length;
     const pct     = correct / WORDS.length;
     let emoji, title;
-    if (pct === 1)       { emoji='🏆'; title='Word Master!'; }
-    else if (pct >= 0.75){ emoji='🎉'; title='Great Job!'; }
-    else if (pct >= 0.5) { emoji='💪'; title='Keep Pushing!'; }
-    else                  { emoji='📚'; title='Keep Practicing!'; }
+    if (pct===1)        { emoji='🏆'; title='Word Master!';      playFanfare(); launchConfetti(); }
+    else if (pct>=0.75) { emoji='🎉'; title='Great Job!';        playCorrect(); }
+    else if (pct>=0.5)  { emoji='💪'; title='Keep Pushing!'; }
+    else                { emoji='📚'; title='Keep Practicing!'; }
 
     document.getElementById('result-emoji').textContent = emoji;
     document.getElementById('result-title').textContent = title;
 
-    setTimeout(() => { if (pct >= 0.34) document.getElementById('star1').classList.add('lit'); }, 300);
-    setTimeout(() => { if (pct >= 0.67) document.getElementById('star2').classList.add('lit'); }, 600);
-    setTimeout(() => { if (pct === 1)   document.getElementById('star3').classList.add('lit'); }, 900);
+    setTimeout(() => { if (pct>=0.34) document.getElementById('star1').classList.add('lit'); }, 300);
+    setTimeout(() => { if (pct>=0.67) document.getElementById('star2').classList.add('lit'); }, 600);
+    setTimeout(() => { if (pct===1)   document.getElementById('star3').classList.add('lit'); }, 900);
 
-    // Review
     const list = document.getElementById('review-list');
     list.innerHTML = log.map(item =>
-      `<div class="review-item ${item.isCorrect ? 'corr' : 'wrong-item'}">
+      `<div class="review-item ${item.isCorrect?'corr':'wrong-item'}">
         <span class="ri-word">${item.singular}</span>
         <span class="ri-arrow">→</span>
         <span class="ri-answer">
-          ${item.isCorrect ? item.plural : `<span style="text-decoration:line-through;opacity:0.5;">${item.typed || '—'}</span>`}
+          ${item.isCorrect ? item.plural : `<span style="text-decoration:line-through;opacity:0.5;">${item.typed||'—'}</span>`}
           ${!item.isCorrect ? `<span class="ri-correct-lbl">✓ ${item.plural}</span>` : ''}
         </span>
       </div>`
@@ -557,12 +481,13 @@
   }
 
   function restartGame() {
-    current = 0; score = 0; streak = 0; log = [];
+    current=0; score=0; streak=0; log=[];
     document.getElementById('score-val').textContent  = '0';
     document.getElementById('streak-val').textContent = '0';
     ['star1','star2','star3'].forEach(id => document.getElementById(id).classList.remove('lit'));
     document.getElementById('game-screen').style.display   = 'flex';
     document.getElementById('results-screen').style.display = 'none';
+    document.getElementById('mascot').style.display = '';
     loadWord(0);
   }
 

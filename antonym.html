@@ -7,269 +7,149 @@
   <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
   <style>
     :root {
-      --yellow: #FFD93D;
-      --pink:   #FF6B9D;
-      --blue:   #4ECDC4;
-      --purple: #A855F7;
-      --orange: #FF8C42;
-      --green:  #6BCB77;
-      --red:    #FF4757;
-      --bg:     #FFF9F0;
+      --yellow:#FFD93D; --pink:#FF6B9D; --blue:#4ECDC4;
+      --purple:#A855F7; --orange:#FF8C42; --green:#6BCB77; --red:#FF4757; --bg:#FFF9F0;
     }
     *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:'Nunito',sans-serif; background:var(--bg); min-height:100dvh; overflow-x:hidden; display:flex; flex-direction:column; align-items:center; }
 
-    body {
-      font-family: 'Nunito', sans-serif;
-      background: var(--bg);
-      min-height: 100dvh;
-      overflow-x: hidden;
-      display: flex; flex-direction: column; align-items: center;
-    }
-
-    /* BG shapes */
     .bg-shapes { position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden; }
-    .shape {
-      position:absolute; border-radius:50%; opacity:0.13;
-      animation: floatShape 8s ease-in-out infinite;
-    }
+    .shape { position:absolute; border-radius:50%; opacity:0.13; animation:floatShape 8s ease-in-out infinite; }
     .shape:nth-child(1){width:220px;height:220px;background:var(--pink);top:-60px;left:-60px;animation-delay:0s;}
     .shape:nth-child(2){width:180px;height:180px;background:var(--blue);top:10%;right:-40px;animation-delay:1.5s;}
     .shape:nth-child(3){width:140px;height:140px;background:var(--yellow);bottom:20%;left:5%;animation-delay:3s;}
     .shape:nth-child(4){width:200px;height:200px;background:var(--purple);bottom:-60px;right:10%;animation-delay:2s;}
-    @keyframes floatShape {
-      0%,100%{transform:translateY(0) rotate(0deg);}
-      50%{transform:translateY(-28px) rotate(15deg);}
-    }
+    @keyframes floatShape { 0%,100%{transform:translateY(0) rotate(0deg);}50%{transform:translateY(-28px) rotate(15deg);} }
 
-    .wrapper {
-      position:relative; z-index:1;
-      width:100%; max-width:520px;
-      padding: 24px 20px 48px;
-      display:flex; flex-direction:column; align-items:center; gap:20px;
-    }
+    .wrapper { position:relative; z-index:1; width:100%; max-width:520px; padding:24px 20px 120px; display:flex; flex-direction:column; align-items:center; gap:20px; }
 
-    /* Back button */
     .back-btn {
-      align-self: flex-start;
-      display:flex; align-items:center; gap:6px;
-      background:#fff; border:3px solid #eee;
-      border-radius:40px; padding:8px 16px;
-      font-family:'Nunito',sans-serif; font-weight:800;
-      font-size:14px; color:#888; cursor:pointer;
-      text-decoration:none;
-      box-shadow: 0 3px 0 #ddd;
-      transition: transform 0.1s, box-shadow 0.1s;
+      align-self:flex-start; display:flex; align-items:center; gap:6px;
+      background:#fff; border:3px solid #eee; border-radius:40px; padding:8px 16px;
+      font-family:'Nunito',sans-serif; font-weight:800; font-size:14px; color:#888;
+      cursor:pointer; text-decoration:none; box-shadow:0 3px 0 #ddd; transition:transform 0.1s, box-shadow 0.1s;
     }
     .back-btn:hover { transform:translateY(-2px); box-shadow:0 5px 0 #ddd; }
-    .back-btn:active { transform:translateY(1px); box-shadow:0 2px 0 #ddd; }
 
-    /* Header */
-    .header { text-align:center; }
-    .game-title {
-      font-family:'Fredoka One', cursive;
-      font-size:clamp(32px,8vw,52px);
-      background: linear-gradient(135deg, var(--pink) 0%, var(--purple) 100%);
-      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+    /* MUTE BUTTON */
+    #mute-btn {
+      position:fixed; top:16px; right:16px; z-index:200;
+      background:#fff; border:3px solid #eee; border-radius:50%;
+      width:44px; height:44px; font-size:20px; cursor:pointer;
+      box-shadow:0 3px 0 #ddd; display:flex; align-items:center; justify-content:center;
+      transition:transform 0.1s;
     }
+    #mute-btn:hover { transform:scale(1.1); }
+
+    .header { text-align:center; }
+    .game-title { font-family:'Fredoka One',cursive; font-size:clamp(32px,8vw,52px); background:linear-gradient(135deg,var(--pink) 0%,var(--purple) 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
     .game-sub { font-size:14px; font-weight:700; color:#aaa; letter-spacing:1px; margin-top:2px; }
 
-    /* Progress bar */
     .progress-wrap { width:100%; }
-    .progress-bar-bg {
-      width:100%; height:14px; background:#eee; border-radius:40px; overflow:hidden;
-      box-shadow: inset 0 2px 4px rgba(0,0,0,0.08);
-    }
-    .progress-bar-fill {
-      height:100%; border-radius:40px;
-      background: linear-gradient(90deg, var(--pink), var(--purple));
-      transition: width 0.4s ease;
-      box-shadow: 0 2px 8px rgba(168,85,247,0.4);
-    }
-    .progress-info {
-      display:flex; justify-content:space-between; align-items:center;
-      font-size:13px; font-weight:800; color:#aaa; margin-bottom:6px;
-    }
+    .progress-bar-bg { width:100%; height:14px; background:#eee; border-radius:40px; overflow:hidden; box-shadow:inset 0 2px 4px rgba(0,0,0,0.08); }
+    .progress-bar-fill { height:100%; border-radius:40px; background:linear-gradient(90deg,var(--pink),var(--purple)); transition:width 0.4s ease; box-shadow:0 2px 8px rgba(168,85,247,0.4); }
+    .progress-info { display:flex; justify-content:space-between; align-items:center; font-size:13px; font-weight:800; color:#aaa; margin-bottom:6px; }
     .progress-info .q-count { color:var(--purple); }
 
-    /* Score */
-    .score-row {
-      display:flex; gap:14px; width:100%;
-    }
-    .score-box {
-      flex:1; background:#fff; border-radius:20px; padding:12px 16px;
-      box-shadow: 0 4px 0 rgba(0,0,0,0.08);
-      border: 3px solid transparent;
-      text-align:center;
-    }
+    .score-row { display:flex; gap:14px; width:100%; }
+    .score-box { flex:1; background:#fff; border-radius:20px; padding:12px 16px; box-shadow:0 4px 0 rgba(0,0,0,0.08); border:3px solid transparent; text-align:center; }
     .score-box.correct-box { border-color:#6BCB7740; }
     .score-box.wrong-box   { border-color:#FF475740; }
     .score-box .sb-label { font-size:11px; font-weight:800; letter-spacing:1px; color:#bbb; text-transform:uppercase; }
-    .score-box .sb-num {
-      font-family:'Fredoka One', cursive;
-      font-size:28px; line-height:1.1;
-    }
+    .score-box .sb-num { font-family:'Fredoka One',cursive; font-size:28px; line-height:1.1; }
     .score-box.correct-box .sb-num { color:var(--green); }
     .score-box.wrong-box   .sb-num { color:var(--red); }
 
-    /* Timer */
     .timer-wrap { width:100%; text-align:center; position:relative; }
-    .timer-ring {
-      width:80px; height:80px; margin:0 auto;
-      position:relative; display:flex; align-items:center; justify-content:center;
-    }
+    .timer-ring { width:80px; height:80px; margin:0 auto; position:relative; display:flex; align-items:center; justify-content:center; }
     .timer-ring svg { position:absolute; top:0; left:0; transform:rotate(-90deg); }
     .timer-ring circle.bg   { fill:none; stroke:#eee; stroke-width:6; }
     .timer-ring circle.fill { fill:none; stroke-width:6; stroke-linecap:round; transition:stroke-dashoffset 0.9s linear, stroke 0.3s; }
-    .timer-num {
-      font-family:'Fredoka One', cursive;
-      font-size:26px; color:#555; z-index:1; position:relative;
-    }
-    .timer-num.urgent { color:var(--red); animation: urgentPulse 0.5s ease-in-out infinite; }
+    .timer-num { font-family:'Fredoka One',cursive; font-size:26px; color:#555; z-index:1; position:relative; }
+    .timer-num.urgent { color:var(--red); animation:urgentPulse 0.5s ease-in-out infinite; }
     @keyframes urgentPulse { 0%,100%{transform:scale(1);}50%{transform:scale(1.2);} }
 
-    /* Question card */
-    .q-card {
-      width:100%; background:#fff;
-      border-radius:28px; padding:36px 28px;
-      box-shadow: 0 8px 0 rgba(0,0,0,0.08), 0 2px 30px rgba(0,0,0,0.06);
-      text-align:center;
-      transition: transform 0.15s;
-      position:relative; overflow:hidden;
-    }
-    .q-card::before {
-      content:''; position:absolute; top:0; left:0; right:0; height:6px;
-      background: linear-gradient(90deg, var(--pink), var(--purple), var(--blue));
-      border-radius:28px 28px 0 0;
-    }
+    .q-card { width:100%; background:#fff; border-radius:28px; padding:36px 28px; box-shadow:0 8px 0 rgba(0,0,0,0.08), 0 2px 30px rgba(0,0,0,0.06); text-align:center; transition:transform 0.15s; position:relative; overflow:hidden; }
+    .q-card::before { content:''; position:absolute; top:0; left:0; right:0; height:6px; background:linear-gradient(90deg,var(--pink),var(--purple),var(--blue)); border-radius:28px 28px 0 0; }
     .q-prompt { font-size:14px; font-weight:800; color:#bbb; letter-spacing:2px; text-transform:uppercase; margin-bottom:20px; }
 
-    .word-pair {
-      display:flex; align-items:center; justify-content:center; gap:16px;
-      flex-wrap:wrap;
-    }
-    .word-chip {
-      font-family:'Fredoka One', cursive;
-      font-size:clamp(24px,6vw,36px);
-      padding:12px 24px; border-radius:16px;
-      box-shadow: 0 4px 0 rgba(0,0,0,0.1);
-    }
+    .word-pair { display:flex; align-items:center; justify-content:center; gap:16px; flex-wrap:wrap; }
+    .word-chip { font-family:'Fredoka One',cursive; font-size:clamp(24px,6vw,36px); padding:12px 24px; border-radius:16px; box-shadow:0 4px 0 rgba(0,0,0,0.1); }
     .word-chip.w1 { background:#FFE8F4; color:var(--pink); }
     .word-chip.w2 { background:#E8F4FF; color:var(--blue); }
-    .vs-badge {
-      font-family:'Fredoka One', cursive;
-      font-size:20px; color:#ccc;
-      background:#f5f5f5; border-radius:50%;
-      width:40px; height:40px; display:flex; align-items:center; justify-content:center;
-    }
+    .vs-badge { font-family:'Fredoka One',cursive; font-size:20px; color:#ccc; background:#f5f5f5; border-radius:50%; width:40px; height:40px; display:flex; align-items:center; justify-content:center; }
 
-    /* Answer buttons */
-    .answer-btns {
-      display:grid; grid-template-columns:1fr 1fr; gap:14px; width:100%;
-    }
-    .ans-btn {
-      padding:20px 12px; border:none; border-radius:22px; cursor:pointer;
-      font-family:'Fredoka One', cursive;
-      font-size:clamp(18px,5vw,26px);
-      display:flex; flex-direction:column; align-items:center; gap:4px;
-      box-shadow: 0 6px 0 rgba(0,0,0,0.15);
-      transition: transform 0.1s, box-shadow 0.1s;
-      user-select:none; -webkit-tap-highlight-color:transparent;
-    }
+    .answer-btns { display:grid; grid-template-columns:1fr 1fr; gap:14px; width:100%; }
+    .ans-btn { padding:20px 12px; border:none; border-radius:22px; cursor:pointer; font-family:'Fredoka One',cursive; font-size:clamp(18px,5vw,26px); display:flex; flex-direction:column; align-items:center; gap:4px; box-shadow:0 6px 0 rgba(0,0,0,0.15); transition:transform 0.1s, box-shadow 0.1s; user-select:none; -webkit-tap-highlight-color:transparent; }
     .ans-btn:active { transform:translateY(4px); box-shadow:0 2px 0 rgba(0,0,0,0.15); }
     .ans-btn .btn-emoji { font-size:28px; line-height:1; }
     .ans-btn .btn-sub { font-size:10px; font-weight:800; letter-spacing:1px; opacity:0.7; font-family:'Nunito',sans-serif; }
-
     .btn-true  { background:var(--green); color:#fff; }
     .btn-false { background:var(--red);   color:#fff; }
 
-    /* Feedback overlay */
-    .feedback-overlay {
-      position:fixed; inset:0; z-index:100;
-      display:flex; align-items:center; justify-content:center;
-      flex-direction:column; gap:12px;
-      pointer-events:none;
-      opacity:0; transition:opacity 0.2s;
-    }
+    /* FEEDBACK OVERLAY */
+    .feedback-overlay { position:fixed; inset:0; z-index:100; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:12px; pointer-events:none; opacity:0; transition:opacity 0.2s; }
     .feedback-overlay.show { opacity:1; pointer-events:all; }
     .feedback-overlay.correct { background:rgba(107,203,119,0.92); }
     .feedback-overlay.wrong   { background:rgba(255,71,87,0.92); }
+    .feedback-emoji { font-size:80px; animation:popIn 0.3s cubic-bezier(0.175,0.885,0.32,1.275); }
+    .feedback-text { font-family:'Fredoka One',cursive; font-size:clamp(28px,8vw,48px); color:#fff; text-shadow:0 3px 0 rgba(0,0,0,0.15); animation:popIn 0.3s cubic-bezier(0.175,0.885,0.32,1.275) 0.05s both; }
+    .feedback-sub { font-size:16px; font-weight:700; color:rgba(255,255,255,0.85); animation:popIn 0.3s cubic-bezier(0.175,0.885,0.32,1.275) 0.1s both; text-align:center; padding:0 20px; }
+    @keyframes popIn { from{transform:scale(0.5);opacity:0;}to{transform:scale(1);opacity:1;} }
 
-    .feedback-emoji { font-size:80px; animation: popIn 0.3s cubic-bezier(0.175,0.885,0.32,1.275); }
-    .feedback-text {
-      font-family:'Fredoka One', cursive;
-      font-size:clamp(28px,8vw,48px); color:#fff;
-      text-shadow: 0 3px 0 rgba(0,0,0,0.15);
-      animation: popIn 0.3s cubic-bezier(0.175,0.885,0.32,1.275) 0.05s both;
+    /* MASCOT */
+    #mascot {
+      position:fixed; bottom:16px; left:50%; transform:translateX(-50%);
+      z-index:150; font-size:56px; line-height:1;
+      animation:mascotIdle 2.5s ease-in-out infinite;
+      cursor:default; user-select:none;
+      filter:drop-shadow(0 4px 8px rgba(0,0,0,0.15));
+      transition:filter 0.2s;
     }
-    .feedback-sub {
-      font-size:16px; font-weight:700; color:rgba(255,255,255,0.85);
-      animation: popIn 0.3s cubic-bezier(0.175,0.885,0.32,1.275) 0.1s both;
-      text-align:center; padding:0 20px;
-    }
-    @keyframes popIn {
-      from { transform:scale(0.5); opacity:0; }
-      to   { transform:scale(1);   opacity:1; }
-    }
+    @keyframes mascotIdle { 0%,100%{transform:translateX(-50%) translateY(0);}50%{transform:translateX(-50%) translateY(-8px);} }
+    #mascot.jump  { animation:mascotJump 0.5s cubic-bezier(0.175,0.885,0.32,1.275) forwards; }
+    #mascot.shake { animation:mascotShake 0.4s ease forwards; }
+    #mascot.spin  { animation:mascotSpin 0.8s cubic-bezier(0.175,0.885,0.32,1.275) forwards; }
+    @keyframes mascotJump  { 0%{transform:translateX(-50%) translateY(0) scale(1);}40%{transform:translateX(-50%) translateY(-40px) scale(1.2);}70%{transform:translateX(-50%) translateY(-20px) scale(0.95);}100%{transform:translateX(-50%) translateY(0) scale(1);} }
+    @keyframes mascotShake { 0%,100%{transform:translateX(-50%);}20%{transform:translateX(calc(-50% - 10px));}40%{transform:translateX(calc(-50% + 10px));}60%{transform:translateX(calc(-50% - 6px));}80%{transform:translateX(calc(-50% + 6px));} }
+    @keyframes mascotSpin  { 0%{transform:translateX(-50%) rotate(0) scale(1);}50%{transform:translateX(-50%) rotate(180deg) scale(1.4);}100%{transform:translateX(-50%) rotate(360deg) scale(1);} }
 
-    /* Results screen */
+    /* RESULTS */
     #results-screen { display:none; width:100%; }
-    .results-card {
-      background:#fff; border-radius:28px; padding:32px 24px;
-      box-shadow: 0 8px 0 rgba(0,0,0,0.08);
-      text-align:center;
-      position:relative; overflow:hidden;
-    }
-    .results-card::before {
-      content:''; position:absolute; top:0; left:0; right:0; height:6px;
-      background: linear-gradient(90deg, var(--yellow), var(--orange), var(--pink));
-    }
-    .result-emoji { font-size:64px; margin-bottom:8px; animation: popIn 0.5s cubic-bezier(0.175,0.885,0.32,1.275); }
-    .result-title {
-      font-family:'Fredoka One', cursive;
-      font-size:clamp(28px,7vw,42px);
-      background: linear-gradient(135deg, var(--orange), var(--pink));
-      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
-      margin-bottom:4px;
-    }
-    .result-score-big {
-      font-family:'Fredoka One', cursive;
-      font-size:clamp(48px,12vw,72px); color:var(--purple);
-      line-height:1; margin:12px 0 4px;
-    }
+    .results-card { background:#fff; border-radius:28px; padding:32px 24px; box-shadow:0 8px 0 rgba(0,0,0,0.08); text-align:center; position:relative; overflow:hidden; }
+    .results-card::before { content:''; position:absolute; top:0; left:0; right:0; height:6px; background:linear-gradient(90deg,var(--yellow),var(--orange),var(--pink)); }
+    .result-emoji { font-size:64px; margin-bottom:8px; animation:popIn 0.5s cubic-bezier(0.175,0.885,0.32,1.275); }
+    .result-title { font-family:'Fredoka One',cursive; font-size:clamp(28px,7vw,42px); background:linear-gradient(135deg,var(--orange),var(--pink)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; margin-bottom:4px; }
+    .result-score-big { font-family:'Fredoka One',cursive; font-size:clamp(48px,12vw,72px); color:var(--purple); line-height:1; margin:12px 0 4px; }
     .result-score-label { font-size:14px; font-weight:800; color:#bbb; letter-spacing:2px; text-transform:uppercase; }
-
     .stars-row { display:flex; justify-content:center; gap:8px; margin:16px 0; font-size:36px; }
     .star { opacity:0.2; transition:opacity 0.3s, transform 0.3s; }
     .star.lit { opacity:1; transform:scale(1.2); }
-
     .review-section { margin-top:20px; text-align:left; }
     .review-title { font-size:13px; font-weight:800; color:#bbb; letter-spacing:2px; text-transform:uppercase; margin-bottom:10px; }
-    .review-item {
-      display:flex; align-items:center; gap:10px;
-      padding:10px 14px; border-radius:14px;
-      font-weight:700; font-size:14px; margin-bottom:6px;
-    }
-    .review-item.wrong-item { background:#FFF0F0; color:var(--red); }
+    .review-item { display:flex; align-items:center; gap:10px; padding:10px 14px; border-radius:14px; font-weight:700; font-size:14px; margin-bottom:6px; }
+    .review-item.wrong-item   { background:#FFF0F0; color:var(--red); }
     .review-item.correct-item { background:#F0FFF4; color:var(--green); }
     .review-item .ri-words { flex:1; }
     .review-item .ri-answer { font-size:12px; opacity:0.7; }
+    .play-again-btn { width:100%; padding:18px; border:none; border-radius:20px; cursor:pointer; font-family:'Fredoka One',cursive; font-size:22px; color:#fff; background:linear-gradient(135deg,var(--pink),var(--purple)); box-shadow:0 6px 0 rgba(168,85,247,0.4); transition:transform 0.1s, box-shadow 0.1s; margin-top:16px; }
+    .play-again-btn:hover { transform:translateY(-3px); }
+    .play-again-btn:active { transform:translateY(3px); }
 
-    .play-again-btn {
-      width:100%; padding:18px; border:none; border-radius:20px; cursor:pointer;
-      font-family:'Fredoka One', cursive; font-size:22px; color:#fff;
-      background: linear-gradient(135deg, var(--pink), var(--purple));
-      box-shadow: 0 6px 0 rgba(168,85,247,0.4);
-      transition: transform 0.1s, box-shadow 0.1s;
-      margin-top:16px;
-    }
-    .play-again-btn:hover { transform:translateY(-3px); box-shadow:0 9px 0 rgba(168,85,247,0.4); }
-    .play-again-btn:active { transform:translateY(3px); box-shadow:0 3px 0 rgba(168,85,247,0.4); }
+    /* CONFETTI */
+    .confetti-piece { position:fixed; width:10px; height:10px; border-radius:2px; pointer-events:none; z-index:999; animation:confettiFall linear forwards; }
+    @keyframes confettiFall { 0%{transform:translateY(-20px) rotate(0deg);opacity:1;}100%{transform:translateY(100vh) rotate(720deg);opacity:0;} }
   </style>
 </head>
 <body>
+  <button id="mute-btn" onclick="toggleMute()" title="Toggle sound">🔊</button>
+
   <div class="bg-shapes">
     <div class="shape"></div><div class="shape"></div><div class="shape"></div><div class="shape"></div>
   </div>
+
+  <!-- MASCOT -->
+  <div id="mascot">🦉</div>
 
   <div class="wrapper">
     <a class="back-btn" href="index.html">← Back</a>
@@ -307,9 +187,7 @@
           <svg width="80" height="80" viewBox="0 0 80 80">
             <circle class="bg" cx="40" cy="40" r="34"/>
             <circle class="fill" id="timer-circle" cx="40" cy="40" r="34"
-              stroke="var(--purple)"
-              stroke-dasharray="213.6"
-              stroke-dashoffset="0"/>
+              stroke="var(--purple)" stroke-dasharray="213.6" stroke-dashoffset="0"/>
           </svg>
           <div class="timer-num" id="timer-num">10</div>
         </div>
@@ -350,45 +228,126 @@
           <span class="star" id="star2">⭐</span>
           <span class="star" id="star3">⭐</span>
         </div>
-
         <div class="review-section">
           <div class="review-title">📋 Review</div>
           <div id="review-list"></div>
         </div>
-
         <button class="play-again-btn" onclick="restartGame()">🔄 Play Again!</button>
         <a class="back-btn" href="index.html" style="margin-top:12px;display:inline-flex;">🏠 Home</a>
       </div>
     </div>
   </div>
 
-  <!-- Feedback overlay -->
   <div class="feedback-overlay" id="feedback-overlay">
     <div class="feedback-emoji" id="fb-emoji">✅</div>
     <div class="feedback-text" id="fb-text">Correct!</div>
-    <div class="feedback-sub" id="fb-sub">They ARE opposites!</div>
+    <div class="feedback-sub"  id="fb-sub">They ARE opposites!</div>
   </div>
 
 <script>
+  // ── SOUND ENGINE ──
+  let muted = false;
+  let audioCtx;
+  function getAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); return audioCtx; }
+  function toggleMute() { muted = !muted; document.getElementById('mute-btn').textContent = muted ? '🔇' : '🔊'; }
+
+  function playCorrect() {
+    if (muted) return;
+    const ctx = getAudio();
+    [523, 659, 784].forEach((freq, i) => {
+      const osc = ctx.createOscillator(), gain = ctx.createGain();
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.frequency.value = freq;
+      const t = ctx.currentTime + i * 0.09;
+      gain.gain.setValueAtTime(0.22, t);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.25);
+      osc.start(t); osc.stop(t + 0.25);
+    });
+  }
+
+  function playWrong() {
+    if (muted) return;
+    const ctx = getAudio();
+    const osc = ctx.createOscillator(), gain = ctx.createGain();
+    osc.type = 'sawtooth';
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.frequency.setValueAtTime(220, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(80, ctx.currentTime + 0.3);
+    gain.gain.setValueAtTime(0.18, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
+    osc.start(); osc.stop(ctx.currentTime + 0.3);
+  }
+
+  function playTick() {
+    if (muted) return;
+    const ctx = getAudio();
+    const osc = ctx.createOscillator(), gain = ctx.createGain();
+    osc.frequency.value = 880;
+    osc.connect(gain); gain.connect(ctx.destination);
+    gain.gain.setValueAtTime(0.08, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.06);
+    osc.start(); osc.stop(ctx.currentTime + 0.06);
+  }
+
+  function playFanfare() {
+    if (muted) return;
+    const ctx = getAudio();
+    [523,659,784,1047,1319].forEach((freq, i) => {
+      const osc = ctx.createOscillator(), gain = ctx.createGain();
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.frequency.value = freq;
+      const t = ctx.currentTime + i * 0.1;
+      gain.gain.setValueAtTime(0.2, t);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.35);
+      osc.start(t); osc.stop(t + 0.35);
+    });
+  }
+
+  // ── CONFETTI ──
+  function launchConfetti() {
+    const colors = ['#FF6B9D','#4ECDC4','#FFD93D','#A855F7','#FF8C42','#6BCB77'];
+    for (let i = 0; i < 70; i++) {
+      setTimeout(() => {
+        const c = document.createElement('div');
+        c.className = 'confetti-piece';
+        c.style.left = Math.random() * 100 + 'vw';
+        c.style.background = colors[Math.floor(Math.random() * colors.length)];
+        c.style.width  = (8 + Math.random() * 8) + 'px';
+        c.style.height = (8 + Math.random() * 8) + 'px';
+        c.style.animationDuration = (1.5 + Math.random() * 2) + 's';
+        document.body.appendChild(c);
+        setTimeout(() => c.remove(), 4000);
+      }, i * 25);
+    }
+  }
+
+  // ── MASCOT ──
+  function mascotReact(type) {
+    const m = document.getElementById('mascot');
+    const faces = { correct:'🦉', wrong:'😱', perfect:'🤩', timeout:'😅' };
+    m.textContent = faces[type] || '🦉';
+    m.className = '';
+    void m.offsetWidth;
+    if (type === 'correct') m.classList.add('jump');
+    else if (type === 'wrong' || type === 'timeout') m.classList.add('shake');
+    else if (type === 'perfect') m.classList.add('spin');
+    setTimeout(() => { m.textContent = '🦉'; m.className = ''; }, 800);
+  }
+
+  // ── GAME DATA ──
   const QUESTIONS = [
-    { w1: "happy",  w2: "sad",   isTrue: true  },
-    { w1: "big",    w2: "tall",  isTrue: false  },
-    { w1: "fast",   w2: "slow",  isTrue: true   },
-    { w1: "early",  w2: "late",  isTrue: true   },
-    { w1: "clean",  w2: "tidy",  isTrue: false  },
-    { w1: "hot",    w2: "cold",  isTrue: true   },
+    { w1:"happy",  w2:"sad",   isTrue:true  },
+    { w1:"big",    w2:"tall",  isTrue:false },
+    { w1:"fast",   w2:"slow",  isTrue:true  },
+    { w1:"early",  w2:"late",  isTrue:true  },
+    { w1:"clean",  w2:"tidy",  isTrue:false },
+    { w1:"hot",    w2:"cold",  isTrue:true  },
   ];
 
   const TIMER_MAX = 10;
-  const CIRCUMFERENCE = 2 * Math.PI * 34; // ~213.6
+  const CIRCUMFERENCE = 2 * Math.PI * 34;
 
-  let current    = 0;
-  let correctCnt = 0;
-  let wrongCnt   = 0;
-  let timerVal   = TIMER_MAX;
-  let timerInt   = null;
-  let answered   = false;
-  let log        = [];
+  let current=0, correctCnt=0, wrongCnt=0, timerVal=TIMER_MAX, timerInt=null, answered=false, log=[];
 
   function startTimer() {
     clearInterval(timerInt);
@@ -397,10 +356,8 @@
     timerInt = setInterval(() => {
       timerVal--;
       updateTimerUI();
-      if (timerVal <= 0) {
-        clearInterval(timerInt);
-        if (!answered) timeOut();
-      }
+      if (timerVal <= 3) playTick();
+      if (timerVal <= 0) { clearInterval(timerInt); if (!answered) timeOut(); }
     }, 1000);
   }
 
@@ -411,18 +368,9 @@
     const numEl  = document.getElementById('timer-num');
     circle.style.strokeDashoffset = offset;
     numEl.textContent = timerVal;
-
-    // Color shift
-    if (timerVal <= 3) {
-      circle.style.stroke = 'var(--red)';
-      numEl.className = 'timer-num urgent';
-    } else if (timerVal <= 5) {
-      circle.style.stroke = 'var(--orange)';
-      numEl.className = 'timer-num';
-    } else {
-      circle.style.stroke = 'var(--purple)';
-      numEl.className = 'timer-num';
-    }
+    if (timerVal <= 3)      { circle.style.stroke = 'var(--red)';    numEl.className = 'timer-num urgent'; }
+    else if (timerVal <= 5) { circle.style.stroke = 'var(--orange)'; numEl.className = 'timer-num'; }
+    else                    { circle.style.stroke = 'var(--purple)'; numEl.className = 'timer-num'; }
   }
 
   function loadQuestion(idx) {
@@ -431,20 +379,14 @@
     document.getElementById('word1').textContent = q.w1;
     document.getElementById('word2').textContent = q.w2;
     document.getElementById('q-count').textContent = `${idx+1} / ${QUESTIONS.length}`;
-    const pct = (idx / QUESTIONS.length) * 100;
-    document.getElementById('progress-fill').style.width = pct + '%';
-
-    // Enable buttons
+    document.getElementById('progress-fill').style.width = (idx / QUESTIONS.length * 100) + '%';
     document.getElementById('btn-true').disabled  = false;
     document.getElementById('btn-false').disabled = false;
     document.getElementById('btn-true').style.opacity  = '1';
     document.getElementById('btn-false').style.opacity = '1';
-
-    // Card entrance
     const card = document.getElementById('q-card');
     card.style.transform = 'scale(0.92)';
     setTimeout(() => card.style.transform = '', 200);
-
     startTimer();
   }
 
@@ -452,19 +394,21 @@
     if (answered) return;
     answered = true;
     clearInterval(timerInt);
-
     const q = QUESTIONS[current];
     const isCorrect = (userSaidTrue === q.isTrue);
-
     log.push({ ...q, userSaidTrue, isCorrect });
 
     if (isCorrect) {
       correctCnt++;
       document.getElementById('correct-count').textContent = correctCnt;
+      playCorrect();
+      mascotReact('correct');
       showFeedback(true, q);
     } else {
       wrongCnt++;
       document.getElementById('wrong-count').textContent = wrongCnt;
+      playWrong();
+      mascotReact('wrong');
       showFeedback(false, q);
     }
 
@@ -476,27 +420,24 @@
     setTimeout(() => {
       hideOverlay();
       current++;
-      if (current < QUESTIONS.length) {
-        loadQuestion(current);
-      } else {
-        showResults();
-      }
+      if (current < QUESTIONS.length) loadQuestion(current);
+      else showResults();
     }, 1200);
   }
 
   function timeOut() {
     answered = true;
     const q = QUESTIONS[current];
-    log.push({ ...q, userSaidTrue: null, isCorrect: false });
+    log.push({ ...q, userSaidTrue:null, isCorrect:false });
     wrongCnt++;
     document.getElementById('wrong-count').textContent = wrongCnt;
+    playWrong();
+    mascotReact('timeout');
 
-    const ov = document.getElementById('feedback-overlay');
     document.getElementById('fb-emoji').textContent = '⏰';
-    document.getElementById('fb-text').textContent  = 'Time`s Up!';
+    document.getElementById('fb-text').textContent  = "Time's Up!";
     document.getElementById('fb-sub').textContent   = `It's ${q.isTrue ? 'TRUE' : 'FALSE'} — "${q.w1}" and "${q.w2}" are ${q.isTrue ? '' : 'NOT '}opposites.`;
-    ov.className = 'feedback-overlay show wrong';
-
+    document.getElementById('feedback-overlay').className = 'feedback-overlay show wrong';
     document.getElementById('btn-true').disabled  = true;
     document.getElementById('btn-false').disabled = true;
 
@@ -509,35 +450,30 @@
   }
 
   function showFeedback(ok, q) {
-    const ov = document.getElementById('feedback-overlay');
-    const correctMessages = ['Awesome! 🎉', 'You got it! 💪', 'Brilliant! ✨', 'Nice work! 🌟'];
-    const wrongMessages   = ['Oops! Try again!', 'Not quite! 😅', 'Almost! 🤔', 'Keep going! 💡'];
-
+    const correctMsgs = ['Awesome! 🎉','You got it! 💪','Brilliant! ✨','Nice work! 🌟'];
+    const wrongMsgs   = ['Oops! Try again!','Not quite! 😅','Almost! 🤔','Keep going! 💡'];
     document.getElementById('fb-emoji').textContent = ok ? ['🎉','⭐','🏆','💫'][Math.floor(Math.random()*4)] : '😬';
-    document.getElementById('fb-text').textContent  = ok
-      ? correctMessages[Math.floor(Math.random()*correctMessages.length)]
-      : wrongMessages[Math.floor(Math.random()*wrongMessages.length)];
+    document.getElementById('fb-text').textContent  = ok ? correctMsgs[Math.floor(Math.random()*correctMsgs.length)] : wrongMsgs[Math.floor(Math.random()*wrongMsgs.length)];
     document.getElementById('fb-sub').textContent   = ok
-      ? `Yes! "${q.w1}" and "${q.w2}" are ${q.isTrue ? '' : 'NOT '}opposites!`
-      : `Actually: "${q.w1}" and "${q.w2}" are ${q.isTrue ? '' : 'NOT '}opposites.`;
-    ov.className = `feedback-overlay show ${ok ? 'correct' : 'wrong'}`;
+      ? `Yes! "${q.w1}" and "${q.w2}" are ${q.isTrue?'':'NOT '}opposites!`
+      : `Actually: "${q.w1}" and "${q.w2}" are ${q.isTrue?'':'NOT '}opposites.`;
+    document.getElementById('feedback-overlay').className = `feedback-overlay show ${ok?'correct':'wrong'}`;
   }
 
-  function hideOverlay() {
-    document.getElementById('feedback-overlay').className = 'feedback-overlay';
-  }
+  function hideOverlay() { document.getElementById('feedback-overlay').className = 'feedback-overlay'; }
 
   function showResults() {
-    document.getElementById('game-screen').style.display  = 'none';
+    document.getElementById('game-screen').style.display    = 'none';
     document.getElementById('results-screen').style.display = 'block';
+    document.getElementById('mascot').style.display = 'none';
 
     const total = QUESTIONS.length;
     document.getElementById('result-score').textContent = `${correctCnt}/${total}`;
-
     const pct = correctCnt / total;
+
     let emoji, title;
-    if (pct === 1)       { emoji='🏆'; title='Perfect Score!'; }
-    else if (pct >= 0.8) { emoji='🎉'; title='Amazing!'; }
+    if (pct === 1)       { emoji='🏆'; title='Perfect Score!'; playFanfare(); launchConfetti(); mascotReact('perfect'); }
+    else if (pct >= 0.8) { emoji='🎉'; title='Amazing!'; playCorrect(); }
     else if (pct >= 0.6) { emoji='😊'; title='Good Job!'; }
     else if (pct >= 0.4) { emoji='💪'; title='Keep Trying!'; }
     else                  { emoji='📚'; title='Keep Learning!'; }
@@ -545,44 +481,35 @@
     document.getElementById('result-emoji').textContent = emoji;
     document.getElementById('result-title').textContent = title;
 
-    // Stars
-    setTimeout(() => {
-      if (pct >= 0.34) { document.getElementById('star1').classList.add('lit'); }
-    }, 300);
-    setTimeout(() => {
-      if (pct >= 0.67) { document.getElementById('star2').classList.add('lit'); }
-    }, 600);
-    setTimeout(() => {
-      if (pct === 1)   { document.getElementById('star3').classList.add('lit'); }
-    }, 900);
+    setTimeout(() => { if (pct >= 0.34) document.getElementById('star1').classList.add('lit'); }, 300);
+    setTimeout(() => { if (pct >= 0.67) document.getElementById('star2').classList.add('lit'); }, 600);
+    setTimeout(() => { if (pct === 1)   document.getElementById('star3').classList.add('lit'); }, 900);
 
-    // Review
     const list = document.getElementById('review-list');
     list.innerHTML = log.map(item =>
-      `<div class="review-item ${item.isCorrect ? 'correct-item' : 'wrong-item'}">
+      `<div class="review-item ${item.isCorrect?'correct-item':'wrong-item'}">
         <div class="ri-words">"${item.w1}" vs "${item.w2}"</div>
-        <div class="ri-answer">${item.isCorrect ? '✅' : '❌'} ${item.isTrue ? 'TRUE' : 'FALSE'}</div>
+        <div class="ri-answer">${item.isCorrect?'✅':'❌'} ${item.isTrue?'TRUE':'FALSE'}</div>
       </div>`
     ).join('');
   }
 
   function restartGame() {
-    current    = 0; correctCnt = 0; wrongCnt = 0; log = [];
+    current=0; correctCnt=0; wrongCnt=0; log=[];
     document.getElementById('correct-count').textContent = '0';
     document.getElementById('wrong-count').textContent   = '0';
     ['star1','star2','star3'].forEach(id => document.getElementById(id).classList.remove('lit'));
-    document.getElementById('game-screen').style.display   = 'flex';
+    document.getElementById('game-screen').style.display    = 'flex';
     document.getElementById('results-screen').style.display = 'none';
+    document.getElementById('mascot').style.display = '';
     loadQuestion(0);
   }
 
-  // Keyboard support
   document.addEventListener('keydown', e => {
-    if (e.key === 'ArrowLeft'  || e.key === 't' || e.key === 'T') answer(true);
-    if (e.key === 'ArrowRight' || e.key === 'f' || e.key === 'F') answer(false);
+    if (e.key==='ArrowLeft'  || e.key==='t' || e.key==='T') answer(true);
+    if (e.key==='ArrowRight' || e.key==='f' || e.key==='F') answer(false);
   });
 
-  // Start!
   loadQuestion(0);
 </script>
 </body>
