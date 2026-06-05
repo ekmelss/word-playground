@@ -1,306 +1,440 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Word Playground 🎉</title>
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --yellow: #FFD93D; --pink: #FF6B9D; --blue: #4ECDC4;
-      --purple: #A855F7; --orange: #FF8C42; --green: #6BCB77; --bg: #FFF9F0;
-    }
-    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
-    body { font-family:'Nunito',sans-serif; background:var(--bg); min-height:100dvh; overflow-x:hidden; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Word Playground</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--yellow:#FFD93D;--pink:#FF6B9D;--blue:#4ECDC4;--purple:#A855F7;--orange:#FF8C42;--green:#6BCB77;--bg:#FFF9F0;--wood:#C4943A;--wood-dark:#A07830;}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Nunito',sans-serif;background:var(--bg);min-height:100dvh;overflow-x:hidden;}
 
-    /* ── LOADING SPLASH ── */
-    #splash {
-      position:fixed; inset:0; z-index:9999;
-      background: linear-gradient(135deg, #FF6B9D 0%, #A855F7 50%, #4ECDC4 100%);
-      display:flex; flex-direction:column; align-items:center; justify-content:center; gap:24px;
-      transition: opacity 0.6s ease, transform 0.6s ease;
-    }
-    #splash.hide { opacity:0; pointer-events:none; transform:scale(1.04); }
+#splash{position:fixed;inset:0;z-index:9999;background:linear-gradient(135deg,#FF6B9D 0%,#A855F7 50%,#4ECDC4 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;transition:opacity 0.6s ease,transform 0.6s ease;}
+#splash.hide{opacity:0;pointer-events:none;transform:scale(1.04);}
+.splash-mascot{font-size:80px;animation:splashBounce 0.8s cubic-bezier(0.175,0.885,0.32,1.275) 0.2s both;}
+.splash-logo{font-family:'Fredoka One',cursive;font-size:clamp(34px,9vw,58px);color:#fff;text-shadow:0 4px 0 rgba(0,0,0,0.15);text-align:center;line-height:1.2;animation:splashPop 0.5s cubic-bezier(0.175,0.885,0.32,1.275) both;}
+.splash-sub{font-size:14px;font-weight:700;color:rgba(255,255,255,0.8);letter-spacing:3px;text-transform:uppercase;}
+.splash-dots{display:flex;gap:10px;}
+.splash-dot{width:14px;height:14px;border-radius:50%;background:rgba(255,255,255,0.7);animation:dotBounce 0.7s ease-in-out infinite;}
+.splash-dot:nth-child(2){animation-delay:0.15s;}
+.splash-dot:nth-child(3){animation-delay:0.3s;}
+@keyframes splashPop{from{transform:scale(0.6);opacity:0;}to{transform:scale(1);opacity:1;}}
+@keyframes splashBounce{from{transform:translateY(40px) scale(0.5);opacity:0;}to{transform:translateY(0) scale(1);opacity:1;}}
+@keyframes dotBounce{0%,100%{transform:translateY(0);background:rgba(255,255,255,0.7);}50%{transform:translateY(-12px);background:#fff;}}
 
-    .splash-logo {
-      font-family:'Fredoka One', cursive;
-      font-size:clamp(36px,9vw,60px); color:#fff;
-      text-shadow: 0 4px 0 rgba(0,0,0,0.15);
-      text-align:center; line-height:1.2;
-      animation: splashPop 0.5s cubic-bezier(0.175,0.885,0.32,1.275) both;
-    }
-    @keyframes splashPop {
-      from { transform:scale(0.6); opacity:0; }
-      to   { transform:scale(1);   opacity:1; }
-    }
+.bg-shapes{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+.shape{position:absolute;border-radius:50%;opacity:0.13;animation:floatShape 8s ease-in-out infinite;}
+.shape:nth-child(1){width:220px;height:220px;background:var(--pink);top:-60px;left:-60px;animation-delay:0s;}
+.shape:nth-child(2){width:180px;height:180px;background:var(--blue);top:10%;right:-40px;animation-delay:1.5s;}
+.shape:nth-child(3){width:140px;height:140px;background:var(--yellow);bottom:20%;left:5%;animation-delay:3s;}
+.shape:nth-child(4){width:200px;height:200px;background:var(--purple);bottom:-60px;right:10%;animation-delay:2s;}
+.shape:nth-child(5){width:100px;height:100px;background:var(--orange);top:45%;left:40%;animation-delay:4s;}
+@keyframes floatShape{0%,100%{transform:translateY(0) rotate(0deg);}50%{transform:translateY(-28px) rotate(15deg);}}
 
-    .splash-mascot {
-      font-size:80px;
-      animation: splashBounce 0.8s cubic-bezier(0.175,0.885,0.32,1.275) 0.2s both;
-    }
-    @keyframes splashBounce {
-      from { transform:translateY(40px) scale(0.5); opacity:0; }
-      to   { transform:translateY(0)    scale(1);   opacity:1; }
-    }
+.wrapper{position:relative;z-index:1;max-width:700px;margin:0 auto;padding:28px 20px 60px;}
 
-    .splash-dots { display:flex; gap:10px; }
-    .splash-dot {
-      width:14px; height:14px; border-radius:50%; background:rgba(255,255,255,0.7);
-      animation: dotBounce 0.7s ease-in-out infinite;
-    }
-    .splash-dot:nth-child(2) { animation-delay:0.15s; }
-    .splash-dot:nth-child(3) { animation-delay:0.30s; }
-    @keyframes dotBounce {
-      0%,100%{ transform:translateY(0);   background:rgba(255,255,255,0.7); }
-      50%    { transform:translateY(-12px); background:#fff; }
-    }
+.header{text-align:center;margin-bottom:28px;}
+.logo{font-family:'Fredoka One',cursive;font-size:clamp(36px,8vw,62px);line-height:1.1;background:linear-gradient(135deg,var(--pink) 0%,var(--purple) 50%,var(--blue) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(3px 3px 0 rgba(0,0,0,0.08));}
+.logo-sub{font-size:clamp(12px,3vw,15px);color:#888;font-weight:700;letter-spacing:3px;text-transform:uppercase;margin-top:4px;}
+.stars{font-size:26px;margin-top:6px;animation:starBounce 1.5s ease-in-out infinite;}
+@keyframes starBounce{0%,100%{transform:scale(1);}50%{transform:scale(1.15);}}
 
-    .splash-sub {
-      font-family:'Nunito',sans-serif; font-size:14px; font-weight:700;
-      color:rgba(255,255,255,0.8); letter-spacing:3px; text-transform:uppercase;
-      animation: splashPop 0.5s cubic-bezier(0.175,0.885,0.32,1.275) 0.1s both;
-    }
+.wotd-card{background:#fff;border-radius:24px;padding:18px 20px;margin-bottom:28px;box-shadow:0 6px 0 rgba(168,85,247,0.15),0 2px 20px rgba(168,85,247,0.08);border:3px solid rgba(168,85,247,0.2);position:relative;overflow:hidden;animation:wotdIn 0.6s cubic-bezier(0.175,0.885,0.32,1.275) 0.3s both;}
+@keyframes wotdIn{from{transform:translateY(20px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+.wotd-card::before{content:'';position:absolute;top:0;left:0;right:0;height:5px;background:linear-gradient(90deg,var(--purple),var(--pink),var(--blue));border-radius:24px 24px 0 0;}
+.wotd-header{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+.wotd-badge{font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;background:linear-gradient(135deg,var(--purple),var(--pink));color:#fff;padding:4px 10px;border-radius:20px;}
+.wotd-date{font-size:12px;font-weight:700;color:#bbb;margin-left:auto;}
+.wotd-body{display:flex;align-items:flex-start;gap:12px;}
+.wotd-icon{font-size:38px;flex-shrink:0;animation:wotdIconPop 0.5s cubic-bezier(0.175,0.885,0.32,1.275) 0.6s both;}
+@keyframes wotdIconPop{from{transform:scale(0) rotate(-20deg);}to{transform:scale(1) rotate(0);}}
+.wotd-word{font-family:'Fredoka One',cursive;font-size:26px;color:var(--purple);line-height:1.1;margin-bottom:2px;}
+.wotd-bm{font-size:12px;font-weight:800;color:var(--pink);margin-bottom:5px;}
+.wotd-def{font-size:13px;font-weight:600;color:#666;line-height:1.5;margin-bottom:5px;}
+.wotd-example{font-size:12px;font-weight:700;color:#aaa;background:#f9f5ff;border-left:3px solid var(--purple);padding:5px 10px;border-radius:0 8px 8px 0;font-style:italic;}
 
-    /* ── BG SHAPES ── */
-    .bg-shapes { position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden; }
-    .shape { position:absolute; border-radius:50%; opacity:0.13; animation:floatShape 8s ease-in-out infinite; }
-    .shape:nth-child(1){width:220px;height:220px;background:var(--pink);top:-60px;left:-60px;animation-delay:0s;}
-    .shape:nth-child(2){width:180px;height:180px;background:var(--blue);top:10%;right:-40px;animation-delay:1.5s;}
-    .shape:nth-child(3){width:140px;height:140px;background:var(--yellow);bottom:20%;left:5%;animation-delay:3s;}
-    .shape:nth-child(4){width:200px;height:200px;background:var(--purple);bottom:-60px;right:10%;animation-delay:2s;}
-    .shape:nth-child(5){width:100px;height:100px;background:var(--orange);top:45%;left:40%;animation-delay:4s;}
-    @keyframes floatShape { 0%,100%{transform:translateY(0) rotate(0deg);}50%{transform:translateY(-28px) rotate(15deg);} }
+.pg-title{font-family:'Fredoka One',cursive;font-size:clamp(20px,5vw,28px);color:#555;text-align:center;margin-bottom:20px;}
 
-    .wrapper { position:relative; z-index:1; max-width:680px; margin:0 auto; padding:32px 20px 60px; }
+/* ── PLAYGROUND SCENE ── */
+.playground{
+  background:linear-gradient(180deg,#E8F8FF 0%,#C8EDF8 55%,#A8D878 55%,#7CB648 100%);
+  border-radius:28px;
+  padding:20px 16px 0;
+  box-shadow:0 8px 0 rgba(0,0,0,0.1),0 2px 30px rgba(0,0,0,0.08);
+  border:3px solid rgba(255,255,255,0.8);
+  overflow:hidden;
+  position:relative;
+  min-height:240px;
+}
 
-    /* ── HEADER ── */
-    .header { text-align:center; margin-bottom:32px; }
-    .logo {
-      font-family:'Fredoka One', cursive; font-size:clamp(38px,8vw,64px); line-height:1.1;
-      background:linear-gradient(135deg, var(--pink) 0%, var(--purple) 50%, var(--blue) 100%);
-      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
-      filter:drop-shadow(3px 3px 0px rgba(0,0,0,0.08));
-    }
-    .logo-sub { font-size:clamp(13px,3vw,16px); color:#888; font-weight:700; letter-spacing:3px; text-transform:uppercase; margin-top:4px; }
-    .stars { font-size:28px; margin-top:6px; animation:starBounce 1.5s ease-in-out infinite; }
-    @keyframes starBounce { 0%,100%{transform:scale(1);}50%{transform:scale(1.15);} }
+/* Sky decorations */
+.cloud{position:absolute;background:#fff;border-radius:50px;opacity:0.75;animation:cloudFloat linear infinite;}
+.cloud::before,.cloud::after{content:'';position:absolute;background:#fff;border-radius:50%;}
+.cloud-1{width:64px;height:20px;top:14px;left:8%;animation-duration:18s;}
+.cloud-1::before{width:30px;height:30px;top:-16px;left:8px;}
+.cloud-1::after{width:24px;height:24px;top:-12px;left:30px;}
+.cloud-2{width:52px;height:16px;top:22px;right:12%;animation-duration:22s;animation-delay:-8s;}
+.cloud-2::before{width:22px;height:22px;top:-12px;left:6px;}
+.cloud-2::after{width:18px;height:18px;top:-8px;left:22px;}
+@keyframes cloudFloat{0%{transform:translateX(-18px);}50%{transform:translateX(18px);}100%{transform:translateX(-18px);}}
+.sun{position:absolute;top:10px;right:28px;font-size:30px;animation:sunSpin 20s linear infinite;}
+@keyframes sunSpin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
 
-    /* ── WORD OF THE DAY ── */
-    .wotd-card {
-      background:#fff; border-radius:24px; padding:20px 22px; margin-bottom:28px;
-      box-shadow: 0 6px 0 rgba(168,85,247,0.15), 0 2px 20px rgba(168,85,247,0.08);
-      border: 3px solid rgba(168,85,247,0.2);
-      position:relative; overflow:hidden;
-      animation: wotdEntrance 0.6s cubic-bezier(0.175,0.885,0.32,1.275) 0.3s both;
-    }
-    @keyframes wotdEntrance {
-      from { transform:translateY(20px); opacity:0; }
-      to   { transform:translateY(0);    opacity:1; }
-    }
-    .wotd-card::before {
-      content:''; position:absolute; top:0; left:0; right:0; height:5px;
-      background:linear-gradient(90deg, var(--purple), var(--pink), var(--blue));
-      border-radius:24px 24px 0 0;
-    }
-    .wotd-header {
-      display:flex; align-items:center; gap:8px; margin-bottom:12px;
-    }
-    .wotd-badge {
-      font-size:10px; font-weight:800; letter-spacing:2px; text-transform:uppercase;
-      background:linear-gradient(135deg,var(--purple),var(--pink));
-      color:#fff; padding:4px 10px; border-radius:20px;
-    }
-    .wotd-date { font-size:12px; font-weight:700; color:#bbb; margin-left:auto; }
+/* Stations row — sits ON the grass line */
+.pg-stations{
+  display:flex;
+  justify-content:space-around;
+  align-items:flex-end;   /* anchor all to bottom */
+  padding-bottom:0;
+  gap:8px;
+  /* height of sky portion above grass */
+  height:200px;
+}
 
-    .wotd-body { display:flex; align-items:flex-start; gap:14px; }
-    .wotd-icon { font-size:40px; flex-shrink:0; animation:wotdIconPop 0.5s cubic-bezier(0.175,0.885,0.32,1.275) 0.6s both; }
-    @keyframes wotdIconPop { from{transform:scale(0) rotate(-20deg);}to{transform:scale(1) rotate(0deg);} }
+.station{
+  display:flex;flex-direction:column;align-items:center;
+  cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;
+  flex:1;
+  transition:transform 0.15s;
+  /* Align bottom of each station to the grass */
+  align-self:flex-end;
+}
+.station:active{transform:scale(0.96);}
 
-    .wotd-content { flex:1; }
-    .wotd-word {
-      font-family:'Fredoka One', cursive; font-size:28px; color:var(--purple);
-      line-height:1.1; margin-bottom:2px;
-    }
-    .wotd-bm { font-size:13px; font-weight:800; color:var(--pink); margin-bottom:6px; }
-    .wotd-def { font-size:13px; font-weight:600; color:#666; line-height:1.6; margin-bottom:6px; }
-    .wotd-example {
-      font-size:12px; font-weight:700; color:#aaa;
-      background:#f9f5ff; border-left:3px solid var(--purple);
-      padding:6px 10px; border-radius:0 8px 8px 0;
-      font-style:italic;
-    }
+/* Ground shadow */
+.station-shadow{width:70px;height:8px;background:rgba(0,0,0,0.12);border-radius:50%;margin-top:3px;}
 
-    /* ── SUBTITLE ── */
-    .subtitle { text-align:center; font-size:17px; font-weight:700; color:#555; margin-bottom:32px; }
+/* ── GRASS STRIP ── */
+.pg-ground-strip{
+  width:100%;height:24px;
+  background:linear-gradient(180deg,#8BC34A,#6A9B2F);
+  border-radius:0 0 24px 24px;
+  display:flex;align-items:center;justify-content:space-around;
+  padding:0 20px;
+  margin-top:0;
+}
+.grass-tuft{font-size:14px;}
 
-    /* ── GAME CARDS ── */
-    .cards { display:flex; flex-direction:column; gap:20px; }
-    .card {
-      display:flex; align-items:center; gap:20px; background:#fff; border-radius:24px;
-      padding:22px 24px; text-decoration:none; color:inherit; border:3px solid transparent;
-      box-shadow:0 6px 0 rgba(0,0,0,0.08), 0 2px 20px rgba(0,0,0,0.06);
-      transition:transform 0.15s, box-shadow 0.15s; position:relative; overflow:hidden;
-      animation: cardEntrance 0.5s cubic-bezier(0.175,0.885,0.32,1.275) both;
-    }
-    .card:nth-child(1){ animation-delay:0.5s; }
-    .card:nth-child(2){ animation-delay:0.65s; }
-    .card:nth-child(3){ animation-delay:0.8s; }
-    @keyframes cardEntrance {
-      from { transform:translateX(-30px); opacity:0; }
-      to   { transform:translateX(0);     opacity:1; }
-    }
-    .card::before { content:''; position:absolute; top:0; left:0; right:0; height:5px; border-radius:24px 24px 0 0; }
-    .card:hover { transform:translateY(-4px); box-shadow:0 10px 0 rgba(0,0,0,0.1), 0 4px 30px rgba(0,0,0,0.1); }
-    .card:active { transform:translateY(0); }
+/* ══════════════════════════════
+   SWING  (Flip or Flop — Green)
+══════════════════════════════ */
+.swing-wrap{
+  position:relative;
+  width:120px;
+  height:155px;
+  flex-shrink:0;
+}
+/* A-frame poles */
+.sw-pole{position:absolute;bottom:8px;width:8px;border-radius:4px;background:var(--wood);box-shadow:2px 0 0 var(--wood-dark);}
+.sw-pole-l{height:75%;left:10px;transform-origin:bottom center;transform:rotate(-9deg);}
+.sw-pole-r{height:75%;right:10px;transform-origin:bottom center;transform:rotate(9deg);}
+/* Cross bar */
+.sw-bar{position:absolute;top:0;left:2px;right:2px;height:10px;background:var(--wood);border-radius:5px;box-shadow:0 3px 0 var(--wood-dark);z-index:3;}
+/* Pendulum */
+.sw-pend-wrap{position:absolute;top:8px;left:0;right:0;display:flex;justify-content:center;z-index:4;}
+.sw-pend{transform-origin:top center;animation:swingAnim 2.2s ease-in-out infinite;display:flex;flex-direction:column;align-items:center;}
+.station:hover .sw-pend,.station:active .sw-pend{animation:swingFast 0.7s ease-in-out infinite;}
+.sw-chains{display:flex;width:58px;justify-content:space-between;}
+.sw-chain{width:3px;height:46px;background:repeating-linear-gradient(180deg,#aaa 0,#aaa 5px,#888 5px,#888 9px);border-radius:2px;}
+.sw-seat{background:var(--green);border-radius:12px;padding:8px 10px;text-align:center;width:80px;box-shadow:0 5px 0 #4a9a55,0 2px 8px rgba(0,0,0,0.15);}
+.sw-seat-emoji{font-size:20px;line-height:1;}
+.sw-seat-name{font-family:'Fredoka One',cursive;font-size:11px;color:#fff;line-height:1.2;margin-top:2px;}
+.sw-seat-diff{font-size:9px;font-weight:800;letter-spacing:1px;background:rgba(255,255,255,0.3);color:#fff;border-radius:20px;padding:2px 6px;margin-top:3px;display:inline-block;}
+@keyframes swingAnim{0%,100%{transform:rotate(-15deg);}50%{transform:rotate(15deg);}}
+@keyframes swingFast{0%,100%{transform:rotate(-26deg);}50%{transform:rotate(26deg);}}
 
-    .card.easy   { border-color:#6BCB7740; } .card.easy::before   { background:var(--green); }
-    .card.medium { border-color:#4ECDC440; } .card.medium::before { background:var(--blue); }
-    .card.hard   { border-color:#FF6B9D40; } .card.hard::before   { background:var(--pink); }
+/* ══════════════════════════════
+   SEESAW  (Synonym Match — Blue)
+══════════════════════════════ */
+.seesaw-wrap{
+  display:flex;flex-direction:column;align-items:center;
+  width:148px;
+  flex-shrink:0;
+}
+.ss-plank{
+  display:flex;align-items:center;justify-content:space-between;gap:4px;
+  width:140px;height:34px;
+  background:var(--blue);border-radius:10px;padding:4px 8px;
+  box-shadow:0 5px 0 #2AADA4,0 2px 8px rgba(0,0,0,0.15);
+  transform-origin:center center;
+  animation:seesawAnim 2s ease-in-out infinite;
+}
+.station:hover .ss-plank,.station:active .ss-plank{animation:seesawFast 0.7s ease-in-out infinite;}
+.ss-figure{font-size:20px;line-height:1;flex-shrink:0;}
+.ss-inner{text-align:center;flex:1;}
+.ss-label{font-family:'Fredoka One',cursive;font-size:10px;color:#fff;line-height:1.2;}
+.ss-diff{font-size:8px;font-weight:800;background:rgba(255,255,255,0.3);color:#fff;border-radius:20px;padding:1px 5px;}
+.ss-pivot{display:flex;flex-direction:column;align-items:center;margin-top:-1px;}
+.ss-triangle{width:0;height:0;border-left:18px solid transparent;border-right:18px solid transparent;border-bottom:26px solid var(--wood);}
+.ss-base{width:62px;height:10px;background:var(--wood);border-radius:3px;box-shadow:0 3px 0 var(--wood-dark);}
+@keyframes seesawAnim{0%,100%{transform:rotate(-10deg);}50%{transform:rotate(10deg);}}
+@keyframes seesawFast{0%,100%{transform:rotate(-20deg);}50%{transform:rotate(20deg);}}
 
-    .card-icon { width:72px; height:72px; border-radius:18px; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:36px; }
-    .card.easy   .card-icon { background:#6BCB7720; }
-    .card.medium .card-icon { background:#4ECDC420; }
-    .card.hard   .card-icon { background:#FF6B9D20; }
+/* ══════════════════════════════
+   ROUNDABOUT  (Plural Rush — Pink/Orange)
+══════════════════════════════ */
+.roundabout-wrap{
+  display:flex;flex-direction:column;align-items:center;
+  width:110px;
+  flex-shrink:0;
+}
+/* Central pole */
+.rb-pole{width:10px;height:44px;background:var(--wood);border-radius:5px;box-shadow:2px 0 0 var(--wood-dark);margin-bottom:0;}
+/* Spinning disc */
+.rb-disc-wrap{position:relative;width:96px;height:96px;margin-bottom:0;}
+.rb-disc{
+  width:96px;height:96px;border-radius:50%;
+  background:conic-gradient(var(--pink) 0deg 120deg,#fff 120deg 121deg,var(--orange) 121deg 241deg,#fff 241deg 242deg,var(--purple) 242deg 360deg);
+  box-shadow:0 6px 0 rgba(0,0,0,0.2),inset 0 2px 4px rgba(255,255,255,0.3);
+  position:relative;
+  animation:rbSpin 4s linear infinite;
+  display:flex;align-items:center;justify-content:center;
+}
+.station:hover .rb-disc,.station:active .rb-disc{animation:rbSpinFast 0.8s linear infinite;}
+/* Handles radiating out */
+.rb-handle{position:absolute;width:38px;height:7px;background:var(--wood);border-radius:4px;box-shadow:0 3px 0 var(--wood-dark);top:50%;transform-origin:left center;}
+.rb-h1{left:50%;top:calc(50% - 3.5px);transform:rotate(0deg);}
+.rb-h2{left:50%;top:calc(50% - 3.5px);transform:rotate(120deg);}
+.rb-h3{left:50%;top:calc(50% - 3.5px);transform:rotate(240deg);}
+/* Center hub */
+.rb-hub{position:absolute;width:24px;height:24px;border-radius:50%;background:#fff;border:3px solid var(--wood);box-shadow:0 2px 4px rgba(0,0,0,0.2);z-index:2;display:flex;align-items:center;justify-content:center;font-size:14px;}
+/* Label card below disc */
+.rb-label{background:var(--pink);border-radius:10px;padding:6px 10px;text-align:center;box-shadow:0 4px 0 #CC4477;margin-top:-4px;width:96px;}
+.rb-label-name{font-family:'Fredoka One',cursive;font-size:11px;color:#fff;line-height:1.2;}
+.rb-label-diff{font-size:9px;font-weight:800;background:rgba(255,255,255,0.3);color:#fff;border-radius:20px;padding:1px 6px;margin-top:2px;display:inline-block;}
+/* Base plate */
+.rb-base{width:70px;height:10px;background:var(--wood);border-radius:5px;box-shadow:0 3px 0 var(--wood-dark);margin-top:0;}
+@keyframes rbSpin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+@keyframes rbSpinFast{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
 
-    .card-body { flex:1; }
-    .card-title { font-family:'Fredoka One',cursive; font-size:22px; line-height:1.2; margin-bottom:4px; }
-    .card.easy   .card-title { color:var(--green); }
-    .card.medium .card-title { color:var(--blue); }
-    .card.hard   .card-title { color:var(--pink); }
-    .card-desc { font-size:13px; color:#888; font-weight:600; line-height:1.5; }
+/* ══════════════════════════════
+   POPUP
+══════════════════════════════ */
+.popup-overlay{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,0.55);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity 0.25s;}
+.popup-overlay.show{opacity:1;pointer-events:all;}
+.popup-card{background:#fff;border-radius:28px;padding:28px 24px;width:100%;max-width:400px;box-shadow:0 20px 60px rgba(0,0,0,0.3);position:relative;overflow:hidden;transform:translateY(40px) scale(0.95);transition:transform 0.3s cubic-bezier(0.175,0.885,0.32,1.275);}
+.popup-overlay.show .popup-card{transform:translateY(0) scale(1);}
+.popup-top-bar{position:absolute;top:0;left:0;right:0;height:6px;border-radius:28px 28px 0 0;}
+.popup-close{position:absolute;top:14px;right:14px;background:#f5f5f5;border:none;border-radius:50%;width:34px;height:34px;font-size:16px;cursor:pointer;font-weight:800;color:#aaa;display:flex;align-items:center;justify-content:center;transition:background 0.15s,transform 0.1s;}
+.popup-close:hover{background:#eee;transform:scale(1.1);}
+.popup-icon{font-size:56px;text-align:center;margin-bottom:8px;animation:popIn 0.4s cubic-bezier(0.175,0.885,0.32,1.275);}
+@keyframes popIn{from{transform:scale(0.5);opacity:0;}to{transform:scale(1);opacity:1;}}
+.popup-title{font-family:'Fredoka One',cursive;font-size:clamp(24px,6vw,34px);text-align:center;margin-bottom:4px;}
+.popup-subtitle{font-size:13px;font-weight:800;color:#bbb;text-align:center;letter-spacing:2px;text-transform:uppercase;margin-bottom:20px;}
+.popup-steps{display:flex;flex-direction:column;gap:10px;margin-bottom:22px;}
+.popup-step{display:flex;align-items:center;gap:12px;background:#f9f9f9;border-radius:14px;padding:10px 14px;}
+.step-icon{font-size:22px;flex-shrink:0;width:32px;text-align:center;}
+.step-text{font-size:14px;font-weight:700;color:#555;line-height:1.4;}
+.popup-play-btn{width:100%;padding:17px;border:none;border-radius:20px;cursor:pointer;font-family:'Fredoka One',cursive;font-size:22px;color:#fff;transition:transform 0.1s,box-shadow 0.1s;}
+.popup-play-btn:hover{transform:translateY(-3px);}
+.popup-play-btn:active{transform:translateY(2px);}
 
-    .card-badge { font-size:10px; font-weight:800; letter-spacing:2px; text-transform:uppercase; padding:4px 10px; border-radius:20px; flex-shrink:0; }
-    .card.easy   .card-badge { background:#6BCB7720; color:var(--green); }
-    .card.medium .card-badge { background:#4ECDC420; color:var(--blue); }
-    .card.hard   .card-badge { background:#FF6B9D20; color:var(--pink); }
-
-    .footer { text-align:center; margin-top:48px; font-size:13px; color:#bbb; font-weight:600; }
-  </style>
+.footer{text-align:center;margin-top:40px;font-size:13px;color:#bbb;font-weight:600;}
+</style>
 </head>
 <body>
 
-  <!-- LOADING SPLASH -->
-  <div id="splash">
-    <div class="splash-mascot">🦉</div>
-    <div class="splash-logo">Word<br>Playground</div>
-    <div class="splash-sub">English Learning Games</div>
-    <div class="splash-dots">
-      <div class="splash-dot"></div>
-      <div class="splash-dot"></div>
-      <div class="splash-dot"></div>
-    </div>
+<div id="splash">
+  <div class="splash-mascot">🦉</div>
+  <div class="splash-logo">Word<br>Playground</div>
+  <div class="splash-sub">English Learning Games</div>
+  <div class="splash-dots"><div class="splash-dot"></div><div class="splash-dot"></div><div class="splash-dot"></div></div>
+</div>
+
+<div class="bg-shapes">
+  <div class="shape"></div><div class="shape"></div><div class="shape"></div>
+  <div class="shape"></div><div class="shape"></div>
+</div>
+
+<div class="wrapper">
+  <div class="header">
+    <div class="logo">Word Playground</div>
+    <div class="logo-sub">English Learning Games</div>
+    <div class="stars">⭐ 🎮 ⭐</div>
   </div>
 
-  <div class="bg-shapes">
-    <div class="shape"></div><div class="shape"></div><div class="shape"></div>
-    <div class="shape"></div><div class="shape"></div>
-  </div>
-
-  <div class="wrapper">
-    <div class="header">
-      <div class="logo">Word Playground</div>
-      <div class="logo-sub">English Learning Games</div>
-      <div class="stars">⭐ 🎮 ⭐</div>
+  <!-- WORD OF THE DAY -->
+  <div class="wotd-card">
+    <div class="wotd-header">
+      <div class="wotd-badge">✨ Word of the Day</div>
+      <div class="wotd-date" id="wotd-date"></div>
     </div>
-
-    <!-- WORD OF THE DAY -->
-    <div class="wotd-card">
-      <div class="wotd-header">
-        <div class="wotd-badge">✨ Word of the Day</div>
-        <div class="wotd-date" id="wotd-date"></div>
-      </div>
-      <div class="wotd-body">
-        <div class="wotd-icon" id="wotd-icon">📖</div>
-        <div class="wotd-content">
-          <div class="wotd-word" id="wotd-word">Loading...</div>
-          <div class="wotd-bm"  id="wotd-bm"></div>
-          <div class="wotd-def" id="wotd-def"></div>
-          <div class="wotd-example" id="wotd-example"></div>
-        </div>
+    <div class="wotd-body">
+      <div class="wotd-icon" id="wotd-icon">📖</div>
+      <div>
+        <div class="wotd-word"     id="wotd-word">Loading...</div>
+        <div class="wotd-bm"      id="wotd-bm"></div>
+        <div class="wotd-def"     id="wotd-def"></div>
+        <div class="wotd-example" id="wotd-example"></div>
       </div>
     </div>
+  </div>
 
-    <div class="subtitle">Pick a game and start learning! 🚀</div>
+  <div class="pg-title">🎪 Pick a game to play!</div>
 
-    <div class="cards">
-      <a class="card easy" href="antonym.html">
-        <div class="card-icon">✅</div>
-        <div class="card-body">
-          <div class="card-title">Flip or Flop!</div>
-          <div class="card-desc">Are these words opposites? Answer TRUE or FALSE as fast as you can!</div>
+  <!-- PLAYGROUND SCENE -->
+  <div class="playground">
+    <div class="cloud cloud-1"></div>
+    <div class="cloud cloud-2"></div>
+    <div class="sun">☀️</div>
+
+    <div class="pg-stations">
+
+      <!-- SWING — Flip or Flop -->
+      <div class="station" onclick="showPopup('flipflop')" title="Flip or Flop!">
+        <div class="swing-wrap">
+          <div class="sw-bar"></div>
+          <div class="sw-pole sw-pole-l"></div>
+          <div class="sw-pole sw-pole-r"></div>
+          <div class="sw-pend-wrap">
+            <div class="sw-pend">
+              <div class="sw-chains">
+                <div class="sw-chain"></div>
+                <div class="sw-chain"></div>
+              </div>
+              <div class="sw-seat">
+                <div class="sw-seat-emoji">✅</div>
+                <div class="sw-seat-name">Flip or Flop!</div>
+                <div class="sw-seat-diff">EASY</div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="card-badge">Easy</div>
-      </a>
-      <a class="card medium" href="wordmatch.html">
-        <div class="card-icon">🔗</div>
-        <div class="card-body">
-          <div class="card-title">Synonym Match</div>
-          <div class="card-desc">Tap to connect words with the same meaning. Match them all!</div>
+        <div class="station-shadow"></div>
+      </div>
+
+      <!-- SEESAW — Synonym Match -->
+      <div class="station" onclick="showPopup('wordmatch')" title="Synonym Match">
+        <div class="seesaw-wrap">
+          <div class="ss-plank">
+            <div class="ss-figure">🔵</div>
+            <div class="ss-inner">
+              <div class="ss-label">Synonym Match</div>
+              <div class="ss-diff">MEDIUM</div>
+            </div>
+            <div class="ss-figure">🔵</div>
+          </div>
+          <div class="ss-pivot">
+            <div class="ss-triangle"></div>
+            <div class="ss-base"></div>
+          </div>
         </div>
-        <div class="card-badge">Medium</div>
-      </a>
-      <a class="card hard" href="typing.html">
-        <div class="card-icon">⌨️</div>
-        <div class="card-body">
-          <div class="card-title">Plural Rush!</div>
-          <div class="card-desc">Type the correct plural form before the timer runs out!</div>
+        <div class="station-shadow"></div>
+      </div>
+
+      <!-- ROUNDABOUT — Plural Rush -->
+      <div class="station" onclick="showPopup('typing')" title="Plural Rush!">
+        <div class="roundabout-wrap">
+          <div class="rb-disc-wrap">
+            <div class="rb-disc">
+              <div class="rb-handle rb-h1"></div>
+              <div class="rb-handle rb-h2"></div>
+              <div class="rb-handle rb-h3"></div>
+              <div class="rb-hub">⌨️</div>
+            </div>
+          </div>
+          <div class="rb-label">
+            <div class="rb-label-name">Plural Rush!</div>
+            <div class="rb-label-diff">HARD</div>
+          </div>
+          <div class="rb-base"></div>
         </div>
-        <div class="card-badge">Hard</div>
-      </a>
+        <div class="station-shadow"></div>
+      </div>
+
     </div>
 
-    <div class="footer">Made with ❤️ by Afreena & Akmal</div>
+    <div class="pg-ground-strip">
+      <span class="grass-tuft">🌿</span>
+      <span class="grass-tuft">🌸</span>
+      <span class="grass-tuft">🍀</span>
+      <span class="grass-tuft">🌻</span>
+      <span class="grass-tuft">🌿</span>
+    </div>
   </div>
+
+  <div class="footer">Made with ❤️ for English Communication Students</div>
+</div>
+
+<!-- POPUP -->
+<div class="popup-overlay" id="popup-overlay" onclick="overlayClick(event)">
+  <div class="popup-card" id="popup-card">
+    <div class="popup-top-bar" id="popup-top-bar"></div>
+    <button class="popup-close" onclick="closePopup()">✕</button>
+    <div class="popup-icon"     id="popup-icon"></div>
+    <div class="popup-title"    id="popup-title"></div>
+    <div class="popup-subtitle" id="popup-subtitle"></div>
+    <div class="popup-steps"    id="popup-steps"></div>
+    <button class="popup-play-btn" id="popup-play-btn" onclick="goToGame()">🎮 Let's Play!</button>
+  </div>
+</div>
 
 <script>
-  // ── WORD OF THE DAY DATA ──
-  const WOTD_LIST = [
-    { word:"analyze",    bm:"menganalisis",  icon:"🔍", def:"To examine something carefully and in detail.", example:"\"We need to analyze the data before making a decision.\"" },
-    { word:"collaborate",bm:"bekerjasama",   icon:"🤝", def:"To work together with others toward a shared goal.", example:"\"The students collaborate on the group project.\"" },
-    { word:"evaluate",   bm:"menilai",       icon:"⚖️", def:"To judge or assess the quality or value of something.", example:"\"The teacher will evaluate your essay next week.\"" },
-    { word:"persuade",   bm:"memujuk",       icon:"💬", def:"To convince someone to do or believe something.", example:"\"She tried to persuade her friend to join the club.\"" },
-    { word:"significant",bm:"signifikan",    icon:"⭐", def:"Important or meaningful; having a notable effect.", example:"\"The discovery was significant for science.\"" },
-    { word:"hypothesis", bm:"hipotesis",     icon:"🧪", def:"An idea or explanation that is tested through research.", example:"\"The scientist formed a hypothesis about climate change.\"" },
-    { word:"articulate", bm:"petah",         icon:"🗣️", def:"Able to express thoughts and ideas clearly and fluently.", example:"\"She gave an articulate speech to the whole school.\"" },
-    { word:"credibility",bm:"kredibiliti",   icon:"🏆", def:"The quality of being trusted and believed.", example:"\"His experience gives him credibility as a speaker.\"" },
-    { word:"nuance",     bm:"nuansa",        icon:"🎨", def:"A subtle difference in meaning, tone, or feeling.", example:"\"Good writing requires attention to nuance.\"" },
-    { word:"conclude",   bm:"menyimpulkan",  icon:"✅", def:"To bring something to an end; to reach a decision.", example:"\"We can conclude that exercise improves health.\"" },
-    { word:"evidence",   bm:"bukti",         icon:"📋", def:"Facts or information that help prove something is true.", example:"\"The evidence clearly supports his argument.\"" },
-    { word:"interpret",  bm:"mentafsir",     icon:"🔎", def:"To explain or understand the meaning of something.", example:"\"How do you interpret this poem?\"" },
-    { word:"communicate",bm:"berkomunikasi", icon:"📡", def:"To share information or express ideas to others.", example:"\"It is important to communicate clearly in class.\"" },
-    { word:"rhetoric",   bm:"retorik",       icon:"📢", def:"The art of using language effectively and persuasively.", example:"\"Politicians use rhetoric to win votes.\"" },
-    { word:"validate",   bm:"mengesahkan",   icon:"✔️", def:"To confirm that something is accurate or acceptable.", example:"\"The experiment helps validate the theory.\"" },
-    { word:"synthesize", bm:"mensintesis",   icon:"⚗️", def:"To combine different ideas or information into one whole.", example:"\"Good essays synthesize ideas from multiple sources.\"" },
-    { word:"coherent",   bm:"koheren",       icon:"🧩", def:"Logical and consistent; easy to understand.", example:"\"Please write a coherent paragraph with a clear topic sentence.\"" },
-    { word:"feedback",   bm:"maklum balas",  icon:"💡", def:"Information given to help improve performance.", example:"\"Her teacher gave useful feedback on the essay.\"" },
-    { word:"argue",      bm:"berhujah",      icon:"⚡", def:"To give reasons or evidence to support a point of view.", example:"\"Students argue their opinions in a debate.\"" },
-    { word:"proposal",   bm:"cadangan",      icon:"📝", def:"A formal suggestion or plan presented for consideration.", example:"\"He submitted a proposal for the new project.\"" },
-    { word:"elaborate",  bm:"menghuraikan",  icon:"🌿", def:"To explain something in more detail.", example:"\"Can you elaborate on your answer?\"" },
-  ];
+const WOTD_LIST=[
+  {word:"analyze",bm:"menganalisis",icon:"🔍",def:"To examine something carefully and in detail.",example:"\"We need to analyze the data before making a decision.\""},
+  {word:"collaborate",bm:"bekerjasama",icon:"🤝",def:"To work together with others toward a shared goal.",example:"\"The students collaborate on the group project.\""},
+  {word:"evaluate",bm:"menilai",icon:"⚖️",def:"To judge or assess the quality or value of something.",example:"\"The teacher will evaluate your essay next week.\""},
+  {word:"persuade",bm:"memujuk",icon:"💬",def:"To convince someone to do or believe something.",example:"\"She tried to persuade her friend to join the club.\""},
+  {word:"significant",bm:"signifikan",icon:"⭐",def:"Important or meaningful; having a notable effect.",example:"\"The discovery was significant for science.\""},
+  {word:"hypothesis",bm:"hipotesis",icon:"🧪",def:"An idea tested through research and experiments.",example:"\"The scientist formed a hypothesis about climate.\""},
+  {word:"articulate",bm:"petah",icon:"🗣️",def:"Able to express thoughts and ideas clearly.",example:"\"She gave an articulate speech to the school.\""},
+  {word:"credibility",bm:"kredibiliti",icon:"🏆",def:"The quality of being trusted and believed.",example:"\"His experience gives him credibility as a speaker.\""},
+  {word:"nuance",bm:"nuansa",icon:"🎨",def:"A subtle difference in meaning, tone, or feeling.",example:"\"Good writing requires attention to nuance.\""},
+  {word:"conclude",bm:"menyimpulkan",icon:"✅",def:"To bring something to an end or reach a decision.",example:"\"We can conclude that exercise improves health.\""},
+  {word:"evidence",bm:"bukti",icon:"📋",def:"Facts that help prove something is true.",example:"\"The evidence clearly supports his argument.\""},
+  {word:"interpret",bm:"mentafsir",icon:"🔎",def:"To explain or understand the meaning of something.",example:"\"How do you interpret this poem?\""},
+  {word:"communicate",bm:"berkomunikasi",icon:"📡",def:"To share information or express ideas to others.",example:"\"It is important to communicate clearly in class.\""},
+  {word:"rhetoric",bm:"retorik",icon:"📢",def:"The art of using language effectively and persuasively.",example:"\"Politicians use rhetoric to win votes.\""},
+  {word:"validate",bm:"mengesahkan",icon:"✔️",def:"To confirm that something is accurate or acceptable.",example:"\"The experiment helps validate the theory.\""},
+  {word:"synthesize",bm:"mensintesis",icon:"⚗️",def:"To combine different ideas into one whole.",example:"\"Good essays synthesize ideas from multiple sources.\""},
+  {word:"coherent",bm:"koheren",icon:"🧩",def:"Logical and consistent; easy to understand.",example:"\"Please write a coherent paragraph with a clear topic sentence.\""},
+  {word:"feedback",bm:"maklum balas",icon:"💡",def:"Information given to help improve performance.",example:"\"Her teacher gave useful feedback on the essay.\""},
+  {word:"argue",bm:"berhujah",icon:"⚡",def:"To give reasons or evidence to support a point of view.",example:"\"Students argue their opinions in a debate.\""},
+  {word:"proposal",bm:"cadangan",icon:"📝",def:"A formal suggestion or plan for consideration.",example:"\"He submitted a proposal for the new project.\""},
+  {word:"elaborate",bm:"menghuraikan",icon:"🌿",def:"To explain something in greater detail.",example:"\"Can you elaborate on your answer?\""},
+];
+const now=new Date();
+const dayOfYear=Math.floor((now-new Date(now.getFullYear(),0,0))/86400000);
+const wotd=WOTD_LIST[dayOfYear%WOTD_LIST.length];
+document.getElementById('wotd-word').textContent=wotd.word;
+document.getElementById('wotd-bm').textContent='🇲🇾 BM: '+wotd.bm;
+document.getElementById('wotd-def').textContent=wotd.def;
+document.getElementById('wotd-example').textContent=wotd.example;
+document.getElementById('wotd-icon').textContent=wotd.icon;
+document.getElementById('wotd-date').textContent=now.toLocaleDateString('en-MY',{weekday:'short',day:'numeric',month:'short'});
 
-  // Pick word based on day of year
-  const now  = new Date();
-  const start = new Date(now.getFullYear(), 0, 0);
-  const dayOfYear = Math.floor((now - start) / 86400000);
-  const wotd = WOTD_LIST[dayOfYear % WOTD_LIST.length];
+const POPUP_DATA={
+  flipflop:{icon:'🔄',title:'Flip or Flop!',subtitle:'True or False Antonym Game',color:'var(--green)',btnGradient:'linear-gradient(135deg,#6BCB77,#3DAA49)',btnShadow:'0 6px 0 rgba(61,170,73,0.4)',href:'antonym.html',steps:[{icon:'👀',text:'Two words will appear on screen'},{icon:'🤔',text:'Decide — are they OPPOSITES of each other?'},{icon:'✅',text:'Tap TRUE if they ARE opposites'},{icon:'❌',text:'Tap FALSE if they are NOT opposites'},{icon:'⏱️',text:'You have 10 seconds per question — be quick!'}]},
+  wordmatch:{icon:'🔗',title:'Synonym Match',subtitle:'Word Connection Game',color:'var(--blue)',btnGradient:'linear-gradient(135deg,#4ECDC4,#2AADA4)',btnShadow:'0 6px 0 rgba(42,173,164,0.4)',href:'wordmatch.html',steps:[{icon:'👀',text:'Two columns of words will appear'},{icon:'👆',text:'Tap any word on the LEFT to select it'},{icon:'🔗',text:'Then tap its SYNONYM on the RIGHT'},{icon:'✅',text:'Match all 6 pairs correctly to win!'},{icon:'💡',text:'Synonyms = words with the SAME meaning'}]},
+  typing:{icon:'⌨️',title:'Plural Rush!',subtitle:'Spelling Speed Game',color:'var(--pink)',btnGradient:'linear-gradient(135deg,#FF6B9D,#CC4477)',btnShadow:'0 6px 0 rgba(204,68,119,0.4)',href:'typing.html',steps:[{icon:'👀',text:'A word appears on screen'},{icon:'⌨️',text:'Type the correct PLURAL form of the word'},{icon:'⏎',text:'Press ENTER or tap CHECK to submit'},{icon:'⚡',text:'Answer faster to earn bonus points!'},{icon:'🔥',text:'Keep a streak going for even more score!'}]}
+};
 
-  document.getElementById('wotd-word').textContent    = wotd.word;
-  document.getElementById('wotd-bm').textContent      = '🇲🇾 BM: ' + wotd.bm;
-  document.getElementById('wotd-def').textContent     = wotd.def;
-  document.getElementById('wotd-example').textContent = wotd.example;
-  document.getElementById('wotd-icon').textContent    = wotd.icon;
+let currentHref='';
+function showPopup(gameKey){
+  const d=POPUP_DATA[gameKey];currentHref=d.href;
+  document.getElementById('popup-top-bar').style.background=d.btnGradient;
+  document.getElementById('popup-icon').textContent=d.icon;
+  document.getElementById('popup-title').textContent=d.title;
+  document.getElementById('popup-title').style.color=d.color;
+  document.getElementById('popup-subtitle').textContent=d.subtitle;
+  document.getElementById('popup-steps').innerHTML=d.steps.map(s=>`<div class="popup-step"><div class="step-icon">${s.icon}</div><div class="step-text">${s.text}</div></div>`).join('');
+  const btn=document.getElementById('popup-play-btn');
+  btn.style.background=d.btnGradient;btn.style.boxShadow=d.btnShadow;
+  document.getElementById('popup-overlay').classList.add('show');
+  document.body.style.overflow='hidden';
+}
+function closePopup(){document.getElementById('popup-overlay').classList.remove('show');document.body.style.overflow='';}
+function overlayClick(e){if(e.target===document.getElementById('popup-overlay'))closePopup();}
+function goToGame(){window.location.href=currentHref;}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closePopup();});
 
-  // Format date
-  const dateStr = now.toLocaleDateString('en-MY', { weekday:'short', day:'numeric', month:'short' });
-  document.getElementById('wotd-date').textContent = dateStr;
-
-  // ── DISMISS SPLASH ──
-  window.addEventListener('load', () => {
-    setTimeout(() => {
-      document.getElementById('splash').classList.add('hide');
-      setTimeout(() => document.getElementById('splash').remove(), 700);
-    }, 1800);
-  });
+window.addEventListener('load',()=>{
+  setTimeout(()=>{
+    document.getElementById('splash').classList.add('hide');
+    setTimeout(()=>document.getElementById('splash').remove(),700);
+  },2000);
+});
 </script>
 </body>
 </html>
