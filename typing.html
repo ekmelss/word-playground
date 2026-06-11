@@ -23,12 +23,15 @@
     .back-btn { align-self:flex-start; display:flex; align-items:center; gap:6px; background:#fff; border:3px solid #eee; border-radius:40px; padding:8px 16px; font-family:'Nunito',sans-serif; font-weight:800; font-size:14px; color:#888; cursor:pointer; text-decoration:none; box-shadow:0 3px 0 #ddd; transition:transform 0.1s; }
     .back-btn:hover { transform:translateY(-2px); }
 
-    #mute-btn { position:fixed; top:16px; right:16px; z-index:200; background:#fff; border:3px solid #eee; border-radius:50%; width:44px; height:44px; font-size:20px; cursor:pointer; box-shadow:0 3px 0 #ddd; display:flex; align-items:center; justify-content:center; transition:transform 0.1s; }
-    #mute-btn:hover { transform:scale(1.1); }
+    /* TOP BUTTONS */
+    .top-btns { position:fixed; top:16px; right:16px; z-index:200; display:flex; gap:8px; }
+    .top-btn { background:#fff; border:3px solid #eee; border-radius:50%; width:44px; height:44px; font-size:20px; cursor:pointer; box-shadow:0 3px 0 #ddd; display:flex; align-items:center; justify-content:center; transition:transform 0.1s; }
+    .top-btn:hover { transform:scale(1.1); }
 
     .header { text-align:center; }
     .game-title { font-family:'Fredoka One',cursive; font-size:clamp(30px,7vw,50px); background:linear-gradient(135deg,var(--orange) 0%,var(--pink) 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
     .game-sub { font-size:14px; font-weight:700; color:#aaa; letter-spacing:1px; margin-top:2px; }
+    .best-badge { margin-top:8px; font-size:12px; font-weight:800; color:var(--orange); background:#FFF3E0; border-radius:20px; padding:5px 14px; display:inline-flex; align-items:center; gap:5px; }
 
     .stats-row { display:flex; gap:10px; width:100%; }
     .stat-box { flex:1; background:#fff; border-radius:18px; padding:10px 14px; box-shadow:0 4px 0 rgba(0,0,0,0.07); text-align:center; border:2px solid transparent; }
@@ -57,7 +60,11 @@
     .word-card { width:100%; background:#fff; border-radius:28px; padding:32px 24px; box-shadow:0 8px 0 rgba(0,0,0,0.08), 0 2px 30px rgba(0,0,0,0.05); text-align:center; position:relative; overflow:hidden; }
     .word-card::before { content:''; position:absolute; top:0; left:0; right:0; height:6px; border-radius:28px 28px 0 0; background:linear-gradient(90deg,var(--orange),var(--pink)); }
     .word-prompt { font-size:13px; font-weight:800; color:#ccc; letter-spacing:2px; text-transform:uppercase; margin-bottom:12px; }
-    .main-word { font-family:'Fredoka One',cursive; font-size:clamp(36px,9vw,58px); color:var(--orange); text-shadow:0 4px 0 rgba(255,140,66,0.2); margin-bottom:6px; animation:wordPop 0.3s cubic-bezier(0.175,0.885,0.32,1.275); }
+    .main-word-row { display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:6px; }
+    .main-word { font-family:'Fredoka One',cursive; font-size:clamp(36px,9vw,58px); color:var(--orange); text-shadow:0 4px 0 rgba(255,140,66,0.2); animation:wordPop 0.3s cubic-bezier(0.175,0.885,0.32,1.275); }
+    .speak-btn { background:rgba(255,140,66,0.12); border:none; border-radius:50%; width:38px; height:38px; cursor:pointer; font-size:18px; transition:transform 0.1s; -webkit-tap-highlight-color:transparent; flex-shrink:0; }
+    .speak-btn:hover { transform:scale(1.12); }
+    .speak-btn:active { transform:scale(0.85); }
     @keyframes wordPop { from{transform:scale(0.7);opacity:0;}to{transform:scale(1);opacity:1;} }
     .hint-text { font-size:13px; font-weight:700; color:#ccc; margin-bottom:20px; }
     .hint-badge { display:inline-block; background:#FFF3E0; color:var(--orange); border-radius:20px; padding:4px 12px; font-size:12px; font-weight:800; }
@@ -83,6 +90,19 @@
     .key-hint { font-size:12px; color:#ccc; font-weight:700; text-align:center; }
     .key-hint kbd { background:#f0f0f0; border-radius:6px; padding:2px 6px; font-family:'Nunito',sans-serif; font-size:11px; color:#999; border:1px solid #ddd; }
 
+    /* HOW TO PLAY MODAL */
+    .modal-overlay { position:fixed; inset:0; z-index:500; background:rgba(255,140,66,0.4); display:flex; align-items:center; justify-content:center; padding:20px; opacity:0; pointer-events:none; transition:opacity 0.3s; }
+    .modal-overlay.show { opacity:1; pointer-events:all; }
+    .modal-card { background:#fff; border-radius:28px; padding:28px 24px; max-width:380px; width:100%; text-align:center; box-shadow:0 12px 0 rgba(0,0,0,0.1); transform:scale(0.85); transition:transform 0.35s cubic-bezier(0.175,0.885,0.32,1.275); }
+    .modal-overlay.show .modal-card { transform:scale(1); }
+    .modal-emoji { font-size:54px; margin-bottom:6px; }
+    .modal-title { font-family:'Fredoka One',cursive; font-size:26px; color:var(--orange); margin-bottom:16px; }
+    .modal-steps { text-align:left; display:flex; flex-direction:column; gap:12px; margin-bottom:22px; }
+    .modal-step { display:flex; align-items:center; gap:12px; font-size:14px; font-weight:700; color:#666; line-height:1.4; }
+    .modal-step .ms-num { flex-shrink:0; width:30px; height:30px; border-radius:50%; background:linear-gradient(135deg,var(--orange),var(--pink)); color:#fff; font-family:'Fredoka One',cursive; display:flex; align-items:center; justify-content:center; font-size:15px; }
+    .modal-play-btn { width:100%; padding:16px; border:none; border-radius:20px; cursor:pointer; font-family:'Fredoka One',cursive; font-size:22px; color:#fff; background:linear-gradient(135deg,var(--orange),var(--pink)); box-shadow:0 5px 0 rgba(0,0,0,0.12); transition:transform 0.1s; }
+    .modal-play-btn:active { transform:translateY(3px); }
+
     /* MASCOT */
     #mascot { position:fixed; bottom:16px; left:50%; transform:translateX(-50%); z-index:150; font-size:56px; line-height:1; animation:mascotIdle 2.5s ease-in-out infinite; cursor:default; user-select:none; filter:drop-shadow(0 4px 8px rgba(0,0,0,0.15)); }
     @keyframes mascotIdle { 0%,100%{transform:translateX(-50%) translateY(0);}50%{transform:translateX(-50%) translateY(-8px);} }
@@ -101,12 +121,13 @@
     .result-title { font-family:'Fredoka One',cursive; font-size:clamp(26px,7vw,40px); background:linear-gradient(135deg,var(--orange),var(--pink)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; margin-bottom:4px; }
     .result-score-big { font-family:'Fredoka One',cursive; font-size:clamp(44px,11vw,68px); color:var(--orange); line-height:1; margin:10px 0 4px; }
     .result-score-label { font-size:13px; font-weight:800; color:#bbb; letter-spacing:2px; text-transform:uppercase; }
+    .new-record { font-family:'Fredoka One',cursive; font-size:17px; color:var(--orange); margin-top:10px; animation:popIn 0.5s cubic-bezier(0.175,0.885,0.32,1.275); }
     .stars-row { display:flex; justify-content:center; gap:8px; margin:14px 0; font-size:34px; }
     .star { opacity:0.2; transition:opacity 0.3s, transform 0.4s cubic-bezier(0.175,0.885,0.32,1.275); }
     .star.lit { opacity:1; transform:scale(1.25); }
     .review-section { margin-top:18px; text-align:left; }
     .review-title { font-size:12px; font-weight:800; color:#bbb; letter-spacing:2px; text-transform:uppercase; margin-bottom:10px; }
-    .review-item { display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:8px; padding:10px 14px; border-radius:14px; margin-bottom:6px; font-weight:700; font-size:14px; }
+    .review-item { display:grid; grid-template-columns:1fr auto 1fr auto; align-items:center; gap:8px; padding:10px 14px; border-radius:14px; margin-bottom:6px; font-weight:700; font-size:14px; }
     .review-item.corr       { background:#F0FFF4; }
     .review-item.wrong-item { background:#FFF0F0; }
     .ri-word  { color:#555; }
@@ -115,16 +136,25 @@
     .review-item.corr .ri-answer       { color:var(--green); }
     .review-item.wrong-item .ri-answer { color:var(--red); }
     .ri-correct-lbl { font-size:11px; font-weight:800; color:var(--red); display:block; }
+    .ri-speak { background:rgba(0,0,0,0.05); border:none; border-radius:50%; width:28px; height:28px; cursor:pointer; font-size:13px; transition:transform 0.1s; -webkit-tap-highlight-color:transparent; }
+    .ri-speak:active { transform:scale(0.85); }
     .play-again-btn { width:100%; padding:16px; border:none; border-radius:20px; cursor:pointer; font-family:'Fredoka One',cursive; font-size:22px; color:#fff; background:linear-gradient(135deg,var(--orange),var(--pink)); box-shadow:0 6px 0 rgba(255,71,87,0.3); transition:transform 0.1s; margin-top:14px; }
     .play-again-btn:hover { transform:translateY(-3px); }
 
     @keyframes popIn { from{transform:scale(0.5);opacity:0;}to{transform:scale(1);opacity:1;} }
     .confetti-piece { position:fixed; width:10px; height:10px; border-radius:2px; pointer-events:none; z-index:999; animation:confettiFall linear forwards; }
     @keyframes confettiFall { 0%{transform:translateY(-20px) rotate(0deg);opacity:1;}100%{transform:translateY(100vh) rotate(720deg);opacity:0;} }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important; }
+    }
   </style>
 </head>
 <body>
-  <button id="mute-btn" onclick="toggleMute()" title="Toggle sound">🔊</button>
+  <div class="top-btns">
+    <button id="mute-btn" class="top-btn" onclick="toggleMute()" title="Toggle sound">🔊</button>
+    <button class="top-btn" onclick="showHowTo()" title="How to play">❓</button>
+  </div>
 
   <div class="bg-shapes">
     <div class="shape"></div><div class="shape"></div><div class="shape"></div><div class="shape"></div>
@@ -141,6 +171,7 @@
       <div class="header">
         <div class="game-title">Plural Rush! ⌨️</div>
         <div class="game-sub">Type the correct plural form!</div>
+        <div class="best-badge" id="best-badge" style="display:none;">🏅 Best Score: <span id="best-val">0</span></div>
       </div>
 
       <div class="stats-row">
@@ -173,7 +204,10 @@
 
       <div class="word-card">
         <div class="word-prompt">Type the plural of</div>
-        <div class="main-word" id="main-word">baby</div>
+        <div class="main-word-row">
+          <div class="main-word" id="main-word">baby</div>
+          <button class="speak-btn" onclick="speak(document.getElementById('main-word').textContent)" title="Hear word">🔊</button>
+        </div>
         <div class="hint-text">
           <span class="hint-badge" id="rule-badge">-y → -ies</span>
         </div>
@@ -196,6 +230,7 @@
         <div class="result-title" id="result-title">Word Master!</div>
         <div class="result-score-big" id="result-score">0</div>
         <div class="result-score-label">Points Earned</div>
+        <div class="new-record" id="new-record" style="display:none;">🏅 New Best Score!</div>
         <div class="stars-row">
           <span class="star" id="star1">⭐</span>
           <span class="star" id="star2">⭐</span>
@@ -211,12 +246,41 @@
     </div>
   </div>
 
+  <!-- HOW TO PLAY MODAL -->
+  <div class="modal-overlay" id="howto-modal">
+    <div class="modal-card">
+      <div class="modal-emoji">⌨️</div>
+      <div class="modal-title">Plural Rush!</div>
+      <div class="modal-steps">
+        <div class="modal-step"><span class="ms-num">1</span><span>See a singular word (like <b>baby</b>). Type its <b>plural</b> (babies).</span></div>
+        <div class="modal-step"><span class="ms-num">2</span><span>The badge shows the <b>rule</b>. Stuck? Tap <b>💡 Show Hint</b>.</span></div>
+        <div class="modal-step"><span class="ms-num">3</span><span>Be quick — <b>15 seconds</b> each! Faster answers earn bonus points.</span></div>
+        <div class="modal-step"><span class="ms-num">4</span><span>Build a <b>streak</b> 🔥 for more points. Tap 🔊 to hear the word.</span></div>
+      </div>
+      <button class="modal-play-btn" onclick="startGame()">Let's Play! 🚀</button>
+    </div>
+  </div>
+
 <script>
   // ── SOUND ENGINE ──
   let muted = false;
   let audioCtx;
   function getAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); return audioCtx; }
-  function toggleMute() { muted = !muted; document.getElementById('mute-btn').textContent = muted ? '🔇' : '🔊'; }
+  function toggleMute() {
+    muted = !muted;
+    document.getElementById('mute-btn').textContent = muted ? '🔇' : '🔊';
+    if (muted && window.speechSynthesis) speechSynthesis.cancel();
+  }
+
+  function speak(text) {
+    if (muted || !window.speechSynthesis) return;
+    try {
+      speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = 'en-US'; u.rate = 0.85;
+      speechSynthesis.speak(u);
+    } catch (e) {}
+  }
 
   function playCorrect() {
     if (muted) return;
@@ -300,20 +364,58 @@
     setTimeout(() => { m.textContent = '🦉'; m.className = ''; }, 800);
   }
 
-  // ── GAME DATA ──
-  const WORDS = [
-    { singular:"baby",   plural:"babies",   hint:"Drop -y, add -ies",     rule:"-y → -ies"  },
-    { singular:"city",   plural:"cities",   hint:"Drop -y, add -ies",     rule:"-y → -ies"  },
-    { singular:"mouse",  plural:"mice",     hint:"Irregular plural!",     rule:"Irregular"   },
-    { singular:"party",  plural:"parties",  hint:"Drop -y, add -ies",     rule:"-y → -ies"  },
-    { singular:"tomato", plural:"tomatoes", hint:"Add -es at the end",    rule:"+ -es"       },
-    { singular:"child",  plural:"children", hint:"Irregular plural!",     rule:"Irregular"   },
-    { singular:"man",    plural:"men",      hint:"Vowel change: a → e",   rule:"Irregular"   },
-    { singular:"goose",  plural:"geese",    hint:"Vowel change: oo → ee", rule:"Irregular"   },
+  // ── BEST SCORE (localStorage) ──
+  const BEST_KEY = 'wp_plural_best';
+  function getBest() { try { return parseInt(localStorage.getItem(BEST_KEY) || '0', 10); } catch (e) { return 0; } }
+  function setBest(v) { try { localStorage.setItem(BEST_KEY, v); } catch (e) {} }
+
+  // ── GAME DATA (large pool — 8 random words picked each play) ──
+  const POOL = [
+    { singular:"baby",   plural:"babies",   hint:"Drop -y, add -ies",      rule:"-y → -ies"   },
+    { singular:"city",   plural:"cities",   hint:"Drop -y, add -ies",      rule:"-y → -ies"   },
+    { singular:"party",  plural:"parties",  hint:"Drop -y, add -ies",      rule:"-y → -ies"   },
+    { singular:"lady",   plural:"ladies",   hint:"Drop -y, add -ies",      rule:"-y → -ies"   },
+    { singular:"story",  plural:"stories",  hint:"Drop -y, add -ies",      rule:"-y → -ies"   },
+    { singular:"fly",    plural:"flies",    hint:"Drop -y, add -ies",      rule:"-y → -ies"   },
+    { singular:"toy",    plural:"toys",     hint:"Vowel + y: just add -s", rule:"vowel+y → +s"},
+    { singular:"key",    plural:"keys",     hint:"Vowel + y: just add -s", rule:"vowel+y → +s"},
+    { singular:"tomato", plural:"tomatoes", hint:"Add -es at the end",     rule:"+ -es"       },
+    { singular:"potato", plural:"potatoes", hint:"Add -es at the end",     rule:"+ -es"       },
+    { singular:"box",    plural:"boxes",    hint:"Ends in -x: add -es",    rule:"+ -es"       },
+    { singular:"bus",    plural:"buses",    hint:"Ends in -s: add -es",    rule:"+ -es"       },
+    { singular:"dish",   plural:"dishes",   hint:"Ends in -sh: add -es",   rule:"+ -es"       },
+    { singular:"church", plural:"churches", hint:"Ends in -ch: add -es",   rule:"+ -es"       },
+    { singular:"watch",  plural:"watches",  hint:"Ends in -ch: add -es",   rule:"+ -es"       },
+    { singular:"leaf",   plural:"leaves",   hint:"-f becomes -ves",        rule:"-f → -ves"   },
+    { singular:"wolf",   plural:"wolves",   hint:"-f becomes -ves",        rule:"-f → -ves"   },
+    { singular:"knife",  plural:"knives",   hint:"-fe becomes -ves",       rule:"-fe → -ves"  },
+    { singular:"mouse",  plural:"mice",     hint:"Irregular plural!",      rule:"Irregular"   },
+    { singular:"child",  plural:"children", hint:"Irregular plural!",      rule:"Irregular"   },
+    { singular:"man",    plural:"men",      hint:"Vowel change: a → e",    rule:"Irregular"   },
+    { singular:"goose",  plural:"geese",    hint:"Vowel change: oo → ee",  rule:"Irregular"   },
+    { singular:"foot",   plural:"feet",     hint:"Vowel change: oo → ee",  rule:"Irregular"   },
+    { singular:"tooth",  plural:"teeth",    hint:"Vowel change: oo → ee",  rule:"Irregular"   },
+    { singular:"person", plural:"people",   hint:"Irregular plural!",      rule:"Irregular"   },
+    { singular:"sheep",  plural:"sheep",    hint:"Tricky! Stays the same", rule:"No change"   },
+    { singular:"fish",   plural:"fish",     hint:"Tricky! Stays the same", rule:"No change"   },
   ];
 
+  const NUM_WORDS = 8;
   const TIMER_MAX = 15;
+
+  let WORDS = [];
   let current=0, score=0, streak=0, timerVal=TIMER_MAX, timerInt=null, answered=false, hintUsed=false, log=[];
+
+  function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  function pickWords() { WORDS = shuffle(POOL).slice(0, NUM_WORDS); }
 
   function startTimer() {
     clearInterval(timerInt);
@@ -455,13 +557,22 @@
     const correct = log.filter(l=>l.isCorrect).length;
     const pct     = correct / WORDS.length;
     let emoji, title;
-    if (pct===1)        { emoji='🏆'; title='Word Master!';      playFanfare(); launchConfetti(); }
+    if (pct===1)        { emoji='🏆'; title='Word Master!';      playFanfare(); launchConfetti(); mascotReact('perfect'); }
     else if (pct>=0.75) { emoji='🎉'; title='Great Job!';        playCorrect(); }
     else if (pct>=0.5)  { emoji='💪'; title='Keep Pushing!'; }
     else                { emoji='📚'; title='Keep Practicing!'; }
 
     document.getElementById('result-emoji').textContent = emoji;
     document.getElementById('result-title').textContent = title;
+
+    // Best score
+    const prevBest = getBest();
+    if (score > prevBest) {
+      setBest(score);
+      document.getElementById('new-record').style.display = 'block';
+    } else {
+      document.getElementById('new-record').style.display = 'none';
+    }
 
     setTimeout(() => { if (pct>=0.34) document.getElementById('star1').classList.add('lit'); }, 300);
     setTimeout(() => { if (pct>=0.67) document.getElementById('star2').classList.add('lit'); }, 600);
@@ -476,14 +587,17 @@
           ${item.isCorrect ? item.plural : `<span style="text-decoration:line-through;opacity:0.5;">${item.typed||'—'}</span>`}
           ${!item.isCorrect ? `<span class="ri-correct-lbl">✓ ${item.plural}</span>` : ''}
         </span>
+        <button class="ri-speak" onclick="speak('${item.plural}')" title="Hear plural">🔊</button>
       </div>`
     ).join('');
   }
 
   function restartGame() {
+    pickWords();
     current=0; score=0; streak=0; log=[];
     document.getElementById('score-val').textContent  = '0';
     document.getElementById('streak-val').textContent = '0';
+    document.getElementById('new-record').style.display = 'none';
     ['star1','star2','star3'].forEach(id => document.getElementById(id).classList.remove('lit'));
     document.getElementById('game-screen').style.display   = 'flex';
     document.getElementById('results-screen').style.display = 'none';
@@ -495,7 +609,33 @@
     if (e.key === 'Enter') submitAnswer();
   });
 
-  loadWord(0);
+  // ── HOW TO PLAY MODAL ──
+  function isModalOpen() { return document.getElementById('howto-modal').classList.contains('show'); }
+  function showHowTo() {
+    clearInterval(timerInt);
+    document.getElementById('howto-modal').classList.add('show');
+  }
+  function startGame() {
+    document.getElementById('howto-modal').classList.remove('show');
+    getAudio();
+    loadWord(current); // (re)start the timer for the current word and focus the input
+  }
+
+  // ── INIT ──
+  (function init() {
+    const best = getBest();
+    if (best > 0) {
+      document.getElementById('best-val').textContent = best;
+      document.getElementById('best-badge').style.display = 'inline-flex';
+    }
+    pickWords();
+    // Show the first word behind the modal, but don't start the timer yet.
+    const w = WORDS[0];
+    document.getElementById('main-word').textContent = w.singular;
+    document.getElementById('rule-badge').textContent = w.rule;
+    document.getElementById('timer-num').textContent = TIMER_MAX;
+    showHowTo();
+  })();
 </script>
 </body>
 </html>
