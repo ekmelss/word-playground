@@ -31,19 +31,20 @@
     }
     .back-btn:hover { transform:translateY(-2px); box-shadow:0 5px 0 #ddd; }
 
-    /* MUTE BUTTON */
-    #mute-btn {
-      position:fixed; top:16px; right:16px; z-index:200;
+    /* TOP BUTTONS */
+    .top-btns { position:fixed; top:16px; right:16px; z-index:200; display:flex; gap:8px; }
+    .top-btn {
       background:#fff; border:3px solid #eee; border-radius:50%;
       width:44px; height:44px; font-size:20px; cursor:pointer;
       box-shadow:0 3px 0 #ddd; display:flex; align-items:center; justify-content:center;
       transition:transform 0.1s;
     }
-    #mute-btn:hover { transform:scale(1.1); }
+    .top-btn:hover { transform:scale(1.1); }
 
     .header { text-align:center; }
     .game-title { font-family:'Fredoka One',cursive; font-size:clamp(32px,8vw,52px); background:linear-gradient(135deg,var(--pink) 0%,var(--purple) 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
     .game-sub { font-size:14px; font-weight:700; color:#aaa; letter-spacing:1px; margin-top:2px; }
+    .best-badge { margin-top:8px; font-size:12px; font-weight:800; color:var(--orange); background:#FFF3E0; border-radius:20px; padding:5px 14px; display:inline-flex; align-items:center; gap:5px; }
 
     .progress-wrap { width:100%; }
     .progress-bar-bg { width:100%; height:14px; background:#eee; border-radius:40px; overflow:hidden; box-shadow:inset 0 2px 4px rgba(0,0,0,0.08); }
@@ -73,11 +74,14 @@
     .q-card::before { content:''; position:absolute; top:0; left:0; right:0; height:6px; background:linear-gradient(90deg,var(--pink),var(--purple),var(--blue)); border-radius:28px 28px 0 0; }
     .q-prompt { font-size:14px; font-weight:800; color:#bbb; letter-spacing:2px; text-transform:uppercase; margin-bottom:20px; }
 
-    .word-pair { display:flex; align-items:center; justify-content:center; gap:16px; flex-wrap:wrap; }
+    .word-pair { display:flex; align-items:center; justify-content:center; gap:10px; flex-wrap:wrap; }
     .word-chip { font-family:'Fredoka One',cursive; font-size:clamp(24px,6vw,36px); padding:12px 24px; border-radius:16px; box-shadow:0 4px 0 rgba(0,0,0,0.1); }
     .word-chip.w1 { background:#FFE8F4; color:var(--pink); }
     .word-chip.w2 { background:#E8F4FF; color:var(--blue); }
     .vs-badge { font-family:'Fredoka One',cursive; font-size:20px; color:#ccc; background:#f5f5f5; border-radius:50%; width:40px; height:40px; display:flex; align-items:center; justify-content:center; }
+    .speak-btn { background:rgba(0,0,0,0.05); border:none; border-radius:50%; width:32px; height:32px; cursor:pointer; font-size:15px; transition:transform 0.1s; -webkit-tap-highlight-color:transparent; }
+    .speak-btn:hover { transform:scale(1.12); }
+    .speak-btn:active { transform:scale(0.85); }
 
     .answer-btns { display:grid; grid-template-columns:1fr 1fr; gap:14px; width:100%; }
     .ans-btn { padding:20px 12px; border:none; border-radius:22px; cursor:pointer; font-family:'Fredoka One',cursive; font-size:clamp(18px,5vw,26px); display:flex; flex-direction:column; align-items:center; gap:4px; box-shadow:0 6px 0 rgba(0,0,0,0.15); transition:transform 0.1s, box-shadow 0.1s; user-select:none; -webkit-tap-highlight-color:transparent; }
@@ -94,8 +98,21 @@
     .feedback-overlay.wrong   { background:rgba(255,71,87,0.92); }
     .feedback-emoji { font-size:80px; animation:popIn 0.3s cubic-bezier(0.175,0.885,0.32,1.275); }
     .feedback-text { font-family:'Fredoka One',cursive; font-size:clamp(28px,8vw,48px); color:#fff; text-shadow:0 3px 0 rgba(0,0,0,0.15); animation:popIn 0.3s cubic-bezier(0.175,0.885,0.32,1.275) 0.05s both; }
-    .feedback-sub { font-size:16px; font-weight:700; color:rgba(255,255,255,0.85); animation:popIn 0.3s cubic-bezier(0.175,0.885,0.32,1.275) 0.1s both; text-align:center; padding:0 20px; }
+    .feedback-sub { font-size:16px; font-weight:700; color:rgba(255,255,255,0.92); animation:popIn 0.3s cubic-bezier(0.175,0.885,0.32,1.275) 0.1s both; text-align:center; padding:0 24px; line-height:1.5; max-width:460px; }
     @keyframes popIn { from{transform:scale(0.5);opacity:0;}to{transform:scale(1);opacity:1;} }
+
+    /* HOW TO PLAY MODAL */
+    .modal-overlay { position:fixed; inset:0; z-index:500; background:rgba(168,85,247,0.4); display:flex; align-items:center; justify-content:center; padding:20px; opacity:0; pointer-events:none; transition:opacity 0.3s; }
+    .modal-overlay.show { opacity:1; pointer-events:all; }
+    .modal-card { background:#fff; border-radius:28px; padding:28px 24px; max-width:380px; width:100%; text-align:center; box-shadow:0 12px 0 rgba(0,0,0,0.1); transform:scale(0.85); transition:transform 0.35s cubic-bezier(0.175,0.885,0.32,1.275); }
+    .modal-overlay.show .modal-card { transform:scale(1); }
+    .modal-emoji { font-size:54px; margin-bottom:6px; }
+    .modal-title { font-family:'Fredoka One',cursive; font-size:26px; color:var(--purple); margin-bottom:16px; }
+    .modal-steps { text-align:left; display:flex; flex-direction:column; gap:12px; margin-bottom:22px; }
+    .modal-step { display:flex; align-items:center; gap:12px; font-size:14px; font-weight:700; color:#666; line-height:1.4; }
+    .modal-step .ms-num { flex-shrink:0; width:30px; height:30px; border-radius:50%; background:linear-gradient(135deg,var(--pink),var(--purple)); color:#fff; font-family:'Fredoka One',cursive; display:flex; align-items:center; justify-content:center; font-size:15px; }
+    .modal-play-btn { width:100%; padding:16px; border:none; border-radius:20px; cursor:pointer; font-family:'Fredoka One',cursive; font-size:22px; color:#fff; background:linear-gradient(135deg,var(--green),var(--blue)); box-shadow:0 5px 0 rgba(0,0,0,0.12); transition:transform 0.1s; }
+    .modal-play-btn:active { transform:translateY(3px); }
 
     /* MASCOT */
     #mascot {
@@ -122,6 +139,7 @@
     .result-title { font-family:'Fredoka One',cursive; font-size:clamp(28px,7vw,42px); background:linear-gradient(135deg,var(--orange),var(--pink)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; margin-bottom:4px; }
     .result-score-big { font-family:'Fredoka One',cursive; font-size:clamp(48px,12vw,72px); color:var(--purple); line-height:1; margin:12px 0 4px; }
     .result-score-label { font-size:14px; font-weight:800; color:#bbb; letter-spacing:2px; text-transform:uppercase; }
+    .new-record { font-family:'Fredoka One',cursive; font-size:17px; color:var(--orange); margin-top:10px; animation:popIn 0.5s cubic-bezier(0.175,0.885,0.32,1.275); }
     .stars-row { display:flex; justify-content:center; gap:8px; margin:16px 0; font-size:36px; }
     .star { opacity:0.2; transition:opacity 0.3s, transform 0.3s; }
     .star.lit { opacity:1; transform:scale(1.2); }
@@ -131,7 +149,7 @@
     .review-item.wrong-item   { background:#FFF0F0; color:var(--red); }
     .review-item.correct-item { background:#F0FFF4; color:var(--green); }
     .review-item .ri-words { flex:1; }
-    .review-item .ri-answer { font-size:12px; opacity:0.7; }
+    .review-item .ri-answer { font-size:12px; opacity:0.7; white-space:nowrap; }
     .play-again-btn { width:100%; padding:18px; border:none; border-radius:20px; cursor:pointer; font-family:'Fredoka One',cursive; font-size:22px; color:#fff; background:linear-gradient(135deg,var(--pink),var(--purple)); box-shadow:0 6px 0 rgba(168,85,247,0.4); transition:transform 0.1s, box-shadow 0.1s; margin-top:16px; }
     .play-again-btn:hover { transform:translateY(-3px); }
     .play-again-btn:active { transform:translateY(3px); }
@@ -139,10 +157,17 @@
     /* CONFETTI */
     .confetti-piece { position:fixed; width:10px; height:10px; border-radius:2px; pointer-events:none; z-index:999; animation:confettiFall linear forwards; }
     @keyframes confettiFall { 0%{transform:translateY(-20px) rotate(0deg);opacity:1;}100%{transform:translateY(100vh) rotate(720deg);opacity:0;} }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important; }
+    }
   </style>
 </head>
 <body>
-  <button id="mute-btn" onclick="toggleMute()" title="Toggle sound">🔊</button>
+  <div class="top-btns">
+    <button id="mute-btn" class="top-btn" onclick="toggleMute()" title="Toggle sound">🔊</button>
+    <button class="top-btn" onclick="showHowTo()" title="How to play">❓</button>
+  </div>
 
   <div class="bg-shapes">
     <div class="shape"></div><div class="shape"></div><div class="shape"></div><div class="shape"></div>
@@ -159,11 +184,12 @@
       <div class="header">
         <div class="game-title">Flip or Flop! 🔄</div>
         <div class="game-sub">Are these words OPPOSITES?</div>
+        <div class="best-badge" id="best-badge" style="display:none;">🏅 Best: <span id="best-val">0</span>/<span id="best-total">8</span></div>
       </div>
 
       <div class="progress-wrap">
         <div class="progress-info">
-          <span>Question <span class="q-count" id="q-count">1 / 6</span></span>
+          <span>Question <span class="q-count" id="q-count">1 / 8</span></span>
           <span id="q-emoji">🎯</span>
         </div>
         <div class="progress-bar-bg">
@@ -197,8 +223,10 @@
         <div class="q-prompt">Are these opposites?</div>
         <div class="word-pair">
           <div class="word-chip w1" id="word1">happy</div>
+          <button class="speak-btn" onclick="speak(document.getElementById('word1').textContent)" title="Hear word">🔊</button>
           <div class="vs-badge">vs</div>
           <div class="word-chip w2" id="word2">sad</div>
+          <button class="speak-btn" onclick="speak(document.getElementById('word2').textContent)" title="Hear word">🔊</button>
         </div>
       </div>
 
@@ -223,6 +251,7 @@
         <div class="result-title" id="result-title">Amazing!</div>
         <div class="result-score-big" id="result-score">6/6</div>
         <div class="result-score-label">Correct Answers</div>
+        <div class="new-record" id="new-record" style="display:none;">🏅 New Best Score!</div>
         <div class="stars-row">
           <span class="star" id="star1">⭐</span>
           <span class="star" id="star2">⭐</span>
@@ -244,12 +273,42 @@
     <div class="feedback-sub"  id="fb-sub">They ARE opposites!</div>
   </div>
 
+  <!-- HOW TO PLAY MODAL -->
+  <div class="modal-overlay" id="howto-modal">
+    <div class="modal-card">
+      <div class="modal-emoji">🔄</div>
+      <div class="modal-title">Flip or Flop!</div>
+      <div class="modal-steps">
+        <div class="modal-step"><span class="ms-num">1</span><span>You'll see <b>two words</b>. Decide if they are <b>opposites</b> (antonyms).</span></div>
+        <div class="modal-step"><span class="ms-num">2</span><span>Tap <b>TRUE</b> if they ARE opposites, or <b>FALSE</b> if they are not.</span></div>
+        <div class="modal-step"><span class="ms-num">3</span><span>Answer fast — you only get <b>10 seconds</b> per question! ⏱️</span></div>
+        <div class="modal-step"><span class="ms-num">4</span><span>Tap 🔊 to <b>hear</b> any word. Get them all right for 3 stars! ⭐</span></div>
+      </div>
+      <button class="modal-play-btn" onclick="startGame()">Let's Play! 🚀</button>
+    </div>
+  </div>
+
 <script>
   // ── SOUND ENGINE ──
   let muted = false;
   let audioCtx;
   function getAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); return audioCtx; }
-  function toggleMute() { muted = !muted; document.getElementById('mute-btn').textContent = muted ? '🔇' : '🔊'; }
+  function toggleMute() {
+    muted = !muted;
+    document.getElementById('mute-btn').textContent = muted ? '🔇' : '🔊';
+    if (muted && window.speechSynthesis) speechSynthesis.cancel();
+  }
+
+  // ── PRONUNCIATION (free, built into the browser) ──
+  function speak(text) {
+    if (muted || !window.speechSynthesis) return;
+    try {
+      speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = 'en-US'; u.rate = 0.85;
+      speechSynthesis.speak(u);
+    } catch (e) {}
+  }
 
   function playCorrect() {
     if (muted) return;
@@ -334,20 +393,63 @@
     setTimeout(() => { m.textContent = '🦉'; m.className = ''; }, 800);
   }
 
-  // ── GAME DATA ──
-  const QUESTIONS = [
-    { w1:"happy",  w2:"sad",   isTrue:true  },
-    { w1:"big",    w2:"tall",  isTrue:false },
-    { w1:"fast",   w2:"slow",  isTrue:true  },
-    { w1:"early",  w2:"late",  isTrue:true  },
-    { w1:"clean",  w2:"tidy",  isTrue:false },
-    { w1:"hot",    w2:"cold",  isTrue:true  },
+  // ── BEST SCORE (localStorage — works on GitHub Pages) ──
+  const BEST_KEY = 'wp_antonym_best';
+  function getBest() { try { return parseInt(localStorage.getItem(BEST_KEY) || '0', 10); } catch (e) { return 0; } }
+  function setBest(v) { try { localStorage.setItem(BEST_KEY, v); } catch (e) {} }
+
+  // ── GAME DATA (large pool — a random set is picked each play) ──
+  // For FALSE pairs we store the real opposite (opp) to teach the correct antonym.
+  const POOL = [
+    { w1:"happy",    w2:"sad",      isTrue:true  },
+    { w1:"fast",     w2:"slow",     isTrue:true  },
+    { w1:"early",    w2:"late",     isTrue:true  },
+    { w1:"hot",      w2:"cold",     isTrue:true  },
+    { w1:"open",     w2:"closed",   isTrue:true  },
+    { w1:"empty",    w2:"full",     isTrue:true  },
+    { w1:"light",    w2:"dark",     isTrue:true  },
+    { w1:"buy",      w2:"sell",     isTrue:true  },
+    { w1:"win",      w2:"lose",     isTrue:true  },
+    { w1:"brave",    w2:"afraid",   isTrue:true  },
+    { w1:"ancient",  w2:"modern",   isTrue:true  },
+    { w1:"accept",   w2:"reject",   isTrue:true  },
+    { w1:"arrive",   w2:"depart",   isTrue:true  },
+    { w1:"increase", w2:"decrease", isTrue:true  },
+    { w1:"strong",   w2:"weak",     isTrue:true  },
+    { w1:"big",      w2:"tall",      isTrue:false, opp:"small"   },
+    { w1:"clean",    w2:"tidy",      isTrue:false, opp:"dirty"   },
+    { w1:"smart",    w2:"clever",    isTrue:false, opp:"stupid"  },
+    { w1:"happy",    w2:"joyful",    isTrue:false, opp:"sad"     },
+    { w1:"quick",    w2:"rapid",     isTrue:false, opp:"slow"    },
+    { w1:"huge",     w2:"large",     isTrue:false, opp:"tiny"    },
+    { w1:"difficult",w2:"hard",      isTrue:false, opp:"easy"    },
+    { w1:"wealthy",  w2:"rich",      isTrue:false, opp:"poor"    },
+    { w1:"begin",    w2:"start",     isTrue:false, opp:"end"     },
+    { w1:"shout",    w2:"yell",      isTrue:false, opp:"whisper" },
   ];
 
+  const NUM_QUESTIONS = 8;
   const TIMER_MAX = 10;
   const CIRCUMFERENCE = 2 * Math.PI * 34;
 
+  let QUESTIONS = [];
   let current=0, correctCnt=0, wrongCnt=0, timerVal=TIMER_MAX, timerInt=null, answered=false, log=[];
+
+  function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  function pickQuestions() { QUESTIONS = shuffle(POOL).slice(0, NUM_QUESTIONS); }
+
+  function noteFor(q) {
+    if (q.isTrue) return `Yes! "${q.w1}" and "${q.w2}" are opposites.`;
+    return `Not opposites — "${q.w1}" and "${q.w2}" mean almost the same. The opposite of "${q.w1}" is "${q.opp}".`;
+  }
 
   function startTimer() {
     clearInterval(timerInt);
@@ -391,7 +493,7 @@
   }
 
   function answer(userSaidTrue) {
-    if (answered) return;
+    if (answered || isModalOpen()) return;
     answered = true;
     clearInterval(timerInt);
     const q = QUESTIONS[current];
@@ -422,7 +524,7 @@
       current++;
       if (current < QUESTIONS.length) loadQuestion(current);
       else showResults();
-    }, 1200);
+    }, 1500);
   }
 
   function timeOut() {
@@ -436,7 +538,7 @@
 
     document.getElementById('fb-emoji').textContent = '⏰';
     document.getElementById('fb-text').textContent  = "Time's Up!";
-    document.getElementById('fb-sub').textContent   = `It's ${q.isTrue ? 'TRUE' : 'FALSE'} — "${q.w1}" and "${q.w2}" are ${q.isTrue ? '' : 'NOT '}opposites.`;
+    document.getElementById('fb-sub').textContent   = noteFor(q);
     document.getElementById('feedback-overlay').className = 'feedback-overlay show wrong';
     document.getElementById('btn-true').disabled  = true;
     document.getElementById('btn-false').disabled = true;
@@ -446,7 +548,7 @@
       current++;
       if (current < QUESTIONS.length) loadQuestion(current);
       else showResults();
-    }, 1400);
+    }, 1700);
   }
 
   function showFeedback(ok, q) {
@@ -454,9 +556,7 @@
     const wrongMsgs   = ['Oops! Try again!','Not quite! 😅','Almost! 🤔','Keep going! 💡'];
     document.getElementById('fb-emoji').textContent = ok ? ['🎉','⭐','🏆','💫'][Math.floor(Math.random()*4)] : '😬';
     document.getElementById('fb-text').textContent  = ok ? correctMsgs[Math.floor(Math.random()*correctMsgs.length)] : wrongMsgs[Math.floor(Math.random()*wrongMsgs.length)];
-    document.getElementById('fb-sub').textContent   = ok
-      ? `Yes! "${q.w1}" and "${q.w2}" are ${q.isTrue?'':'NOT '}opposites!`
-      : `Actually: "${q.w1}" and "${q.w2}" are ${q.isTrue?'':'NOT '}opposites.`;
+    document.getElementById('fb-sub').textContent   = noteFor(q);
     document.getElementById('feedback-overlay').className = `feedback-overlay show ${ok?'correct':'wrong'}`;
   }
 
@@ -481,6 +581,15 @@
     document.getElementById('result-emoji').textContent = emoji;
     document.getElementById('result-title').textContent = title;
 
+    // Best score
+    const prevBest = getBest();
+    if (correctCnt > prevBest) {
+      setBest(correctCnt);
+      document.getElementById('new-record').style.display = 'block';
+    } else {
+      document.getElementById('new-record').style.display = 'none';
+    }
+
     setTimeout(() => { if (pct >= 0.34) document.getElementById('star1').classList.add('lit'); }, 300);
     setTimeout(() => { if (pct >= 0.67) document.getElementById('star2').classList.add('lit'); }, 600);
     setTimeout(() => { if (pct === 1)   document.getElementById('star3').classList.add('lit'); }, 900);
@@ -489,15 +598,17 @@
     list.innerHTML = log.map(item =>
       `<div class="review-item ${item.isCorrect?'correct-item':'wrong-item'}">
         <div class="ri-words">"${item.w1}" vs "${item.w2}"</div>
-        <div class="ri-answer">${item.isCorrect?'✅':'❌'} ${item.isTrue?'TRUE':'FALSE'}</div>
+        <div class="ri-answer">${item.isCorrect?'✅':'❌'} ${item.isTrue?'Opposites':'Not opposites'}</div>
       </div>`
     ).join('');
   }
 
   function restartGame() {
+    pickQuestions();
     current=0; correctCnt=0; wrongCnt=0; log=[];
     document.getElementById('correct-count').textContent = '0';
     document.getElementById('wrong-count').textContent   = '0';
+    document.getElementById('new-record').style.display = 'none';
     ['star1','star2','star3'].forEach(id => document.getElementById(id).classList.remove('lit'));
     document.getElementById('game-screen').style.display    = 'flex';
     document.getElementById('results-screen').style.display = 'none';
@@ -505,12 +616,36 @@
     loadQuestion(0);
   }
 
+  // ── HOW TO PLAY MODAL ──
+  function isModalOpen() { return document.getElementById('howto-modal').classList.contains('show'); }
+  function showHowTo() { document.getElementById('howto-modal').classList.add('show'); }
+  function startGame() {
+    document.getElementById('howto-modal').classList.remove('show');
+    getAudio(); // unlock audio on user gesture
+    // Only (re)build a fresh round if we are not mid-game
+    if (current === 0 && log.length === 0) loadQuestion(0);
+  }
+
   document.addEventListener('keydown', e => {
+    if (isModalOpen()) { if (e.key === 'Enter') startGame(); return; }
     if (e.key==='ArrowLeft'  || e.key==='t' || e.key==='T') answer(true);
     if (e.key==='ArrowRight' || e.key==='f' || e.key==='F') answer(false);
   });
 
-  loadQuestion(0);
+  // ── INIT ──
+  (function init() {
+    const best = getBest();
+    if (best > 0) {
+      document.getElementById('best-val').textContent = best;
+      document.getElementById('best-total').textContent = NUM_QUESTIONS;
+      document.getElementById('best-badge').style.display = 'inline-flex';
+    }
+    pickQuestions();
+    loadQuestion(0);   // build first question UI (timer will run; modal sits on top)
+    clearInterval(timerInt); // pause timer until the player taps "Let's Play!"
+    document.getElementById('timer-num').textContent = TIMER_MAX;
+    showHowTo();
+  })();
 </script>
 </body>
 </html>
