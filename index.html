@@ -191,12 +191,131 @@
     .best-cell .bc-val { font-family:'Fredoka One',cursive; font-size:20px; color:var(--purple); margin-top:4px; line-height:1.1; }
     .best-cell .bc-lbl { font-size:10px; font-weight:800; color:#bbb; letter-spacing:1px; text-transform:uppercase; margin-top:2px; }
 
+    /* ── MUSIC TOGGLE (top-right, matches game pages) ── */
+    .top-btns { position:fixed; top:16px; right:16px; z-index:300; display:flex; gap:8px; }
+    .top-btn {
+      background:#fff; border:3px solid #eee; border-radius:50%;
+      width:46px; height:46px; font-size:20px; cursor:pointer;
+      box-shadow:0 3px 0 #ddd; display:flex; align-items:center; justify-content:center;
+      transition:transform 0.1s; -webkit-tap-highlight-color:transparent;
+    }
+    .top-btn:hover { transform:scale(1.1); }
+    .top-btn:active { transform:scale(0.9); }
+    .top-btn.spin { animation: musicSpin 3s linear infinite; }
+    @keyframes musicSpin { to { transform:rotate(360deg); } }
+
+    /* ── PLAYGROUND STAGE ── */
+    .stage-section { margin-bottom:22px; animation: wotdEntrance 0.6s cubic-bezier(0.175,0.885,0.32,1.275) 0.4s both; }
+    .stage {
+      position:relative; width:100%; height:340px; border-radius:28px; overflow:hidden;
+      background:linear-gradient(#bdeeff 0%, #d9f6ff 52%, #cfeeff 64%);
+      border:4px solid #fff; touch-action:none; user-select:none;
+      box-shadow:0 8px 0 rgba(168,85,247,0.12), 0 4px 24px rgba(0,0,0,0.08);
+    }
+    .deco { position:absolute; pointer-events:none; z-index:1; }
+    .deco.sun   { top:14px; right:18px; font-size:40px; animation:starBounce 3s ease-in-out infinite; }
+    .deco.cloud { font-size:42px; opacity:0.95; animation:floatCloud 18s linear infinite; }
+    .deco.cloud1 { top:24px; left:-10%; }
+    .deco.cloud2 { top:60px; left:-10%; font-size:32px; animation-duration:26s; animation-delay:6s; }
+    @keyframes floatCloud { from{ transform:translateX(0); } to{ transform:translateX(140vw); } }
+
+    .ground {
+      position:absolute; left:0; right:0; bottom:0; height:32%;
+      background:linear-gradient(#92db6e, #6BCB77);
+      border-top:5px solid #5bb866; z-index:2;
+    }
+    .ground::before {
+      content:''; position:absolute; top:-9px; left:0; right:0; height:10px;
+      background:repeating-linear-gradient(90deg, transparent 0 14px, #5bb86688 14px 16px);
+    }
+
+    .equip {
+      position:absolute; bottom:30%; transform:translateX(-50%);
+      display:flex; flex-direction:column; align-items:center; gap:4px;
+      text-decoration:none; cursor:pointer; z-index:3; transition:transform 0.15s;
+      -webkit-tap-highlight-color:transparent;
+    }
+    .equip:hover { transform:translateX(-50%) translateY(-4px); }
+    .equip.swing { left:20%; }
+    .equip.merry { left:50%; }
+    .equip.slide { left:80%; }
+    .equip-gif { width:104px; height:auto; display:block; filter:drop-shadow(0 5px 4px rgba(0,0,0,0.18)); }
+    .equip-emoji { font-size:62px; line-height:1; filter:drop-shadow(0 5px 4px rgba(0,0,0,0.18)); }
+    .equip-label {
+      font-family:'Fredoka One',cursive; font-size:12px; color:#fff;
+      background:rgba(0,0,0,0.28); padding:2px 11px; border-radius:20px; white-space:nowrap;
+    }
+    .equip.active .equip-emoji,
+    .equip.active .equip-gif { animation: equipWobble 0.5s ease-in-out infinite; }
+    .equip.active .equip-label { background:var(--purple); }
+    @keyframes equipWobble { 0%,100%{ transform:rotate(-4deg) scale(1.06); } 50%{ transform:rotate(4deg) scale(1.1); } }
+
+    .kid { position:absolute; bottom:30%; left:50%; transform:translateX(-50%); z-index:4; will-change:left; pointer-events:none; }
+    .kid-inner { display:block; font-size:46px; line-height:1; filter:drop-shadow(0 4px 3px rgba(0,0,0,0.22)); }
+    .kid.walking .kid-inner { animation: kidBob 0.32s ease-in-out infinite; }
+    @keyframes kidBob { 0%,100%{ translate:0 0; } 50%{ translate:0 -7px; } }
+
+    .play-prompt {
+      position:absolute; bottom:64%; left:50%; transform:translateX(-50%);
+      background:var(--purple); color:#fff; font-family:'Fredoka One',cursive; font-size:13px;
+      padding:6px 14px; border-radius:20px; white-space:nowrap; z-index:6;
+      box-shadow:0 4px 0 rgba(0,0,0,0.18); cursor:pointer;
+      opacity:0; pointer-events:none; transition:opacity 0.15s;
+    }
+    .play-prompt::after {
+      content:''; position:absolute; bottom:-7px; left:50%; transform:translateX(-50%);
+      border:7px solid transparent; border-top-color:var(--purple); border-bottom:0;
+    }
+    .play-prompt.show { opacity:1; pointer-events:auto; animation: promptPop 0.3s cubic-bezier(0.175,0.885,0.32,1.275); }
+    @keyframes promptPop { from{ transform:translateX(-50%) scale(0.5); } to{ transform:translateX(-50%) scale(1); } }
+
+    .joystick {
+      position:absolute; bottom:16px; left:16px; width:92px; height:92px; border-radius:50%;
+      background:rgba(255,255,255,0.35); border:3px solid rgba(255,255,255,0.75); z-index:7;
+      touch-action:none; box-shadow:0 4px 12px rgba(0,0,0,0.12);
+    }
+    .joystick-knob {
+      position:absolute; top:50%; left:50%; width:42px; height:42px; margin:-21px 0 0 -21px;
+      border-radius:50%; background:#fff; box-shadow:0 3px 8px rgba(0,0,0,0.28);
+      display:flex; align-items:center; justify-content:center; font-size:16px;
+    }
+    .joystick-knob::before { content:'🕹️'; }
+
+    .stage-hint { text-align:center; font-size:13px; font-weight:700; color:#aaa; margin-top:10px; }
+    .stage-hint b { color:var(--purple); }
+
+    /* ── QUICK FALLBACK MENU ── */
+    .quick-menu { margin-top:8px; }
+    .quick-menu-title { text-align:center; font-size:12px; font-weight:800; color:#bbb; letter-spacing:1px; text-transform:uppercase; margin-bottom:10px; }
+    .quick-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+    .quick-link {
+      display:flex; flex-direction:column; align-items:center; gap:5px;
+      background:#fff; border-radius:16px; padding:12px 6px; text-decoration:none;
+      box-shadow:0 4px 0 rgba(0,0,0,0.06); border:2px solid #f0f0f0; transition:transform 0.1s;
+    }
+    .quick-link:hover { transform:translateY(-3px); }
+    .quick-link .ql-emoji { font-size:26px; }
+    .quick-link .ql-name { font-size:11px; font-weight:800; color:#777; text-align:center; line-height:1.2; }
+
+    @media (max-width:420px) {
+      .stage { height:300px; }
+      .equip-gif { width:86px; }
+      .equip-emoji { font-size:52px; }
+      .kid-inner { font-size:40px; }
+    }
+
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important; }
     }
   </style>
 </head>
 <body>
+
+  <!-- MUSIC TOGGLE + BACKGROUND SONG -->
+  <div class="top-btns">
+    <button id="music-btn" class="top-btn" title="Toggle music" aria-label="Toggle background music">🎵</button>
+  </div>
+  <audio id="bgm" loop preload="auto" src="bgm.mp3"></audio>
 
   <!-- LOADING SPLASH -->
   <div id="splash">
@@ -242,33 +361,51 @@
       </div>
     </div>
 
-    <div class="subtitle">Pick a game and start learning! 🚀</div>
+    <div class="subtitle">Walk around the playground and pick a game! 🛝</div>
 
-    <div class="cards">
-      <a class="card easy" href="antonym.html">
-        <div class="card-icon">✅</div>
-        <div class="card-body">
-          <div class="card-title">Flip or Flop!</div>
-          <div class="card-desc">Are these words opposites? Answer TRUE or FALSE as fast as you can!</div>
-        </div>
-        <div class="card-badge">Easy</div>
-      </a>
-      <a class="card medium" href="wordmatch.html">
-        <div class="card-icon">🔗</div>
-        <div class="card-body">
-          <div class="card-title">Synonym Match</div>
-          <div class="card-desc">Tap to connect words with the same meaning. Match them all!</div>
-        </div>
-        <div class="card-badge">Medium</div>
-      </a>
-      <a class="card hard" href="typing.html">
-        <div class="card-icon">⌨️</div>
-        <div class="card-body">
-          <div class="card-title">Plural Rush!</div>
-          <div class="card-desc">Type the correct plural form before the timer runs out!</div>
-        </div>
-        <div class="card-badge">Hard</div>
-      </a>
+    <!-- PLAYGROUND STAGE -->
+    <div class="stage-section">
+      <div class="stage" id="stage">
+        <span class="deco sun">☀️</span>
+        <span class="deco cloud cloud1">☁️</span>
+        <span class="deco cloud cloud2">☁️</span>
+
+        <div class="ground"></div>
+
+        <!-- Equipment (each launches a game) -->
+        <a class="equip swing" id="equip-swing" href="antonym.html" aria-label="Play Flip or Flop">
+          <img class="equip-gif" src="tilixia-summer-swing-6077.gif" alt="">
+          <span class="equip-label">Flip or Flop</span>
+        </a>
+        <a class="equip merry" id="equip-merry" href="wordmatch.html" aria-label="Play Synonym Match">
+          <span class="equip-emoji">🎠</span>
+          <span class="equip-label">Synonym Match</span>
+        </a>
+        <a class="equip slide" id="equip-slide" href="typing.html" aria-label="Play Plural Rush">
+          <span class="equip-emoji">🛝</span>
+          <span class="equip-label">Plural Rush</span>
+        </a>
+
+        <!-- The kid you control -->
+        <div class="kid" id="kid"><span class="kid-inner" id="kidInner">🧒</span></div>
+
+        <!-- "Press to play" bubble -->
+        <div class="play-prompt" id="playPrompt">▶ Press to play</div>
+
+        <!-- On-screen joystick (touch + mouse) -->
+        <div class="joystick" id="joystick"><div class="joystick-knob" id="joyKnob"></div></div>
+      </div>
+      <div class="stage-hint">Use <b>arrow keys</b> or the <b>joystick</b> to walk · reach a toy &amp; press <b>Enter</b> 🎈</div>
+    </div>
+
+    <!-- QUICK FALLBACK MENU (always tappable) -->
+    <div class="quick-menu">
+      <div class="quick-menu-title">🎮 Or tap a game to play</div>
+      <div class="quick-grid">
+        <a class="quick-link" href="antonym.html"><span class="ql-emoji">🪀</span><span class="ql-name">Flip or Flop</span></a>
+        <a class="quick-link" href="wordmatch.html"><span class="ql-emoji">🎠</span><span class="ql-name">Synonym Match</span></a>
+        <a class="quick-link" href="typing.html"><span class="ql-emoji">🛝</span><span class="ql-name">Plural Rush</span></a>
+      </div>
     </div>
 
     <!-- BEST SCORES -->
@@ -360,6 +497,162 @@
     if (synonym !== null) { document.getElementById('best-synonym').textContent = '⭐'.repeat(Math.max(1, parseInt(synonym,10))); any = true; }
     if (plural  !== null) { document.getElementById('best-plural').textContent  = plural + ' pts'; any = true; }
     if (any) document.getElementById('best-scores').style.display = 'block';
+  })();
+
+  // ── BACKGROUND MUSIC (starts on first interaction; mute remembered) ──
+  (function music(){
+    const bgm = document.getElementById('bgm');
+    const btn = document.getElementById('music-btn');
+    bgm.volume = 0.32;
+
+    let muted = false;
+    try { muted = localStorage.getItem('wp_music_muted') === '1'; } catch (e) {}
+
+    function paint(){
+      btn.textContent = muted ? '🔇' : '🎵';
+      btn.classList.toggle('spin', !muted && !bgm.paused);
+    }
+    paint();
+
+    let started = false;
+    function start(){
+      if (started || muted) return;
+      started = true;
+      bgm.play().then(paint).catch(() => { started = false; });
+    }
+    // Arm on the very first user gesture anywhere (autoplay-policy friendly)
+    ['pointerdown','touchstart','keydown','scroll'].forEach(ev =>
+      window.addEventListener(ev, start, { once:true, passive:true }));
+
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      muted = !muted;
+      try { localStorage.setItem('wp_music_muted', muted ? '1' : '0'); } catch (e) {}
+      if (muted) { bgm.pause(); }
+      else { started = true; bgm.play().catch(() => { started = false; }); }
+      paint();
+    });
+    bgm.addEventListener('play', paint);
+    bgm.addEventListener('pause', paint);
+  })();
+
+  // ── PLAYGROUND: controllable kid walks to a toy to launch a game ──
+  (function playground(){
+    const stage    = document.getElementById('stage');
+    if (!stage) return;
+    const kid      = document.getElementById('kid');
+    const kidInner = document.getElementById('kidInner');
+    const prompt   = document.getElementById('playPrompt');
+    const joystick = document.getElementById('joystick');
+    const knob     = document.getElementById('joyKnob');
+
+    const equips = [
+      { el: document.getElementById('equip-swing'), href: 'antonym.html'  },
+      { el: document.getElementById('equip-merry'), href: 'wordmatch.html' },
+      { el: document.getElementById('equip-slide'), href: 'typing.html'    },
+    ];
+
+    const SPEED  = 0.30;   // px per ms at full input
+    const MARGIN = 30;     // keep kid inside the stage
+    const REACH  = 64;     // px proximity to "reach" a toy
+
+    let stageW = stage.clientWidth;
+    let kidX   = stageW * 0.5;
+    let facing = 1;
+    let active = null;
+
+    window.addEventListener('resize', () => {
+      const ratio = kidX / Math.max(1, stageW);
+      stageW = stage.clientWidth;
+      kidX = Math.max(MARGIN, Math.min(stageW - MARGIN, ratio * stageW));
+    });
+
+    function go(eq){ if (eq) window.location.href = eq.href; }
+
+    // ── keyboard ──
+    const keys = { left:false, right:false };
+    window.addEventListener('keydown', (e) => {
+      const k = e.key.toLowerCase();
+      if (k === 'arrowleft'  || k === 'a') { keys.left  = true; e.preventDefault(); }
+      if (k === 'arrowright' || k === 'd') { keys.right = true; e.preventDefault(); }
+      if ((k === 'enter' || k === ' ') && active) { e.preventDefault(); go(active); }
+    });
+    window.addEventListener('keyup', (e) => {
+      const k = e.key.toLowerCase();
+      if (k === 'arrowleft'  || k === 'a') keys.left  = false;
+      if (k === 'arrowright' || k === 'd') keys.right = false;
+    });
+
+    // ── joystick (pointer events = touch + mouse) ──
+    let joyId = null, joyVx = 0;
+    function joyMove(e){
+      if (joyId === null || e.pointerId !== joyId) return;
+      const r = joystick.getBoundingClientRect();
+      const max = r.width / 2;
+      let dx = e.clientX - (r.left + max);
+      dx = Math.max(-max, Math.min(max, dx));
+      knob.style.transform = 'translate(' + dx + 'px, 0)';
+      joyVx = dx / max;
+    }
+    function joyEnd(e){
+      if (joyId === null || e.pointerId !== joyId) return;
+      joyId = null; joyVx = 0;
+      knob.style.transform = 'translate(0, 0)';
+    }
+    joystick.addEventListener('pointerdown', (e) => {
+      joyId = e.pointerId;
+      joystick.setPointerCapture && joystick.setPointerCapture(e.pointerId);
+      joyMove(e);
+    });
+    window.addEventListener('pointermove', joyMove);
+    window.addEventListener('pointerup',   joyEnd);
+    window.addEventListener('pointercancel', joyEnd);
+
+    // tap the bubble to launch
+    prompt.addEventListener('click', () => go(active));
+
+    // ── main loop ──
+    let last = performance.now();
+    function loop(now){
+      const dt = Math.min(40, now - last); last = now;
+
+      let input = (keys.left ? -1 : 0) + (keys.right ? 1 : 0) + joyVx;
+      input = Math.max(-1, Math.min(1, input));
+
+      if (Math.abs(input) > 0.06) {
+        kidX += input * SPEED * dt;
+        facing = input < 0 ? -1 : 1;
+        kid.classList.add('walking');
+      } else {
+        kid.classList.remove('walking');
+      }
+      kidX = Math.max(MARGIN, Math.min(stageW - MARGIN, kidX));
+      kid.style.left = kidX + 'px';
+      kidInner.style.transform = 'scaleX(' + facing + ')';
+
+      // nearest reachable toy
+      const sr = stage.getBoundingClientRect();
+      let near = null, best = REACH;
+      equips.forEach(eq => {
+        const er = eq.el.getBoundingClientRect();
+        const ex = er.left + er.width / 2 - sr.left;
+        const d  = Math.abs(ex - kidX);
+        if (d < best) { best = d; near = eq; }
+      });
+      if (near !== active) {
+        equips.forEach(eq => eq.el.classList.toggle('active', eq === near));
+        active = near;
+        if (active) {
+          const er = active.el.getBoundingClientRect();
+          prompt.style.left = (er.left + er.width / 2 - sr.left) + 'px';
+          prompt.classList.add('show');
+        } else {
+          prompt.classList.remove('show');
+        }
+      }
+      requestAnimationFrame(loop);
+    }
+    requestAnimationFrame(loop);
   })();
 
   // ── DISMISS SPLASH ──
