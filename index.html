@@ -207,7 +207,7 @@
     /* ── PLAYGROUND STAGE ── */
     .stage-section { margin-bottom:22px; animation: wotdEntrance 0.6s cubic-bezier(0.175,0.885,0.32,1.275) 0.4s both; }
     .stage {
-      position:relative; width:100%; height:340px; border-radius:28px; overflow:hidden;
+      position:relative; width:100%; height:440px; border-radius:28px; overflow:hidden;
       background:linear-gradient(#bdeeff 0%, #d9f6ff 52%, #cfeeff 64%);
       border:4px solid #fff; touch-action:none; user-select:none;
       box-shadow:0 8px 0 rgba(168,85,247,0.12), 0 4px 24px rgba(0,0,0,0.08);
@@ -220,43 +220,59 @@
     @keyframes floatCloud { from{ transform:translateX(0); } to{ transform:translateX(140vw); } }
 
     .ground {
-      position:absolute; left:0; right:0; bottom:0; height:32%;
-      background:linear-gradient(#92db6e, #6BCB77);
-      border-top:5px solid #5bb866; z-index:2;
+      position:absolute; left:0; right:0; bottom:0; height:72%;
+      background:linear-gradient(#9be870 0%, #6BCB77 55%, #5bb866 100%);
+      border-top:5px solid #7fd08a; z-index:2;
     }
     .ground::before {
       content:''; position:absolute; top:-9px; left:0; right:0; height:10px;
       background:repeating-linear-gradient(90deg, transparent 0 14px, #5bb86688 14px 16px);
     }
 
+    /* Equipment placed around the field — walk to it OR just tap it */
     .equip {
-      position:absolute; bottom:30%; transform:translateX(-50%);
+      position:absolute; transform:translate(-50%,-50%);
       display:flex; flex-direction:column; align-items:center; gap:4px;
       text-decoration:none; cursor:pointer; z-index:3; transition:transform 0.15s;
       -webkit-tap-highlight-color:transparent;
     }
-    .equip:hover { transform:translateX(-50%) translateY(-4px); }
-    .equip.swing { left:20%; }
-    .equip.merry { left:50%; }
-    .equip.slide { left:80%; }
-    .equip-gif { width:104px; height:auto; display:block; filter:drop-shadow(0 5px 4px rgba(0,0,0,0.18)); }
-    .equip-emoji { font-size:62px; line-height:1; filter:drop-shadow(0 5px 4px rgba(0,0,0,0.18)); }
+    .equip:hover { transform:translate(-50%,-50%) scale(1.06); }
+    .equip.swing { left:24%; top:42%; }
+    .equip.merry { left:54%; top:74%; }
+    .equip.slide { left:80%; top:46%; }
+    .equip-emoji { font-size:58px; line-height:1; filter:drop-shadow(0 5px 4px rgba(0,0,0,0.18)); }
     .equip-label {
       font-family:'Fredoka One',cursive; font-size:12px; color:#fff;
       background:rgba(0,0,0,0.28); padding:2px 11px; border-radius:20px; white-space:nowrap;
     }
-    .equip.active .equip-emoji,
-    .equip.active .equip-gif { animation: equipWobble 0.5s ease-in-out infinite; }
+    .equip.active .equip-emoji { animation: equipWobble 0.5s ease-in-out infinite; }
     .equip.active .equip-label { background:var(--purple); }
     @keyframes equipWobble { 0%,100%{ transform:rotate(-4deg) scale(1.06); } 50%{ transform:rotate(4deg) scale(1.1); } }
 
-    .kid { position:absolute; bottom:30%; left:50%; transform:translateX(-50%); z-index:4; will-change:left; pointer-events:none; }
-    .kid-inner { display:block; font-size:46px; line-height:1; filter:drop-shadow(0 4px 3px rgba(0,0,0,0.22)); }
-    .kid.walking .kid-inner { animation: kidBob 0.32s ease-in-out infinite; }
-    @keyframes kidBob { 0%,100%{ translate:0 0; } 50%{ translate:0 -7px; } }
+    /* ── CSS KID CHARACTER (roams the field in 2D) ── */
+    .kid { position:absolute; left:50%; top:60%; z-index:4; pointer-events:none; transform:translate(-50%,-100%); will-change:left,top; }
+    .kid-shadow { position:absolute; left:50%; bottom:-5px; transform:translateX(-50%); width:34px; height:10px; border-radius:50%; background:rgba(0,0,0,0.18); filter:blur(1.5px); }
+    #kidFlip { transform-origin:bottom center; }
+    .kid-body { position:relative; width:44px; height:56px; }
+    .kid.walking .kid-body { animation:kidBob 0.34s ease-in-out infinite; }
+    @keyframes kidBob { 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(-3px); } }
+    .kid-head { position:absolute; top:0; left:50%; transform:translateX(-50%); width:26px; height:26px; border-radius:50%; background:#FFE0BD; z-index:3; box-shadow:inset 0 -2px 0 rgba(0,0,0,0.06); }
+    .kid-head::before { content:''; position:absolute; top:-3px; left:-1px; right:-1px; height:12px; border-radius:14px 14px 7px 7px; background:#7a4b34; }
+    .kid-head::after { content:''; position:absolute; top:13px; left:7px; width:3px; height:3px; border-radius:50%; background:#5b4636; box-shadow:9px 0 0 #5b4636; }
+    .kid-torso { position:absolute; top:22px; left:50%; transform:translateX(-50%); width:30px; height:22px; border-radius:12px 12px 9px 9px; background:linear-gradient(#FF6B9D,#e85a8a); z-index:2; }
+    .kid-arm { position:absolute; top:24px; width:7px; height:20px; border-radius:6px; background:#FFE0BD; transform-origin:top center; z-index:1; }
+    .kid-arm.left { left:2px; } .kid-arm.right { right:2px; }
+    .kid-leg { position:absolute; bottom:0; width:9px; height:17px; border-radius:5px; background:#4a6fa5; transform-origin:top center; }
+    .kid-leg.left { left:11px; } .kid-leg.right { right:11px; }
+    .kid.walking .kid-leg.left  { animation:legSwing 0.34s ease-in-out infinite; }
+    .kid.walking .kid-leg.right { animation:legSwing 0.34s ease-in-out infinite reverse; }
+    @keyframes legSwing { 0%,100%{ transform:rotate(16deg); } 50%{ transform:rotate(-16deg); } }
+    .kid.walking .kid-arm.left  { animation:armSwing 0.34s ease-in-out infinite reverse; }
+    .kid.walking .kid-arm.right { animation:armSwing 0.34s ease-in-out infinite; }
+    @keyframes armSwing { 0%,100%{ transform:rotate(20deg); } 50%{ transform:rotate(-20deg); } }
 
     .play-prompt {
-      position:absolute; bottom:64%; left:50%; transform:translateX(-50%);
+      position:absolute; top:0; left:0; transform:translate(-50%,-120%);
       background:var(--purple); color:#fff; font-family:'Fredoka One',cursive; font-size:13px;
       padding:6px 14px; border-radius:20px; white-space:nowrap; z-index:6;
       box-shadow:0 4px 0 rgba(0,0,0,0.18); cursor:pointer;
@@ -266,42 +282,28 @@
       content:''; position:absolute; bottom:-7px; left:50%; transform:translateX(-50%);
       border:7px solid transparent; border-top-color:var(--purple); border-bottom:0;
     }
-    .play-prompt.show { opacity:1; pointer-events:auto; animation: promptPop 0.3s cubic-bezier(0.175,0.885,0.32,1.275); }
-    @keyframes promptPop { from{ transform:translateX(-50%) scale(0.5); } to{ transform:translateX(-50%) scale(1); } }
+    .play-prompt.show { opacity:1; pointer-events:auto; }
 
     .joystick {
-      position:absolute; bottom:16px; left:16px; width:92px; height:92px; border-radius:50%;
-      background:rgba(255,255,255,0.35); border:3px solid rgba(255,255,255,0.75); z-index:7;
-      touch-action:none; box-shadow:0 4px 12px rgba(0,0,0,0.12);
+      position:absolute; bottom:16px; left:16px; width:104px; height:104px; border-radius:50%;
+      background:rgba(255,255,255,0.30); border:3px solid rgba(255,255,255,0.8); z-index:7;
+      touch-action:none; box-shadow:0 4px 14px rgba(0,0,0,0.14);
     }
+    .joystick::after { content:''; position:absolute; inset:0; margin:auto; width:8px; height:8px; border-radius:50%; background:rgba(255,255,255,0.55); }
     .joystick-knob {
-      position:absolute; top:50%; left:50%; width:42px; height:42px; margin:-21px 0 0 -21px;
-      border-radius:50%; background:#fff; box-shadow:0 3px 8px rgba(0,0,0,0.28);
-      display:flex; align-items:center; justify-content:center; font-size:16px;
+      position:absolute; top:50%; left:50%; width:46px; height:46px; margin:-23px 0 0 -23px;
+      border-radius:50%; background:radial-gradient(circle at 35% 30%, #ffffff, #ecd9ff);
+      box-shadow:0 3px 10px rgba(0,0,0,0.28), inset 0 -3px 6px rgba(168,85,247,0.25);
     }
-    .joystick-knob::before { content:'🕹️'; }
 
     .stage-hint { text-align:center; font-size:13px; font-weight:700; color:#aaa; margin-top:10px; }
     .stage-hint b { color:var(--purple); }
 
-    /* ── QUICK FALLBACK MENU ── */
-    .quick-menu { margin-top:8px; }
-    .quick-menu-title { text-align:center; font-size:12px; font-weight:800; color:#bbb; letter-spacing:1px; text-transform:uppercase; margin-bottom:10px; }
-    .quick-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
-    .quick-link {
-      display:flex; flex-direction:column; align-items:center; gap:5px;
-      background:#fff; border-radius:16px; padding:12px 6px; text-decoration:none;
-      box-shadow:0 4px 0 rgba(0,0,0,0.06); border:2px solid #f0f0f0; transition:transform 0.1s;
-    }
-    .quick-link:hover { transform:translateY(-3px); }
-    .quick-link .ql-emoji { font-size:26px; }
-    .quick-link .ql-name { font-size:11px; font-weight:800; color:#777; text-align:center; line-height:1.2; }
-
     @media (max-width:420px) {
-      .stage { height:300px; }
-      .equip-gif { width:86px; }
-      .equip-emoji { font-size:52px; }
-      .kid-inner { font-size:40px; }
+      .stage { height:400px; }
+      .equip-emoji { font-size:48px; }
+      .joystick { width:96px; height:96px; bottom:12px; left:12px; }
+      .joystick-knob { width:44px; height:44px; margin:-22px 0 0 -22px; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -361,7 +363,7 @@
       </div>
     </div>
 
-    <div class="subtitle">Walk around the playground and pick a game! 🛝</div>
+    <div class="subtitle">Move around the playground — reach a toy to play! 🕹️</div>
 
     <!-- PLAYGROUND STAGE -->
     <div class="stage-section">
@@ -374,7 +376,7 @@
 
         <!-- Equipment (each launches a game) -->
         <a class="equip swing" id="equip-swing" href="antonym.html" aria-label="Play Flip or Flop">
-          <img class="equip-gif" src="tilixia-summer-swing-6077.gif" alt="">
+          <span class="equip-emoji">🎡</span>
           <span class="equip-label">Flip or Flop</span>
         </a>
         <a class="equip merry" id="equip-merry" href="wordmatch.html" aria-label="Play Synonym Match">
@@ -386,8 +388,20 @@
           <span class="equip-label">Plural Rush</span>
         </a>
 
-        <!-- The kid you control -->
-        <div class="kid" id="kid"><span class="kid-inner" id="kidInner">🧒</span></div>
+        <!-- The kid you control (pure-CSS animated character) -->
+        <div class="kid" id="kid">
+          <div class="kid-shadow"></div>
+          <div class="kid-flip" id="kidFlip">
+            <div class="kid-body">
+              <div class="kid-head"></div>
+              <div class="kid-torso"></div>
+              <div class="kid-arm left"></div>
+              <div class="kid-arm right"></div>
+              <div class="kid-leg left"></div>
+              <div class="kid-leg right"></div>
+            </div>
+          </div>
+        </div>
 
         <!-- "Press to play" bubble -->
         <div class="play-prompt" id="playPrompt">▶ Press to play</div>
@@ -395,17 +409,7 @@
         <!-- On-screen joystick (touch + mouse) -->
         <div class="joystick" id="joystick"><div class="joystick-knob" id="joyKnob"></div></div>
       </div>
-      <div class="stage-hint">Use <b>arrow keys</b> or the <b>joystick</b> to walk · reach a toy &amp; press <b>Enter</b> 🎈</div>
-    </div>
-
-    <!-- QUICK FALLBACK MENU (always tappable) -->
-    <div class="quick-menu">
-      <div class="quick-menu-title">🎮 Or tap a game to play</div>
-      <div class="quick-grid">
-        <a class="quick-link" href="antonym.html"><span class="ql-emoji">🪀</span><span class="ql-name">Flip or Flop</span></a>
-        <a class="quick-link" href="wordmatch.html"><span class="ql-emoji">🎠</span><span class="ql-name">Synonym Match</span></a>
-        <a class="quick-link" href="typing.html"><span class="ql-emoji">🛝</span><span class="ql-name">Plural Rush</span></a>
-      </div>
+      <div class="stage-hint">Drag the <b>joystick</b> (or arrow keys) to move any direction · reach a toy &amp; tap it to play 🎈</div>
     </div>
 
     <!-- BEST SCORES -->
@@ -430,8 +434,16 @@
       </div>
     </div>
 
-    <div class="footer">Made with ❤️ by Afreena & Akmal</div>
+    <!-- ONLINE LEADERBOARD -->
+    <div id="lb-board"></div>
   </div>
+
+<!-- Firebase (leaderboard) -->
+<script src="https://www.gstatic.com/firebasejs/12.15.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.15.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script src="leaderboard.js"></script>
 
 <script>
   // ── WORD OF THE DAY DATA ──
@@ -536,12 +548,12 @@
     bgm.addEventListener('pause', paint);
   })();
 
-  // ── PLAYGROUND: controllable kid walks to a toy to launch a game ──
+  // ── PLAYGROUND: roam the field in 2D and reach a toy to launch a game ──
   (function playground(){
     const stage    = document.getElementById('stage');
     if (!stage) return;
     const kid      = document.getElementById('kid');
-    const kidInner = document.getElementById('kidInner');
+    const kidFlip  = document.getElementById('kidFlip');
     const prompt   = document.getElementById('playPrompt');
     const joystick = document.getElementById('joystick');
     const knob     = document.getElementById('joyKnob');
@@ -552,52 +564,64 @@
       { el: document.getElementById('equip-slide'), href: 'typing.html'    },
     ];
 
-    const SPEED  = 0.30;   // px per ms at full input
-    const MARGIN = 30;     // keep kid inside the stage
-    const REACH  = 64;     // px proximity to "reach" a toy
+    const SPEED  = 0.34;   // px per ms at full input
+    const MARGIN = 26;     // keep kid inside the stage horizontally
+    const REACH  = 72;     // px proximity to "reach" a toy
 
     let stageW = stage.clientWidth;
-    let kidX   = stageW * 0.5;
+    let stageH = stage.clientHeight;
+    let grassTop = stageH * 0.28;     // sky occupies the top ~28%
+    let kidX = stageW * 0.5;
+    let kidY = stageH * 0.60;
     let facing = 1;
     let active = null;
 
+    function clampPos(){
+      kidX = Math.max(MARGIN, Math.min(stageW - MARGIN, kidX));
+      kidY = Math.max(grassTop + 20, Math.min(stageH - 14, kidY));
+    }
     window.addEventListener('resize', () => {
-      const ratio = kidX / Math.max(1, stageW);
-      stageW = stage.clientWidth;
-      kidX = Math.max(MARGIN, Math.min(stageW - MARGIN, ratio * stageW));
+      const rx = kidX / Math.max(1, stageW), ry = kidY / Math.max(1, stageH);
+      stageW = stage.clientWidth; stageH = stage.clientHeight; grassTop = stageH * 0.28;
+      kidX = rx * stageW; kidY = ry * stageH; clampPos();
     });
 
     function go(eq){ if (eq) window.location.href = eq.href; }
 
-    // ── keyboard ──
-    const keys = { left:false, right:false };
+    // ── keyboard (4-way) ──
+    const keys = { left:false, right:false, up:false, down:false };
     window.addEventListener('keydown', (e) => {
       const k = e.key.toLowerCase();
       if (k === 'arrowleft'  || k === 'a') { keys.left  = true; e.preventDefault(); }
       if (k === 'arrowright' || k === 'd') { keys.right = true; e.preventDefault(); }
+      if (k === 'arrowup'    || k === 'w') { keys.up    = true; e.preventDefault(); }
+      if (k === 'arrowdown'  || k === 's') { keys.down  = true; e.preventDefault(); }
       if ((k === 'enter' || k === ' ') && active) { e.preventDefault(); go(active); }
     });
     window.addEventListener('keyup', (e) => {
       const k = e.key.toLowerCase();
       if (k === 'arrowleft'  || k === 'a') keys.left  = false;
       if (k === 'arrowright' || k === 'd') keys.right = false;
+      if (k === 'arrowup'    || k === 'w') keys.up    = false;
+      if (k === 'arrowdown'  || k === 's') keys.down  = false;
     });
 
-    // ── joystick (pointer events = touch + mouse) ──
-    let joyId = null, joyVx = 0;
+    // ── joystick (pointer events = touch + mouse, 2 axes) ──
+    let joyId = null, joyVx = 0, joyVy = 0;
     function joyMove(e){
       if (joyId === null || e.pointerId !== joyId) return;
       const r = joystick.getBoundingClientRect();
-      const max = r.width / 2;
-      let dx = e.clientX - (r.left + max);
-      dx = Math.max(-max, Math.min(max, dx));
-      knob.style.transform = 'translate(' + dx + 'px, 0)';
-      joyVx = dx / max;
+      const cx = r.left + r.width / 2, cy = r.top + r.height / 2, max = r.width / 2;
+      let dx = e.clientX - cx, dy = e.clientY - cy;
+      const dist = Math.hypot(dx, dy);
+      if (dist > max) { dx = dx / dist * max; dy = dy / dist * max; }
+      knob.style.transform = 'translate(' + dx + 'px,' + dy + 'px)';
+      joyVx = dx / max; joyVy = dy / max;
     }
     function joyEnd(e){
       if (joyId === null || e.pointerId !== joyId) return;
-      joyId = null; joyVx = 0;
-      knob.style.transform = 'translate(0, 0)';
+      joyId = null; joyVx = 0; joyVy = 0;
+      knob.style.transform = 'translate(0,0)';
     }
     joystick.addEventListener('pointerdown', (e) => {
       joyId = e.pointerId;
@@ -611,32 +635,43 @@
     // tap the bubble to launch
     prompt.addEventListener('click', () => go(active));
 
+    // place the kid at its starting spot before the first frame (no flash)
+    clampPos();
+    kid.style.left = kidX + 'px';
+    kid.style.top  = kidY + 'px';
+
     // ── main loop ──
     let last = performance.now();
     function loop(now){
       const dt = Math.min(40, now - last); last = now;
 
-      let input = (keys.left ? -1 : 0) + (keys.right ? 1 : 0) + joyVx;
-      input = Math.max(-1, Math.min(1, input));
+      let ix = (keys.left ? -1 : 0) + (keys.right ? 1 : 0) + joyVx;
+      let iy = (keys.up   ? -1 : 0) + (keys.down  ? 1 : 0) + joyVy;
+      ix = Math.max(-1, Math.min(1, ix));
+      iy = Math.max(-1, Math.min(1, iy));
 
-      if (Math.abs(input) > 0.06) {
-        kidX += input * SPEED * dt;
-        facing = input < 0 ? -1 : 1;
+      const moving = Math.abs(ix) > 0.06 || Math.abs(iy) > 0.06;
+      if (moving) {
+        kidX += ix * SPEED * dt;
+        kidY += iy * SPEED * dt;
+        if (Math.abs(ix) > 0.06) facing = ix < 0 ? -1 : 1;
         kid.classList.add('walking');
       } else {
         kid.classList.remove('walking');
       }
-      kidX = Math.max(MARGIN, Math.min(stageW - MARGIN, kidX));
+      clampPos();
       kid.style.left = kidX + 'px';
-      kidInner.style.transform = 'scaleX(' + facing + ')';
+      kid.style.top  = kidY + 'px';
+      kidFlip.style.transform = 'scaleX(' + facing + ')';
 
-      // nearest reachable toy
+      // nearest reachable toy (2D distance)
       const sr = stage.getBoundingClientRect();
       let near = null, best = REACH;
       equips.forEach(eq => {
         const er = eq.el.getBoundingClientRect();
         const ex = er.left + er.width / 2 - sr.left;
-        const d  = Math.abs(ex - kidX);
+        const ey = er.top  + er.height / 2 - sr.top;
+        const d  = Math.hypot(ex - kidX, ey - kidY);
         if (d < best) { best = d; near = eq; }
       });
       if (near !== active) {
@@ -645,6 +680,7 @@
         if (active) {
           const er = active.el.getBoundingClientRect();
           prompt.style.left = (er.left + er.width / 2 - sr.left) + 'px';
+          prompt.style.top  = (er.top - sr.top) + 'px';
           prompt.classList.add('show');
         } else {
           prompt.classList.remove('show');
@@ -662,6 +698,9 @@
       setTimeout(() => document.getElementById('splash').remove(), 700);
     }, 1800);
   });
+
+  // ── ONLINE LEADERBOARD (combined, all games) ──
+  if (window.LB) LB.renderBoard(document.getElementById('lb-board'), { limit: 10, cta: true });
 </script>
 </body>
 </html>

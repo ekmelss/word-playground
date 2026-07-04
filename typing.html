@@ -122,6 +122,8 @@
     .result-score-big { font-family:'Fredoka One',cursive; font-size:clamp(44px,11vw,68px); color:var(--orange); line-height:1; margin:10px 0 4px; }
     .result-score-label { font-size:13px; font-weight:800; color:#bbb; letter-spacing:2px; text-transform:uppercase; }
     .new-record { font-family:'Fredoka One',cursive; font-size:17px; color:var(--orange); margin-top:10px; animation:popIn 0.5s cubic-bezier(0.175,0.885,0.32,1.275); }
+    .result-time-line { font-size:13px; font-weight:800; color:#bbb; letter-spacing:1px; margin-top:6px; }
+    .result-time-line span { color:var(--orange); font-family:'Fredoka One',cursive; }
     .stars-row { display:flex; justify-content:center; gap:8px; margin:14px 0; font-size:34px; }
     .star { opacity:0.2; transition:opacity 0.3s, transform 0.4s cubic-bezier(0.175,0.885,0.32,1.275); }
     .star.lit { opacity:1; transform:scale(1.25); }
@@ -155,6 +157,7 @@
     <button id="mute-btn" class="top-btn" onclick="toggleMute()" title="Toggle sound">🔊</button>
     <button class="top-btn" onclick="showHowTo()" title="How to play">❓</button>
   </div>
+  <audio id="bgm" loop preload="auto" src="song-plural.mp3"></audio>
 
   <div class="bg-shapes">
     <div class="shape"></div><div class="shape"></div><div class="shape"></div><div class="shape"></div>
@@ -188,7 +191,7 @@
       <div class="progress-wrap">
         <div class="progress-info">
           <span>Word <span class="q-num" id="q-num">1 / 8</span></span>
-          <span id="q-emoji">🎯</span>
+          <span>⏱️ <span id="game-time" style="color:var(--orange);">0:00</span></span>
         </div>
         <div class="progress-bar-bg">
           <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
@@ -230,6 +233,8 @@
         <div class="result-title" id="result-title">Word Master!</div>
         <div class="result-score-big" id="result-score">0</div>
         <div class="result-score-label">Points Earned</div>
+        <div class="result-time-line">⏱️ Time: <span id="result-time">0:00</span></div>
+        <div id="result-points-line" style="display:none;font-family:'Fredoka One',cursive;color:var(--orange);font-size:16px;margin-top:8px;">🏆 +<span id="result-points">0</span> to your total</div>
         <div class="new-record" id="new-record" style="display:none;">🏅 New Best Score!</div>
         <div class="stars-row">
           <span class="star" id="star1">⭐</span>
@@ -240,6 +245,7 @@
           <div class="review-title">📋 Word Review</div>
           <div id="review-list"></div>
         </div>
+        <div id="lb-board"></div>
         <button class="play-again-btn" onclick="restartGame()">🔄 Play Again!</button>
         <a class="back-btn" href="index.html" style="margin-top:12px;display:inline-flex;">🏠 Home</a>
       </div>
@@ -261,16 +267,47 @@
     </div>
   </div>
 
+<!-- Firebase (leaderboard) -->
+<script src="https://www.gstatic.com/firebasejs/12.15.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.15.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script src="leaderboard.js"></script>
+
 <script>
   // ── SOUND ENGINE ──
   let muted = false;
+  try { muted = localStorage.getItem('wp_music_muted') === '1'; } catch (e) {}
   let audioCtx;
   function getAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); return audioCtx; }
+
+  // ── BACKGROUND MUSIC (each game has its own track; shares the mute button) ──
+  const bgm = document.getElementById('bgm');
+  if (bgm) bgm.volume = 0.28;
+  let bgmStarted = false;
+  function startBgm() {
+    if (!bgm || bgmStarted || muted) return;
+    bgmStarted = true;
+    bgm.play().catch(() => { bgmStarted = false; });
+  }
+  // Autoplay policies need a user gesture — arm on the first tap/keypress.
+  ['pointerdown','touchstart','keydown'].forEach(ev =>
+    window.addEventListener(ev, startBgm, { passive:true }));
+
   function toggleMute() {
     muted = !muted;
+    try { localStorage.setItem('wp_music_muted', muted ? '1' : '0'); } catch (e) {}
     document.getElementById('mute-btn').textContent = muted ? '🔇' : '🔊';
-    if (muted && window.speechSynthesis) speechSynthesis.cancel();
+    if (muted) {
+      if (window.speechSynthesis) speechSynthesis.cancel();
+      if (bgm) bgm.pause();
+    } else {
+      bgmStarted = true;
+      if (bgm) bgm.play().catch(() => { bgmStarted = false; });
+    }
   }
+  // Reflect any saved mute preference on the button at load.
+  if (muted) document.getElementById('mute-btn').textContent = '🔇';
 
   function speak(text) {
     if (muted || !window.speechSynthesis) return;
@@ -549,6 +586,9 @@
 
   function showResults() {
     clearInterval(timerInt);
+    GameClock.pause();
+    lastGameMs = GameClock.ms();
+    document.getElementById('result-time').textContent = GameClock.text();
     document.getElementById('game-screen').style.display   = 'none';
     document.getElementById('results-screen').style.display = 'block';
     document.getElementById('mascot').style.display = 'none';
@@ -590,6 +630,20 @@
         <button class="ri-speak" onclick="speak('${item.plural}')" title="Hear plural">🔊</button>
       </div>`
     ).join('');
+
+    // ── Leaderboard: submit this game, refresh the board, maybe ask for a username ──
+    if (window.LB) {
+      const pts = LB.score({ game:'plural', correct, timeMs:lastGameMs, perfect: correct === WORDS.length });
+      const board = document.getElementById('lb-board');
+      if (LB.enabled) {
+        document.getElementById('result-points').textContent = pts;
+        document.getElementById('result-points-line').style.display = 'block';
+      }
+      LB.renderBoard(board, { limit:10, cta:true });
+      LB.submit({ game:'plural', points:pts, correct, timeMs:lastGameMs })
+        .then(() => LB.renderBoard(board, { limit:10, cta:true }))
+        .then(() => LB.maybePromptAfterGame({ onDone: () => LB.renderBoard(board, { limit:10, cta:true }) }));
+    }
   }
 
   function restartGame() {
@@ -603,22 +657,48 @@
     document.getElementById('results-screen').style.display = 'none';
     document.getElementById('mascot').style.display = '';
     loadWord(0);
+    GameClock.reset();
+    GameClock.start();
   }
 
   document.getElementById('plural-input').addEventListener('keydown', e => {
     if (e.key === 'Enter') submitAnswer();
   });
 
+  // ── TOTAL GAME TIMER (elapsed time per game — feeds the leaderboard) ──
+  const GameClock = (function(){
+    let startTs=0, accMs=0, running=false, raf=0, hiddenPause=false;
+    function fmt(ms){ const s=Math.floor(ms/1000); return Math.floor(s/60)+':'+String(s%60).padStart(2,'0'); }
+    function cur(){ return accMs + (running ? performance.now()-startTs : 0); }
+    function paint(){ const e=document.getElementById('game-time'); if(e) e.textContent=fmt(cur()); }
+    function frame(){ if(!running) return; paint(); raf=requestAnimationFrame(frame); }
+    const api = {
+      start(){ if(running) return; startTs=performance.now(); running=true; frame(); },
+      pause(){ if(!running) return; accMs+=performance.now()-startTs; running=false; cancelAnimationFrame(raf); paint(); },
+      reset(){ cancelAnimationFrame(raf); startTs=0; accMs=0; running=false; hiddenPause=false; paint(); },
+      ms(){ return Math.round(cur()); },
+      text(){ return fmt(cur()); }
+    };
+    document.addEventListener('visibilitychange', () => {
+      if(document.hidden){ if(running){ hiddenPause=true; api.pause(); } }
+      else if(hiddenPause){ hiddenPause=false; api.start(); }
+    });
+    return api;
+  })();
+  let lastGameMs = 0;
+
   // ── HOW TO PLAY MODAL ──
   function isModalOpen() { return document.getElementById('howto-modal').classList.contains('show'); }
   function showHowTo() {
     clearInterval(timerInt);
+    GameClock.pause();
     document.getElementById('howto-modal').classList.add('show');
   }
   function startGame() {
     document.getElementById('howto-modal').classList.remove('show');
     getAudio();
     loadWord(current); // (re)start the timer for the current word and focus the input
+    GameClock.start();
   }
 
   // ── INIT ──

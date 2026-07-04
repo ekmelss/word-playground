@@ -1,0 +1,41 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() { return request.auth != null; }
+    function isOwner(uid) { return signedIn() && request.auth.uid == uid; }
+
+    // Public leaderboard profiles. A user may only write their OWN doc,
+    // totalPoints can only go up, and by at most 2000 per write (anti-cheat cap).
+    match /users/{uid} {
+      allow read: if true;
+      allow create: if isOwner(uid)
+        && request.resource.data.totalPoints is number
+        && request.resource.data.totalPoints >= 0
+        && request.resource.data.totalPoints <= 2000;
+      allow update: if isOwner(uid)
+        && request.resource.data.totalPoints is number
+        && request.resource.data.totalPoints >= resource.data.totalPoints
+        && request.resource.data.totalPoints <= resource.data.totalPoints + 2000;
+      allow delete: if false;
+    }
+
+    // Unique usernames: write-once, must map to your own uid.
+    match /usernames/{name} {
+      allow read: if true;
+      allow create: if signedIn() && request.resource.data.uid == request.auth.uid;
+      allow update, delete: if false;
+    }
+
+    // Per-game play log (audit/history). Create-only, own uid, sane point range.
+    match /plays/{id} {
+      allow read: if true;
+      allow create: if signedIn()
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.points is number
+        && request.resource.data.points >= 0
+        && request.resource.data.points <= 2000;
+      allow update, delete: if false;
+    }
+  }
+}
