@@ -214,10 +214,13 @@
     }
     .deco { position:absolute; pointer-events:none; z-index:1; }
     .deco.sun   { top:14px; right:18px; font-size:40px; animation:starBounce 3s ease-in-out infinite; }
-    .deco.cloud { font-size:42px; opacity:0.95; animation:floatCloud 18s linear infinite; }
-    .deco.cloud1 { top:24px; left:-10%; }
-    .deco.cloud2 { top:60px; left:-10%; font-size:32px; animation-duration:26s; animation-delay:6s; }
-    @keyframes floatCloud { from{ transform:translateX(0); } to{ transform:translateX(140vw); } }
+    .deco.cloud { left:-16%; opacity:0.95; animation:floatCloud linear infinite; }
+    .deco.cloud1 { top:22px; font-size:42px; animation-duration:27s; animation-delay:-4s;  }
+    .deco.cloud2 { top:58px; font-size:32px; animation-duration:33s; animation-delay:-15s; opacity:0.9; }
+    .deco.cloud3 { top:14px; font-size:28px; animation-duration:30s; animation-delay:-23s; opacity:0.85; }
+    .deco.cloud4 { top:42px; font-size:50px; animation-duration:23s; animation-delay:-9s;  opacity:0.85; }
+    .deco.cloud5 { top:80px; font-size:26px; animation-duration:37s; animation-delay:-29s; opacity:0.8; }
+    @keyframes floatCloud { from{ transform:translateX(0); } to{ transform:translateX(150vw); } }
 
     .ground {
       position:absolute; left:0; right:0; bottom:0; height:72%;
@@ -228,6 +231,22 @@
       content:''; position:absolute; top:-9px; left:0; right:0; height:10px;
       background:repeating-linear-gradient(90deg, transparent 0 14px, #5bb86688 14px 16px);
     }
+
+    /* ── REACTIVE GRASS FIELD ── */
+    .grass-field { position:absolute; inset:0; z-index:2; pointer-events:none; }
+    .blade {
+      position:absolute; width:0; height:0; transform-origin:bottom center;
+      transition:transform 0.34s cubic-bezier(0.22,0.68,0.4,1.25); will-change:transform;
+    }
+    .blade i {
+      position:absolute; bottom:0; left:0; display:block;
+      width:var(--w,4px); height:var(--h,16px); margin-left:calc(var(--w,4px) * -0.5);
+      background:linear-gradient(to top, #3f9f52, #86dd83);
+      border-radius:50% 50% 45% 45% / 92% 92% 8% 8%;
+      transform-origin:bottom center;
+      animation:grassSway var(--dur,3s) ease-in-out var(--delay,0s) infinite;
+    }
+    @keyframes grassSway { 0%,100%{ transform:rotate(-7deg); } 50%{ transform:rotate(7deg); } }
 
     /* Equipment placed around the field — walk to it OR just tap it */
     .equip {
@@ -398,12 +417,16 @@
         <span class="deco sun">☀️</span>
         <span class="deco cloud cloud1">☁️</span>
         <span class="deco cloud cloud2">☁️</span>
+        <span class="deco cloud cloud3">☁️</span>
+        <span class="deco cloud cloud4">☁️</span>
+        <span class="deco cloud cloud5">☁️</span>
 
         <div class="ground"></div>
+        <div class="grass-field" id="grassField"></div>
 
         <!-- Equipment (each launches a game) -->
         <a class="equip swing" id="equip-swing" href="antonym.html" aria-label="Play See-Saw Swap">
-          <span class="equip-emoji">🎡</span>
+          <span class="equip-emoji">⚖️</span>
           <span class="equip-label">See-Saw Swap</span>
         </a>
         <a class="equip merry" id="equip-merry" href="wordmatch.html" aria-label="Play Merry-Go-Round">
@@ -632,6 +655,35 @@
       kidX = rx * stageW; kidY = ry * stageH; clampPos();
     });
 
+    // ── build a field of swaying grass blades across the ground ──
+    const grassField = document.getElementById('grassField');
+    const blades = [];
+    (function buildGrass(){
+      if (!grassField) return;
+      const N = stageW < 480 ? 42 : 64;
+      const minTp = (grassTop + 12) / stageH, maxTp = (stageH - 6) / stageH;
+      for (let i = 0; i < N; i++){
+        const rx  = 0.02 + Math.random() * 0.96;
+        const tp  = minTp + Math.random() * (maxTp - minTp);
+        const tpn = (tp - minTp) / (maxTp - minTp);          // 0 far (back) .. 1 near (front)
+        const h   = 11 + tpn * 16 + Math.random() * 3;        // taller toward the front
+        const w   = 3 + tpn * 2;
+        const el  = document.createElement('span');
+        el.className = 'blade';
+        el.style.left = (rx * 100).toFixed(2) + '%';
+        el.style.top  = (tp * 100).toFixed(2) + '%';
+        el.style.setProperty('--h', h.toFixed(1) + 'px');
+        el.style.setProperty('--w', w.toFixed(1) + 'px');
+        el.style.setProperty('--dur', (2.4 + Math.random() * 1.8).toFixed(2) + 's');
+        el.style.setProperty('--delay', (-Math.random() * 4).toFixed(2) + 's');
+        el.innerHTML = '<i></i>';
+        grassField.appendChild(el);
+        blades.push({ el: el, rx: rx, tp: tp, bent: false });
+      }
+    })();
+    const GRASS_REACH = 52;   // px around the feet that reacts
+    const GRASS_BEND  = 42;   // max lean, degrees
+
     function go(eq){ if (eq) window.location.href = eq.href; }
 
     // Fill + place the pop-up card above (or below) the reached toy, kept inside the stage
@@ -653,13 +705,13 @@
       const cx = er.left + er.width / 2 - sr.left;
       const cw = card.offsetWidth, ch = card.offsetHeight, half = cw / 2;
       const left = Math.max(half + 6, Math.min(stageW - half - 6, cx));
-      const roomAbove = (er.top - sr.top) - ch - 14;
-      let top, below = false;
-      if (roomAbove < 4) { top = (er.bottom - sr.top) + 14; below = true; }
-      else               { top = (er.top - sr.top) - 14; }
+      // always sit above the toy; clamp so the whole card stays inside the stage
+      // (card is anchored bottom-centre via translateY(-100%), so top edge = top - ch)
+      let top = (er.top - sr.top) - 14;
+      top = Math.max(top, ch + 4);
+      card.classList.remove('below');
       card.style.left = left + 'px';
       card.style.top  = top + 'px';
-      card.classList.toggle('below', below);
       let arrowX = cx - left;
       arrowX = Math.max(-(half - 16), Math.min(half - 16, arrowX));
       card.style.setProperty('--arrow-x', arrowX + 'px');
@@ -740,6 +792,22 @@
       kid.style.left = kidX + 'px';
       kid.style.top  = kidY + 'px';
       kidFlip.style.transform = 'scaleX(' + facing + ')';
+
+      // grass reacts: blades near the kid's feet bend away, then spring back
+      for (let i = 0; i < blades.length; i++){
+        const b  = blades[i];
+        const dx = kidX - b.rx * stageW;
+        const dy = kidY - b.tp * stageH;
+        if (dx*dx + dy*dy < GRASS_REACH*GRASS_REACH){
+          const d = Math.sqrt(dx*dx + dy*dy) || 0.001;
+          const ang = (dx >= 0 ? -1 : 1) * (1 - d / GRASS_REACH) * GRASS_BEND;
+          b.el.style.transform = 'rotate(' + ang.toFixed(1) + 'deg)';
+          b.bent = true;
+        } else if (b.bent){
+          b.el.style.transform = 'rotate(0deg)';
+          b.bent = false;
+        }
+      }
 
       // nearest reachable toy (2D distance)
       const sr = stage.getBoundingClientRect();
