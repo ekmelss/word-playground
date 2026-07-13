@@ -237,8 +237,8 @@
       -webkit-tap-highlight-color:transparent;
     }
     .equip:hover { transform:translate(-50%,-50%) scale(1.06); }
-    .equip.swing { left:24%; top:42%; }
-    .equip.merry { left:54%; top:74%; }
+    .equip.swing { left:54%; top:74%; }
+    .equip.merry { left:24%; top:42%; }
     .equip.slide { left:80%; top:46%; }
     .equip-emoji { font-size:58px; line-height:1; filter:drop-shadow(0 5px 4px rgba(0,0,0,0.18)); }
     .equip-label {
@@ -271,18 +271,45 @@
     .kid.walking .kid-arm.right { animation:armSwing 0.34s ease-in-out infinite; }
     @keyframes armSwing { 0%,100%{ transform:rotate(20deg); } 50%{ transform:rotate(-20deg); } }
 
-    .play-prompt {
-      position:absolute; top:0; left:0; transform:translate(-50%,-120%);
-      background:var(--purple); color:#fff; font-family:'Fredoka One',cursive; font-size:13px;
-      padding:6px 14px; border-radius:20px; white-space:nowrap; z-index:6;
-      box-shadow:0 4px 0 rgba(0,0,0,0.18); cursor:pointer;
-      opacity:0; pointer-events:none; transition:opacity 0.15s;
+    /* Game info pop-up card (small, mobile-friendly) */
+    .play-card {
+      position:absolute; top:0; left:0; transform:translate(-50%,-100%);
+      width:186px; background:#fff; border-radius:16px; z-index:8;
+      padding:11px 13px 12px; text-align:left;
+      box-shadow:0 8px 22px rgba(58,46,77,0.28), 0 3px 0 rgba(168,85,247,0.18);
+      border:2px solid rgba(168,85,247,0.28);
+      opacity:0; pointer-events:none; transition:opacity 0.16s;
     }
-    .play-prompt::after {
-      content:''; position:absolute; bottom:-7px; left:50%; transform:translateX(-50%);
-      border:7px solid transparent; border-top-color:var(--purple); border-bottom:0;
+    .play-card.show { opacity:1; pointer-events:auto; }
+    .play-card.below { transform:translate(-50%,0); }
+    .play-card::after {
+      content:''; position:absolute; left:calc(50% + var(--arrow-x,0px)); bottom:-9px;
+      transform:translateX(-50%);
+      border:9px solid transparent; border-top-color:#fff; border-bottom:0;
+      filter:drop-shadow(0 3px 2px rgba(58,46,77,0.12));
     }
-    .play-prompt.show { opacity:1; pointer-events:auto; }
+    .play-card.below::after {
+      bottom:auto; top:-9px; border-top:0; border-bottom:9px solid #fff;
+      filter:drop-shadow(0 -2px 2px rgba(58,46,77,0.10));
+    }
+    .pc-title {
+      font-family:'Fredoka One',cursive; font-size:14.5px; color:#3A2E4D;
+      display:flex; align-items:center; gap:6px; line-height:1.1;
+    }
+    .pc-title .pc-emoji { font-size:19px; }
+    .pc-desc { font-size:11.5px; color:#6B5E7A; margin-top:4px; line-height:1.35; }
+    .pc-foot { display:flex; align-items:center; justify-content:space-between; gap:8px; margin-top:9px; }
+    .pc-diff {
+      font-size:10px; font-weight:800; letter-spacing:0.3px; color:#fff;
+      background:var(--green); padding:3px 8px; border-radius:20px; white-space:nowrap;
+    }
+    .pc-play {
+      font-family:'Fredoka One',cursive; font-size:12.5px; color:#fff; cursor:pointer;
+      background:linear-gradient(135deg,var(--pink),var(--purple));
+      border:0; padding:6px 15px; border-radius:20px; box-shadow:0 3px 0 rgba(0,0,0,0.16);
+      -webkit-tap-highlight-color:transparent; white-space:nowrap;
+    }
+    .pc-play:active { transform:translateY(1px); box-shadow:0 2px 0 rgba(0,0,0,0.16); }
 
     .joystick {
       position:absolute; bottom:16px; left:16px; width:104px; height:104px; border-radius:50%;
@@ -403,8 +430,15 @@
           </div>
         </div>
 
-        <!-- "Press to play" bubble -->
-        <div class="play-prompt" id="playPrompt">▶ Press to play</div>
+        <!-- Game info pop-up card (appears when the kid reaches a toy) -->
+        <div class="play-card" id="playCard">
+          <div class="pc-title"><span class="pc-emoji" id="pcEmoji"></span><span id="pcName"></span></div>
+          <div class="pc-desc" id="pcDesc"></div>
+          <div class="pc-foot">
+            <span class="pc-diff" id="pcDiff"></span>
+            <button class="pc-play" id="pcPlay" type="button">▶ Play</button>
+          </div>
+        </div>
 
         <!-- On-screen joystick (touch + mouse) -->
         <div class="joystick" id="joystick"><div class="joystick-knob" id="joyKnob"></div></div>
@@ -554,7 +588,12 @@
     if (!stage) return;
     const kid      = document.getElementById('kid');
     const kidFlip  = document.getElementById('kidFlip');
-    const prompt   = document.getElementById('playPrompt');
+    const card     = document.getElementById('playCard');
+    const pcEmoji  = document.getElementById('pcEmoji');
+    const pcName   = document.getElementById('pcName');
+    const pcDesc   = document.getElementById('pcDesc');
+    const pcDiff   = document.getElementById('pcDiff');
+    const pcPlay   = document.getElementById('pcPlay');
     const joystick = document.getElementById('joystick');
     const knob     = document.getElementById('joyKnob');
 
@@ -563,6 +602,13 @@
       { el: document.getElementById('equip-merry'), href: 'wordmatch.html' },
       { el: document.getElementById('equip-slide'), href: 'typing.html'    },
     ];
+
+    // Short blurb + difficulty for each game's pop-up card
+    const INFO = {
+      'antonym.html':  { desc:'Are these two words opposites? Tap to decide!', diff:'Easy · A1',    color:'#5FBF6E' },
+      'wordmatch.html':{ desc:'Match two words that mean the same thing.',     diff:'Easy · A1–A2', color:'#4EA8DE' },
+      'typing.html':   { desc:'Type the correct plural before time runs out!', diff:'Medium · A2',  color:'#FF8C42' },
+    };
 
     const SPEED  = 0.34;   // px per ms at full input
     const MARGIN = 26;     // keep kid inside the stage horizontally
@@ -587,6 +633,37 @@
     });
 
     function go(eq){ if (eq) window.location.href = eq.href; }
+
+    // Fill + place the pop-up card above (or below) the reached toy, kept inside the stage
+    function showCard(eq){
+      const info    = INFO[eq.href] || {};
+      const emojiEl = eq.el.querySelector('.equip-emoji');
+      const nameEl  = eq.el.querySelector('.equip-label');
+      pcEmoji.textContent = emojiEl ? emojiEl.textContent : '🎮';
+      pcName.textContent  = nameEl  ? nameEl.textContent  : 'Play';
+      pcDesc.textContent  = info.desc || '';
+      pcDiff.textContent  = info.diff || '';
+      pcDiff.style.background = info.color || 'var(--green)';
+      card.classList.add('show');
+      positionCard(eq);
+    }
+    function positionCard(eq){
+      const sr = stage.getBoundingClientRect();
+      const er = eq.el.getBoundingClientRect();
+      const cx = er.left + er.width / 2 - sr.left;
+      const cw = card.offsetWidth, ch = card.offsetHeight, half = cw / 2;
+      const left = Math.max(half + 6, Math.min(stageW - half - 6, cx));
+      const roomAbove = (er.top - sr.top) - ch - 14;
+      let top, below = false;
+      if (roomAbove < 4) { top = (er.bottom - sr.top) + 14; below = true; }
+      else               { top = (er.top - sr.top) - 14; }
+      card.style.left = left + 'px';
+      card.style.top  = top + 'px';
+      card.classList.toggle('below', below);
+      let arrowX = cx - left;
+      arrowX = Math.max(-(half - 16), Math.min(half - 16, arrowX));
+      card.style.setProperty('--arrow-x', arrowX + 'px');
+    }
 
     // ── keyboard (4-way) ──
     const keys = { left:false, right:false, up:false, down:false };
@@ -632,8 +709,8 @@
     window.addEventListener('pointerup',   joyEnd);
     window.addEventListener('pointercancel', joyEnd);
 
-    // tap the bubble to launch
-    prompt.addEventListener('click', () => go(active));
+    // tap the Play button to launch
+    pcPlay.addEventListener('click', (e) => { e.stopPropagation(); go(active); });
 
     // place the kid at its starting spot before the first frame (no flash)
     clampPos();
@@ -677,14 +754,8 @@
       if (near !== active) {
         equips.forEach(eq => eq.el.classList.toggle('active', eq === near));
         active = near;
-        if (active) {
-          const er = active.el.getBoundingClientRect();
-          prompt.style.left = (er.left + er.width / 2 - sr.left) + 'px';
-          prompt.style.top  = (er.top - sr.top) + 'px';
-          prompt.classList.add('show');
-        } else {
-          prompt.classList.remove('show');
-        }
+        if (active) { showCard(active); }
+        else        { card.classList.remove('show'); }
       }
       requestAnimationFrame(loop);
     }
