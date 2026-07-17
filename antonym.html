@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>See-Saw Swap! 🔄</title>
+  <title>Swing or Slip! 🎡</title>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -185,7 +185,7 @@
     <!-- GAME SCREEN -->
     <div id="game-screen" style="width:100%;display:flex;flex-direction:column;align-items:center;gap:18px;">
       <div class="header">
-        <div class="game-title">See-Saw Swap! 🔄</div>
+        <div class="game-title">Swing or Slip! 🎡</div>
         <div class="game-sub">Are these words OPPOSITES?</div>
         <div class="best-badge" id="best-badge" style="display:none;">🏅 Best: <span id="best-val">0</span>/<span id="best-total">8</span></div>
       </div>
@@ -283,7 +283,7 @@
   <div class="modal-overlay" id="howto-modal">
     <div class="modal-card">
       <div class="modal-emoji">🔄</div>
-      <div class="modal-title">See-Saw Swap!</div>
+      <div class="modal-title">Swing or Slip!</div>
       <div class="modal-steps">
         <div class="modal-step"><span class="ms-num">1</span><span>You'll see <b>two words</b>. Decide if they are <b>opposites</b> (antonyms).</span></div>
         <div class="modal-step"><span class="ms-num">2</span><span>Tap <b>TRUE</b> if they ARE opposites, or <b>FALSE</b> if they are not.</span></div>
@@ -436,33 +436,55 @@
   function setBest(v) { try { localStorage.setItem(BEST_KEY, v); } catch (e) {} }
 
   // ── GAME DATA (large pool — a random set is picked each play) ──
-  // For FALSE pairs we store the real opposite (opp) to teach the correct antonym.
+  // Noun antonyms only, CEFR A1–A2.
+  // FALSE pairs carry `why` (how the two words really relate) and, where one
+  // exists, `opp` (the true opposite of w1) so the player still learns it.
   const POOL = [
-    { w1:"happy",    w2:"sad",      isTrue:true  },
-    { w1:"fast",     w2:"slow",     isTrue:true  },
-    { w1:"early",    w2:"late",     isTrue:true  },
-    { w1:"hot",      w2:"cold",     isTrue:true  },
-    { w1:"open",     w2:"closed",   isTrue:true  },
-    { w1:"empty",    w2:"full",     isTrue:true  },
-    { w1:"light",    w2:"dark",     isTrue:true  },
-    { w1:"buy",      w2:"sell",     isTrue:true  },
-    { w1:"win",      w2:"lose",     isTrue:true  },
-    { w1:"brave",    w2:"afraid",   isTrue:true  },
-    { w1:"ancient",  w2:"modern",   isTrue:true  },
-    { w1:"accept",   w2:"reject",   isTrue:true  },
-    { w1:"arrive",   w2:"depart",   isTrue:true  },
-    { w1:"increase", w2:"decrease", isTrue:true  },
-    { w1:"strong",   w2:"weak",     isTrue:true  },
-    { w1:"big",      w2:"tall",      isTrue:false, opp:"small"   },
-    { w1:"clean",    w2:"tidy",      isTrue:false, opp:"dirty"   },
-    { w1:"smart",    w2:"clever",    isTrue:false, opp:"stupid"  },
-    { w1:"happy",    w2:"joyful",    isTrue:false, opp:"sad"     },
-    { w1:"quick",    w2:"rapid",     isTrue:false, opp:"slow"    },
-    { w1:"huge",     w2:"large",     isTrue:false, opp:"tiny"    },
-    { w1:"difficult",w2:"hard",      isTrue:false, opp:"easy"    },
-    { w1:"wealthy",  w2:"rich",      isTrue:false, opp:"poor"    },
-    { w1:"begin",    w2:"start",     isTrue:false, opp:"end"     },
-    { w1:"shout",    w2:"yell",      isTrue:false, opp:"whisper" },
+    // ── TRUE: real opposites ──
+    { w1:"day",       w2:"night",     isTrue:true },
+    { w1:"life",      w2:"death",     isTrue:true },
+    { w1:"friend",    w2:"enemy",     isTrue:true },
+    { w1:"peace",     w2:"war",       isTrue:true },
+    { w1:"success",   w2:"failure",   isTrue:true },
+    { w1:"victory",   w2:"defeat",    isTrue:true },
+    { w1:"entrance",  w2:"exit",      isTrue:true },
+    { w1:"beginning", w2:"ending",    isTrue:true },
+    { w1:"arrival",   w2:"departure", isTrue:true },
+    { w1:"gain",      w2:"loss",      isTrue:true },
+    { w1:"buyer",     w2:"seller",    isTrue:true },
+    { w1:"heaven",    w2:"hell",      isTrue:true },
+    { w1:"host",      w2:"guest",     isTrue:true },
+    { w1:"truth",     w2:"lie",       isTrue:true },
+    { w1:"winner",    w2:"loser",     isTrue:true },
+    { w1:"birth",     w2:"death",     isTrue:true },
+    { w1:"adult",     w2:"child",     isTrue:true },
+
+    // ── FALSE: related, but not opposites ──
+    { w1:"day",     w2:"morning",   isTrue:false, why:"morning is a part of the day.",             opp:"night"     },
+    { w1:"life",    w2:"health",    isTrue:false, why:"health is a part of life.",                 opp:"death"     },
+    { w1:"friend",  w2:"neighbour", isTrue:false, why:"a neighbour lives near you — often a friend!", opp:"enemy"  },
+    { w1:"peace",   w2:"love",      isTrue:false, why:"both are good things, and they go together.", opp:"war"     },
+    { w1:"success", w2:"victory",   isTrue:false, why:"they mean almost the same thing.",          opp:"failure"   },
+    { w1:"entrance",w2:"door",      isTrue:false, why:"a door is what you walk through at an entrance.", opp:"exit" },
+    { w1:"arrival", w2:"journey",   isTrue:false, why:"the arrival is the end of a journey.",      opp:"departure" },
+    { w1:"buyer",   w2:"customer",  isTrue:false, why:"they mean almost the same thing.",          opp:"seller"    },
+    { w1:"teacher", w2:"student",   isTrue:false, why:"they work together at school." },
+    { w1:"doctor",  w2:"nurse",     isTrue:false, why:"both work at a hospital." },
+    { w1:"book",    w2:"notebook",  isTrue:false, why:"you read a book and write in a notebook." },
+    { w1:"apple",   w2:"orange",    isTrue:false, why:"both are fruit." },
+    { w1:"cat",     w2:"dog",       isTrue:false, why:"both are animals." },
+    { w1:"table",   w2:"chair",     isTrue:false, why:"both are furniture, and they go together." },
+    { w1:"bus",     w2:"train",     isTrue:false, why:"both take you places." },
+    { w1:"river",   w2:"lake",      isTrue:false, why:"both are water." },
+    { w1:"mountain",w2:"hill",      isTrue:false, why:"both are high land — a mountain is just bigger." },
+    { w1:"kitchen", w2:"bedroom",   isTrue:false, why:"both are rooms in a house." },
+    { w1:"school",  w2:"hospital",  isTrue:false, why:"both are places in a town." },
+    { w1:"king",    w2:"queen",     isTrue:false, why:"they rule together." },
+    { w1:"brother", w2:"sister",    isTrue:false, why:"both are family." },
+    { w1:"cup",     w2:"bottle",    isTrue:false, why:"both hold a drink." },
+    { w1:"pen",     w2:"pencil",    isTrue:false, why:"both are for writing." },
+    { w1:"village", w2:"town",      isTrue:false, why:"both are places people live — a village is just smaller." },
+    { w1:"sun",     w2:"moon",      isTrue:false, why:"both are in the sky." },
   ];
 
   const NUM_QUESTIONS = 8;
@@ -485,7 +507,9 @@
 
   function noteFor(q) {
     if (q.isTrue) return `Yes! "${q.w1}" and "${q.w2}" are opposites.`;
-    return `Not opposites — "${q.w1}" and "${q.w2}" mean almost the same. The opposite of "${q.w1}" is "${q.opp}".`;
+    let s = `Not opposites — ${q.why}`;
+    if (q.opp) s += ` The opposite of "${q.w1}" is "${q.opp}".`;
+    return s;
   }
 
   function startTimer() {
