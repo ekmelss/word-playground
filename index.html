@@ -692,10 +692,8 @@
       pcEmoji.textContent = emojiEl ? emojiEl.textContent : '🎮';
       pcName.textContent  = nameEl  ? nameEl.textContent  : 'Play';
       pcDesc.textContent  = info.desc || '';
-      const best = info.bestKey ? readBest(info.bestKey) : null;
-      pcDiff.textContent = best === null ? '' : '🏆 Best: ' + info.fmt(best);
-      pcDiff.style.display = best === null ? 'none' : '';
-      pcDiff.style.background = info.color || 'var(--green)';
+      pcDiff.textContent = '';
+      pcDiff.style.display = 'none';
       card.classList.add('show');
       positionCard(eq);
     }
